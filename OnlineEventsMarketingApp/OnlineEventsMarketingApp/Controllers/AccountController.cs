@@ -8,7 +8,10 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using OnlineEventsMarketingApp.Entities.Users;
+using OnlineEventsMarketingApp.Infrastructure.Interfaces;
 using OnlineEventsMarketingApp.Models;
+using OnlineEventsMarketingApp.Services.Interfaces;
 
 namespace OnlineEventsMarketingApp.Controllers
 {
@@ -17,15 +20,17 @@ namespace OnlineEventsMarketingApp.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private readonly IUserRepository _userRepository; 
 
-        public AccountController()
+        public AccountController(IUserRepository userRepository)
         {
+            _userRepository = userRepository;
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
-            SignInManager = signInManager;
+            SignInManager = signInManager;            
         }
 
         public ApplicationSignInManager SignInManager
@@ -393,6 +398,13 @@ namespace OnlineEventsMarketingApp.Controllers
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             return RedirectToAction("Index", "Home");
+        }
+
+        [Authorize(Roles = "Admin")]
+        public ActionResult Index()
+        {
+            var users = _userRepository.GetUsers();
+            return View(users);
         }
 
         //

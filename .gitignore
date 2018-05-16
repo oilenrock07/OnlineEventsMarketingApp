@@ -3,3 +3,9 @@ OnlineEventsMarketingApp/OnlineEventsMarketingApp/bin/
 OnlineEventsMarketingApp/OnlineEventsMarketingApp/obj/
 OnlineEventsMarketingApp/OnlineEventsMarketingApp.Tests/bin/
 OnlineEventsMarketingApp/OnlineEventsMarketingApp.Tests/obj/
+OnlineEventsMarketingApp/OnlineEventsMarketingApp.Infrastructure/obj/
+OnlineEventsMarketingApp/OnlineEventsMarketingApp.Entities/obj/
+OnlineEventsMarketingApp/OnlineEventsMarketingApp.Infrastructure/bin/
+OnlineEventsMarketingApp/OnlineEventsMarketingApp.Services/obj/
+OnlineEventsMarketingApp/OnlineEventsMarketingApp.Services/bin/
+OnlineEventsMarketingApp/OnlineEventsMarketingApp.Entities/bin/
