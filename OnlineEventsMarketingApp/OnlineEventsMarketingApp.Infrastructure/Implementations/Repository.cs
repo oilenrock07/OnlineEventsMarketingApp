@@ -41,6 +41,11 @@ namespace OnlineEventsMarketingApp.Infrastructure.Implementations
             return DbSet;
         }
 
+        public virtual T FirstOrDefault(System.Linq.Expressions.Expression<Func<T, bool>> expression)
+        {
+            return DbSet.FirstOrDefault(expression);
+        }
+
         public virtual IQueryable<T> Find(System.Linq.Expressions.Expression<Func<T, bool>> expression)
         {
             return DbSet.Where(expression);

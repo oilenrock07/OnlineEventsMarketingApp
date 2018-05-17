@@ -11,7 +11,9 @@ namespace OnlineEventsMarketingApp.Infrastructure.Interfaces
         IQueryable<T> GetAll();
 
         IQueryable<T> Find(Expression<Func<T, bool>> expression);
-        
+
+        T FirstOrDefault(Expression<Func<T, bool>> expression);
+
         T Add(T entity);
 
         void Update(T entity);

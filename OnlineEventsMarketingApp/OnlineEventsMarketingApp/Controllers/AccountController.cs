@@ -10,7 +10,9 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using OnlineEventsMarketingApp.Entities.Users;
 using OnlineEventsMarketingApp.Infrastructure.Interfaces;
+using OnlineEventsMarketingApp.Interfaces;
 using OnlineEventsMarketingApp.Models;
+using OnlineEventsMarketingApp.Models.Accounts;
 using OnlineEventsMarketingApp.Services.Interfaces;
 
 namespace OnlineEventsMarketingApp.Controllers
@@ -20,11 +22,16 @@ namespace OnlineEventsMarketingApp.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
-        private readonly IUserRepository _userRepository; 
+        private readonly IUserService _userService;
+        private readonly IPaginationService _paginationService;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IRepository<User> _userRepository;
 
-        public AccountController(IUserRepository userRepository)
+        public AccountController(IUnitOfWork unitOfWork, IUserService userRepository, IPaginationService paginationService)
         {
-            _userRepository = userRepository;
+            _unitOfWork = unitOfWork;
+            _userService = userRepository;
+            _paginationService = paginationService;
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
@@ -403,8 +410,27 @@ namespace OnlineEventsMarketingApp.Controllers
         [Authorize(Roles = "Admin")]
         public ActionResult Index()
         {
-            var users = _userRepository.GetUsers();
-            return View(users);
+            var users = _userService.GetUsers().ToList();
+            var pagination = _paginationService.GetPaginationModel(Request, users.Count);
+            var viewModel = new UserListViewModel
+            {
+                Users = _paginationService.TakePaginationModel(users, pagination),
+                Pagination = pagination
+            };
+
+            return View(viewModel);
+        }
+
+
+        [Authorize(Roles = "Admin")]
+        public ActionResult Delete(string id)
+        {
+            var user = _userRepository.FirstOrDefault(x => x.Id == id);
+            _userRepository.Update(user);
+            user.IsDeleted = true;
+            _unitOfWork.Commit();
+
+            return RedirectToAction("Index");
         }
 
         //

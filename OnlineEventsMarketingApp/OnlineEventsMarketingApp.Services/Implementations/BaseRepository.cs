@@ -3,7 +3,7 @@ using OnlineEventsMarketingApp.Infrastructure.Interfaces;
 
 namespace OnlineEventsMarketingApp.Services.Implementations
 {
-    public abstract class BaseRepository
+    public abstract class BaseRepository 
     {
         public OnlineEventsContext Context { get; set; }
 

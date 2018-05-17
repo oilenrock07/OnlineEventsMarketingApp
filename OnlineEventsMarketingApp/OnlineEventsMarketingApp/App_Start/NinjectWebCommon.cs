@@ -1,6 +1,8 @@
 using Ninject.Web.Common.WebHost;
+using OnlineEventsMarketingApp.BusinessLogic;
 using OnlineEventsMarketingApp.Infrastructure.Implementations;
 using OnlineEventsMarketingApp.Infrastructure.Interfaces;
+using OnlineEventsMarketingApp.Interfaces;
 using OnlineEventsMarketingApp.Services.Implementations;
 using OnlineEventsMarketingApp.Services.Interfaces;
 
@@ -73,7 +75,8 @@ namespace OnlineEventsMarketingApp.App_Start
             kernel.Bind(typeof(IRepository<>)).To(typeof(Repository<>));
 
             //Services
-            kernel.Bind<IUserRepository>().To<UserRepository>().InRequestScope();
+            kernel.Bind<IUserService>().To<UserService>().InRequestScope();
+            kernel.Bind<IPaginationService>().To<PaginationService>().InRequestScope();
         }        
     }
 }
