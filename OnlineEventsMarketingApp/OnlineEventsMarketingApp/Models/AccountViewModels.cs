@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Web.Mvc;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace OnlineEventsMarketingApp.Models
@@ -77,8 +78,19 @@ namespace OnlineEventsMarketingApp.Models
 
         [DataType(DataType.Password)]
         [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [System.ComponentModel.DataAnnotations.Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        [Required]
+        public string FirstName { get; set; }
+
+        [Required]
+        public string LastName { get; set; }
+
+        public string RoleId { get; set; }
+        public IEnumerable<SelectListItem> Roles { get; set; }
+
+        public string Id { get; set; }
     }
 
     public class ResetPasswordViewModel
@@ -96,7 +108,7 @@ namespace OnlineEventsMarketingApp.Models
 
         [DataType(DataType.Password)]
         [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [System.ComponentModel.DataAnnotations.Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
 
         public string Code { get; set; }

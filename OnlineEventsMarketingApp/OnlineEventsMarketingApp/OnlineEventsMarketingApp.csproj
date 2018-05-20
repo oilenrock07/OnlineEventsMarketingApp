@@ -65,6 +65,10 @@
       <HintPath>..\packages\Ninject.MVC5.3.3.0\lib\net45\Ninject.Web.Mvc.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Omu.ValueInjecter, Version=3.1.2.0, Culture=neutral, PublicKeyToken=5692a4ecdffbe736, processorArchitecture=MSIL">
+      <HintPath>..\packages\ValueInjecter.3.1.2\lib\net45\Omu.ValueInjecter.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -264,6 +268,7 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Account\Index.cshtml" />
     <Content Include="Views\Shared\Pagination.cshtml" />
+    <Content Include="Views\Account\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -277,6 +282,10 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\OnlineEventsMarketingApp.Common\OnlineEventsMarketingApp.Common.csproj">
+      <Project>{73d6d90d-1f50-4471-a93c-ee622e9caec9}</Project>
+      <Name>OnlineEventsMarketingApp.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OnlineEventsMarketingApp.Entities\OnlineEventsMarketingApp.Entities.csproj">
       <Project>{6c4337f7-2d29-4980-8e0f-bd9eab96be98}</Project>
       <Name>OnlineEventsMarketingApp.Entities</Name>

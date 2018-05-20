@@ -7,7 +7,7 @@ namespace OnlineEventsMarketingApp.Services.Interfaces
     public interface IUserService
     {
         IEnumerable<UserDTO> GetUsers();
-
+        UserDTO GetUserAndRoleId(string userId);
         User GetByUserId(string id);
     }
 }

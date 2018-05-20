@@ -19,7 +19,7 @@ namespace OnlineEventsMarketingApp.Services.Implementations
 
         public IEnumerable<UserDTO> GetUsers()
         {
-            return from userrole in Context.UserRoles//.Where(x => x.RoleId != "1")
+            return from userrole in Context.UserRoles.Where(x => x.RoleId != "1")
                     join user in Context.Users on userrole.UserId equals user.Id
                     join role in Context.Roles on userrole.RoleId equals role.Id
                     select new UserDTO
@@ -27,6 +27,20 @@ namespace OnlineEventsMarketingApp.Services.Implementations
                         User = user,
                         Role = role.Name
                     };
+        }
+
+        public UserDTO GetUserAndRoleId(string userId)
+        {
+            return (from userrole in Context.UserRoles
+                   join user in Context.Users on userrole.UserId equals user.Id
+                   join role in Context.Roles on userrole.RoleId equals role.Id
+                   where user.Id == userId
+                   select new UserDTO
+                   {
+                       User = user,
+                       RoleId = role.Id,
+                       Role = role.Name
+                   }).FirstOrDefault();
         }
 
         public User GetByUserId(string id)

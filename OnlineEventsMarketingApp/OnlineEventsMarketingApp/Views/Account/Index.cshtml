@@ -8,7 +8,7 @@
 
 <div class="row">
     <div class="col-md-6 pull-left t1">
-        @Html.ActionLink("Create New", "Create")
+        @Html.ActionLink("Create New", "Register")
     </div>
     @*<div class="col-md-6">
         @Html.Partial("_SearchEmployee", "/EmployeeController/SearchEmployee")
@@ -26,9 +26,9 @@
         <th>
             Role
         </th>
-        <th>
+        @*<th>
             Enabled
-        </th>
+        </th>*@
         <th></th>
     </tr>
 
@@ -44,9 +44,9 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Role)
             </td>
-            <td>
+            @*<td>
                 @Html.DisplayFor(modelItem => item.IsEnabled)
-            </td>
+            </td>*@
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id = item.User.Id }) |
                 @Html.ActionLink("Delete", "Delete", new {id = item.User.Id}, new {@class = "js-userDelete"}) |

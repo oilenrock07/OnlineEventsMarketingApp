@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineEventsMarketingApp.In
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineEventsMarketingApp.Services", "OnlineEventsMarketingApp.Services\OnlineEventsMarketingApp.Services.csproj", "{333592B9-301F-4A04-98D0-30E12CE2CEE1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineEventsMarketingApp.Common", "OnlineEventsMarketingApp.Common\OnlineEventsMarketingApp.Common.csproj", "{73D6D90D-1F50-4471-A93C-EE622E9CAEC9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{333592B9-301F-4A04-98D0-30E12CE2CEE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{333592B9-301F-4A04-98D0-30E12CE2CEE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{333592B9-301F-4A04-98D0-30E12CE2CEE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73D6D90D-1F50-4471-A93C-EE622E9CAEC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73D6D90D-1F50-4471-A93C-EE622E9CAEC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73D6D90D-1F50-4471-A93C-EE622E9CAEC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73D6D90D-1F50-4471-A93C-EE622E9CAEC9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

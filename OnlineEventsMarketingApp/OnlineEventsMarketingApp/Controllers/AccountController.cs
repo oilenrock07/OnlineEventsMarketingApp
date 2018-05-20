@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
@@ -8,6 +9,7 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using OnlineEventsMarketingApp.Common.Extensions;
 using OnlineEventsMarketingApp.Entities.Users;
 using OnlineEventsMarketingApp.Infrastructure.Interfaces;
 using OnlineEventsMarketingApp.Interfaces;
@@ -25,12 +27,20 @@ namespace OnlineEventsMarketingApp.Controllers
         private readonly IUserService _userService;
         private readonly IPaginationService _paginationService;
         private readonly IUnitOfWork _unitOfWork;
+
+        private readonly IRepository<Role> _roleRepository;
+        private readonly IRepository<UserRole> _userRoleRepository;
         private readonly IRepository<User> _userRepository;
 
-        public AccountController(IUnitOfWork unitOfWork, IUserService userRepository, IPaginationService paginationService)
+        public AccountController(IUnitOfWork unitOfWork, IRepository<User> userRepository,
+            IRepository<Role> roleRepository, IRepository<UserRole> userRoleRepository,
+            IUserService userService, IPaginationService paginationService)
         {
             _unitOfWork = unitOfWork;
-            _userService = userRepository;
+            _userRepository = userRepository;
+            _roleRepository = roleRepository;
+            _userRoleRepository = userRoleRepository;
+            _userService = userService;
             _paginationService = paginationService;
         }
 
@@ -81,26 +91,82 @@ namespace OnlineEventsMarketingApp.Controllers
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
             if (!ModelState.IsValid)
-            {
                 return View(model);
+
+            var user = _userRepository.Find(x => x.Email == model.Email && !x.IsDeleted).FirstOrDefault();
+            if (user != null && UserManager.PasswordHasher.VerifyHashedPassword(user.PasswordHash, model.Password) == PasswordVerificationResult.Success)
+            {
+                var applicationUser = await UserManager.FindByIdAsync(user.Id);
+                await SignInManager.SignInAsync(applicationUser, false, model.RememberMe);
+                return RedirectToLocal(returnUrl);
             }
+
+            ModelState.AddModelError("", "Invalid email or password.");
+            return View(model);
 
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
-            switch (result)
+            //var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            //switch (result)
+            //{
+            //    case SignInStatus.Success:
+            //        return RedirectToLocal(returnUrl);
+            //    case SignInStatus.LockedOut:
+            //        return View("Lockout");
+            //    case SignInStatus.RequiresVerification:
+            //        return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+            //    case SignInStatus.Failure:
+            //    default:
+            //        ModelState.AddModelError("", "Invalid login attempt.");
+            //        return View(model);
+            //}
+        }
+
+        [Authorize(Roles = "Admin")]
+        public ActionResult Edit(string Id)
+        {
+            if (String.IsNullOrEmpty(Id))
+                return RedirectToAction("Index");
+
+            var user = _userService.GetUserAndRoleId(Id);
+            if (user == null)
             {
-                case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
-                case SignInStatus.LockedOut:
-                    return View("Lockout");
-                case SignInStatus.RequiresVerification:
-                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
-                case SignInStatus.Failure:
-                default:
-                    ModelState.AddModelError("", "Invalid login attempt.");
-                    return View(model);
+                ModelState.AddModelError("", "Invalid user");
+                return View();
             }
+
+            var viewModel = user.User.MapItem<RegisterViewModel>();
+            viewModel.Roles = GetRoles();
+            viewModel.RoleId = user.RoleId;
+            return View(viewModel);
+        }
+
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public ActionResult Edit(RegisterViewModel viewModel)
+        {
+            //update user
+            var user = _userService.GetByUserId(viewModel.Id);
+            _userRepository.Update(user);
+            user.FirstName = viewModel.FirstName;
+            user.LastName = viewModel.LastName;
+            user.UserName = String.Format("{0} {1}", viewModel.FirstName, viewModel.LastName);
+
+            //update roles
+            var userRoleRepository = _userRoleRepository.FirstOrDefault(x => x.UserId == viewModel.Id);
+            if (userRoleRepository != null && userRoleRepository.RoleId != viewModel.RoleId)
+            {
+                _userRoleRepository.Delete(userRoleRepository);
+                _userRoleRepository.Add(new UserRole
+                {
+                    RoleId = viewModel.RoleId,
+                    UserId = viewModel.Id
+                });
+            }
+            
+            _unitOfWork.Commit();
+            return RedirectToAction("Index");
         }
 
         //
@@ -151,7 +217,12 @@ namespace OnlineEventsMarketingApp.Controllers
         [AllowAnonymous]
         public ActionResult Register()
         {
-            return View();
+            var viewModel = new RegisterViewModel
+            {
+                Roles = GetRoles()
+            };
+
+            return View(viewModel);
         }
 
         //
@@ -163,25 +234,44 @@ namespace OnlineEventsMarketingApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = String.Format("{0} {1}", model.FirstName, model.LastName), Email = model.Email };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
-                    // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
-                    // Send an email with this link
-                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                    //update user firstname and lastname
+                    var usr = _userRepository.FirstOrDefault(x => x.Id == user.Id);
+                    _userRepository.Update(usr);
+                    usr.FirstName = model.FirstName;
+                    usr.LastName = model.LastName;
 
-                    return RedirectToAction("Index", "Home");
+                    _userRoleRepository.Add(new UserRole
+                    {
+                        RoleId = model.RoleId,
+                        UserId = user.Id
+                    });
+                    _unitOfWork.Commit();
+
+                    return RedirectToAction("Index", "Account");
                 }
-                AddErrors(result);
+                else
+                {
+                    AddErrors(result);
+                }
             }
 
             // If we got this far, something failed, redisplay form
+            model.Roles = GetRoles();
             return View(model);
+        }
+
+        private IEnumerable<SelectListItem> GetRoles()
+        {
+            var roles = _roleRepository.GetAll().ToList();
+            return roles.Select(x => new SelectListItem()
+            {
+                Text = x.Name,
+                Value = x.Id
+            });
         }
 
         //

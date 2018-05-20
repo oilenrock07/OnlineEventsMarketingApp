@@ -16,6 +16,7 @@ namespace OnlineEventsMarketingApp.Services.DataTransferObjects
             }
         }
 
+        public string RoleId { get; set; }
         public string Role { get; set; }
     }
 }

@@ -1,14 +1,15 @@
 ﻿@model OnlineEventsMarketingApp.Models.RegisterViewModel
 @{
-    ViewBag.Title = "Register";
+    ViewBag.Title = "Edit";
 }
 
 <h2>@ViewBag.Title.</h2>
 
-@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+@using (Html.BeginForm("Edit", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
+    @Html.HiddenFor(model => model.Id)
     @Html.AntiForgeryToken()
-    <h4>Create a new account.</h4>
+    <h4>Edit account.</h4>
     <hr />
     @Html.ValidationSummary()
     <div class="form-group">
@@ -35,18 +36,6 @@
         @Html.Label("Role", new { @class = "col-md-2 control-label" })
         <div class="col-md-4">
             @Html.DropDownListFor(m => m.RoleId, Model.Roles, new {@class = "form-control"})
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
-        <div class="col-md-4">
-            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
-        <div class="col-md-4">
-            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
         </div>
     </div>
     <div class="form-group">
