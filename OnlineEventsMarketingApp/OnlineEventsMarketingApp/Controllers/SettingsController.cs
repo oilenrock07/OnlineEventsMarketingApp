@@ -31,27 +31,30 @@ namespace OnlineEventsMarketingApp.Controllers
         // GET: Settings
         public ActionResult Tags()
         {
-            var currentMonth = DateTime.Now.Month;
-            var tags = _tagService.GetTagsByMonth(currentMonth);
+            var now = DateTime.Now;
+            var currentMonth = now.Month;
+            var currentYear = now.Year;
+
             var viewModel = new TagListViewModel
             {
+                Year = currentYear,
                 Month = currentMonth,
                 Months = GetMonthList(),
-                Tags = tags
+                Years = GetYearList()
             };
 
             return View(viewModel);
         }
 
-        //public PartialViewResult TagsContent()
-        //{
-        //    var tags = _tagService.GetTagsByMonth(currentMonth);
-        //    var viewModel = new TagListViewModel
-        //    {
-        //        Tags = tags
-        //    };
-        //    return PartialView("_TagContent", );
-        //}
+        public PartialViewResult TagsContent(int year, int month)
+        {
+            var tags = _tagService.GetTags(year, month);
+            var viewModel = new TagListViewModel
+            {
+                Tags = tags
+            };
+            return PartialView("_TagContent", viewModel);
+        }
 
         // GET: Settings/CreateTag
         public ActionResult CreateTag(int month)
@@ -67,19 +70,19 @@ namespace OnlineEventsMarketingApp.Controllers
         //// POST: Settings/Create
         //// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         //// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public PartialViewResult Create([Bind(Include = "TagId,TagName,Month,StartDate,EndDate")] TagCreateViewModel viewModel)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var tag = viewModel.MapItem<Tag>();
-        //        _tagRepository.Add(tag);
-        //        _unitOfWork.Commit();
-        //    }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public PartialViewResult Create([Bind(Include = "TagId,TagName,Year,Month,StartDate,EndDate")] TagCreateViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var tag = viewModel.MapItem<Tag>();
+                _tagRepository.Add(tag);
+                _unitOfWork.Commit();
+            }
 
-        //    return TagsContent();
-        //}
+            return TagsContent(viewModel.Year, viewModel.Month);
+        }
 
         
 
@@ -151,13 +154,24 @@ namespace OnlineEventsMarketingApp.Controllers
 
         private IEnumerable<SelectListItem> GetMonthList()
         {
-            var months = MonthYearHelper.GetMonths().Select(x => new SelectListItem
+            var months = MonthHelper.GetMonths().Select(x => new SelectListItem
             {
                 Text = x.Item2,
                 Value = x.Item1.ToString()
             });
 
             return months;
-        } 
+        }
+
+        private IEnumerable<SelectListItem> GetYearList()
+        {
+            var months = MonthHelper.GetYears().Select(x => new SelectListItem
+            {
+                Text = x.ToString(),
+                Value = x.ToString()
+            });
+
+            return months;
+        }
     }
 }
