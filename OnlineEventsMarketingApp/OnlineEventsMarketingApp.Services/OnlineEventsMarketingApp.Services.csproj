@@ -51,8 +51,10 @@
   <ItemGroup>
     <Compile Include="DataTransferObjects\UserDTO.cs" />
     <Compile Include="Implementations\BaseRepository.cs" />
+    <Compile Include="Implementations\DataSheetService.cs" />
     <Compile Include="Implementations\TagService.cs" />
     <Compile Include="Implementations\UserService.cs" />
+    <Compile Include="Interfaces\IDataSheetService.cs" />
     <Compile Include="Interfaces\ITagService.cs" />
     <Compile Include="Interfaces\IUserService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

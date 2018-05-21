@@ -43,15 +43,15 @@ namespace OnlineEventsMarketingApp.Controllers
             return View(viewModel);
         }
 
-        public PartialViewResult TagsContent()
-        {
-            var tags = _tagService.GetTagsByMonth(currentMonth);
-            var viewModel = new TagListViewModel
-            {
-                Tags = tags
-            };
-            return PartialView("_TagContent", );
-        }
+        //public PartialViewResult TagsContent()
+        //{
+        //    var tags = _tagService.GetTagsByMonth(currentMonth);
+        //    var viewModel = new TagListViewModel
+        //    {
+        //        Tags = tags
+        //    };
+        //    return PartialView("_TagContent", );
+        //}
 
         // GET: Settings/CreateTag
         public ActionResult CreateTag(int month)
@@ -67,19 +67,19 @@ namespace OnlineEventsMarketingApp.Controllers
         //// POST: Settings/Create
         //// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         //// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public PartialViewResult Create([Bind(Include = "TagId,TagName,Month,StartDate,EndDate")] TagCreateViewModel viewModel)
-        {
-            if (ModelState.IsValid)
-            {
-                var tag = viewModel.MapItem<Tag>();
-                _tagRepository.Add(tag);
-                _unitOfWork.Commit();
-            }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public PartialViewResult Create([Bind(Include = "TagId,TagName,Month,StartDate,EndDate")] TagCreateViewModel viewModel)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var tag = viewModel.MapItem<Tag>();
+        //        _tagRepository.Add(tag);
+        //        _unitOfWork.Commit();
+        //    }
 
-            return TagsContent();
-        }
+        //    return TagsContent();
+        //}
 
         
 
@@ -151,7 +151,7 @@ namespace OnlineEventsMarketingApp.Controllers
 
         private IEnumerable<SelectListItem> GetMonthList()
         {
-            var months = MonthHelper.GetMonths().Select(x => new SelectListItem
+            var months = MonthYearHelper.GetMonths().Select(x => new SelectListItem
             {
                 Text = x.Item2,
                 Value = x.Item1.ToString()

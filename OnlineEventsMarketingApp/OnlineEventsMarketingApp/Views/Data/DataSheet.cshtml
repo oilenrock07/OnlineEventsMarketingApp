@@ -1,0 +1,22 @@
+﻿@model OnlineEventsMarketingApp.Models.Data.DataSheetViewModel
+@{
+    ViewBag.Title = "Data Sheet";
+}
+
+<h2>Data Sheet</h2>
+
+@using (Html.BeginForm("ImportDataSheet", "Data", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="row">
+        <div class="col-xs-12 col-md-6 t1">
+            @Html.DropDownListFor(m => m.Month, Model.Months, new { @class = "form-control" })
+        </div>
+        <div class="col-xs-12 col-md-6 pull-right t1">
+            <div class="pull-right">
+                @Html.TextBoxFor(model => model.File, new { type = "file", @class = "form-control, hidden" })
+                <button class="btn btn-default">Import Data</button>
+                <button class="btn btn-success">Export Data</button>
+            </div>
+        </div>
+    </div>
+}

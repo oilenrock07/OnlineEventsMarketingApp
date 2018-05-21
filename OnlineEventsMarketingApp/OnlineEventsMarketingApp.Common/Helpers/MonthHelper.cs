@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace OnlineEventsMarketingApp.Common.Helpers
 {
-    public static class MonthHelper
+    public static class MonthYearHelper
     {
         public static IEnumerable<Tuple<int, string>> _months = new List<Tuple<int, string>>
         {
@@ -24,6 +24,17 @@ namespace OnlineEventsMarketingApp.Common.Helpers
         public static IEnumerable<Tuple<int, string>> GetMonths()
         {
             return _months;
-        } 
+        }
+
+        public static IEnumerable<int> GetYears()
+        {
+            var yearNow = DateTime.Now.Year;
+            var years = new List<int>();
+
+            for (var a = yearNow - 5; a <= a + 5; a++)
+                years.Add(a);
+
+            return years;
+        }
     }
 }

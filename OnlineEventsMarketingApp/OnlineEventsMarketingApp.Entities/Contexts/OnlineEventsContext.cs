@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
+﻿using System.Configuration;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using OnlineEventsMarketingApp.Entities.Users;
 
 namespace OnlineEventsMarketingApp.Entities.Contexts
@@ -18,6 +13,7 @@ namespace OnlineEventsMarketingApp.Entities.Contexts
         }
 
         public virtual IDbSet<Tag> Tags { get; set; }
+        public virtual IDbSet<DataSheet> DataSheets { get; set; }
 
         //Users
         public virtual IDbSet<Role> Roles { get; set; }
