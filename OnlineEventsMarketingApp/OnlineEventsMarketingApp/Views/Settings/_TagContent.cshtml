@@ -1,0 +1,37 @@
+﻿@model OnlineEventsMarketingApp.Models.Settings.TagListViewModel
+
+<table class="table">
+    <tr>
+        <th>
+            Tag Name
+        </th>
+        <th>
+            Start Date
+        </th>
+        <th>
+            End Date
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model.Tags)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TagName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EndDate)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.TagId }) |
+                @Html.ActionLink("Details", "Details", new { id = item.TagId }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.TagId })
+            </td>
+        </tr>
+    }
+
+</table>

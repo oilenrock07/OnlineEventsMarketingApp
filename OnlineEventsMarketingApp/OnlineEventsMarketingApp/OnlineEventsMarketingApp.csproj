@@ -192,6 +192,7 @@
     <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Controllers\SettingsController.cs" />
     <Compile Include="Interfaces\IPaginationModel.cs" />
     <Compile Include="BusinessLogic\PaginationService.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -206,6 +207,8 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\PaginationModel.cs" />
+    <Compile Include="Models\Settings\TagCreateViewModel.cs" />
+    <Compile Include="Models\Settings\TagListViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -269,6 +272,10 @@
     <Content Include="Views\Account\Index.cshtml" />
     <Content Include="Views\Shared\Pagination.cshtml" />
     <Content Include="Views\Account\Edit.cshtml" />
+    <Content Include="Views\Settings\Tags.cshtml" />
+    <Content Include="Views\Settings\_CreateTag.cshtml" />
+    <Content Include="Views\Shared\_LayoutModal.cshtml" />
+    <Content Include="Views\Settings\_TagContent.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
