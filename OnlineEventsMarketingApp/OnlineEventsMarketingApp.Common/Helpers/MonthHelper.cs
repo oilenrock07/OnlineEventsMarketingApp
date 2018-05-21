@@ -24,6 +24,17 @@ namespace OnlineEventsMarketingApp.Common.Helpers
         public static IEnumerable<Tuple<int, string>> GetMonths()
         {
             return _months;
-        } 
+        }
+
+        public static IEnumerable<int> GetYears()
+        {
+            var year = DateTime.Now.Year;
+            var years = new List<int>();
+
+            for (var a = year - 5; a <= year +5; a++)
+                years.Add(a);
+
+            return years;
+        }
     }
 }

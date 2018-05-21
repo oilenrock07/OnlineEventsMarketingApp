@@ -8,6 +8,7 @@ namespace OnlineEventsMarketingApp.Entities
         [Key]
         public int TagId { get; set; }
         public string TagName { get; set; }
+        public short Year { get; set; }
         public short Month { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }

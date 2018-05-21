@@ -31,26 +31,29 @@ namespace OnlineEventsMarketingApp.Controllers
         // GET: Settings
         public ActionResult Tags()
         {
-            var currentMonth = DateTime.Now.Month;
-            var tags = _tagService.GetTagsByMonth(currentMonth);
+            var now = DateTime.Now;
+            var currentMonth = now.Month;
+            var currentYear = now.Year;
+
             var viewModel = new TagListViewModel
             {
+                Year = currentYear,
                 Month = currentMonth,
                 Months = GetMonthList(),
-                Tags = tags
+                Years = GetYearList()
             };
 
             return View(viewModel);
         }
 
-        public PartialViewResult TagsContent()
+        public PartialViewResult TagsContent(int year, int month)
         {
-            var tags = _tagService.GetTagsByMonth(currentMonth);
+            var tags = _tagService.GetTags(year, month);
             var viewModel = new TagListViewModel
             {
                 Tags = tags
             };
-            return PartialView("_TagContent", );
+            return PartialView("_TagContent", viewModel);
         }
 
         // GET: Settings/CreateTag
@@ -69,7 +72,7 @@ namespace OnlineEventsMarketingApp.Controllers
         //// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public PartialViewResult Create([Bind(Include = "TagId,TagName,Month,StartDate,EndDate")] TagCreateViewModel viewModel)
+        public PartialViewResult Create([Bind(Include = "TagId,TagName,Year,Month,StartDate,EndDate")] TagCreateViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
@@ -78,7 +81,7 @@ namespace OnlineEventsMarketingApp.Controllers
                 _unitOfWork.Commit();
             }
 
-            return TagsContent();
+            return TagsContent(viewModel.Year, viewModel.Month);
         }
 
         
@@ -158,6 +161,17 @@ namespace OnlineEventsMarketingApp.Controllers
             });
 
             return months;
-        } 
+        }
+
+        private IEnumerable<SelectListItem> GetYearList()
+        {
+            var months = MonthHelper.GetYears().Select(x => new SelectListItem
+            {
+                Text = x.ToString(),
+                Value = x.ToString()
+            });
+
+            return months;
+        }
     }
 }

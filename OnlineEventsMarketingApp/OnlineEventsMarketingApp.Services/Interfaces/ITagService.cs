@@ -5,6 +5,6 @@ namespace OnlineEventsMarketingApp.Services.Interfaces
 {
     public interface ITagService
     {
-        IEnumerable<Tag> GetTagsByMonth(int month);
+        IEnumerable<Tag> GetTags(int year, int month);
     }
 }

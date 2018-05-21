@@ -18,9 +18,9 @@ namespace OnlineEventsMarketingApp.Services.Implementations
             _tagRepository = tagRepository;
         }
 
-        public IEnumerable<Tag> GetTagsByMonth(int month)
+        public IEnumerable<Tag> GetTags(int year, int month)
         {
-            return _tagRepository.Find(x => x.Month == month).ToList();
+            return _tagRepository.Find(x => x.Month == month && x.Year == year).ToList();
         }
     }
 }

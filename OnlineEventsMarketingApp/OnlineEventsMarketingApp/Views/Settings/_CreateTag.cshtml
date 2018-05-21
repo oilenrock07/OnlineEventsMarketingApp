@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Payroll.Entities.WorkSchedule>
+﻿@using OnlineEventsMarketingApp.Extensions
+@model OnlineEventsMarketingApp.Models.Settings.TagCreateViewModel
 @{
     ViewBag.Title = "Create Tag";
     ViewBag.ModalId = "ModalCreateTags";
@@ -14,22 +15,28 @@
 <div class="form-horizontal">
     @Html.ValidationSummary(true)
     <div class="form-group">
-        @Html.LabelFor(model => model.DeductionId, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.Label("Tag Name", new { @class = "control-label col-md-2" })
         <div class="col-md-6">
-            @Html.DropDownListFor(model => model.DeductionId, Model.Deductions, new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.DeductionId)
+            @Html.TextBoxFor(model => model.TagName, new {@class = "form-control"})
+            @Html.ValidationMessageFor(model => model.TagName)
         </div>
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(model => model.Amount, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.Label("Start Date", new { @class = "control-label col-md-2" })
         <div class="col-md-6">
-            @Html.TextBoxFor(model => model.Amount, new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.Amount)
+            @Html.DatePickerFor("StartDate", DateTime.Now, new { @class = "form-control datepicker" })
+            @Html.ValidationMessageFor(model => model.StartDate)
         </div>
     </div>
 
-    @Html.HiddenFor(model => model.EmployeeId)
+    <div class="form-group">
+        @Html.Label("End Date", new { @class = "control-label col-md-2" })
+        <div class="col-md-6">
+            @Html.DatePickerFor("EndDate", DateTime.Now, new { @class = "form-control datepicker" })
+            @Html.ValidationMessageFor(model => model.EndDate)
+        </div>
+    </div>
 </div>
 
 
