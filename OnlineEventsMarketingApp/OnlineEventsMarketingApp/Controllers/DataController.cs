@@ -30,6 +30,13 @@ namespace OnlineEventsMarketingApp.Controllers
             return View(viewModel);
         }
 
+        [Authorize]
+        [HttpPost]
+        public ActionResult DataSheet(HttpPostedFileBase file)
+        {
+            return View();
+        }
+
         private IEnumerable<SelectListItem> GetMonthList()
         {
             var months = MonthYearHelper.GetMonths().Select(x => new SelectListItem
