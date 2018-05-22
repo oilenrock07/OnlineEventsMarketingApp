@@ -14,6 +14,12 @@ namespace OnlineEventsMarketingApp
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
+                name: "SettingsRoute",
+                url: "Settings/{action}/{month}/{year}",
+                defaults: new {controller = "Settings", action = "Tags", month = UrlParameter.Optional, year = UrlParameter.Optional }
+                );
+
+            routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }

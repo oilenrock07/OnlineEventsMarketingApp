@@ -8,14 +8,14 @@
 
     //form
     ViewBag.ModalFormId = "frmTag";
-    ViewBag.ModalFormAction = Url.Content("/Employee/CreateEmployeeDeductions");
+    ViewBag.ModalFormAction = Url.Content("/Settings/CreateTag");
 }
 
-
 <div class="form-horizontal">
+    @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
     <div class="form-group">
-        @Html.Label("Tag Name", new { @class = "control-label col-md-2" })
+        @Html.Label("Tag Name", new {@class = "control-label col-md-3"})
         <div class="col-md-6">
             @Html.TextBoxFor(model => model.TagName, new {@class = "form-control"})
             @Html.ValidationMessageFor(model => model.TagName)
@@ -23,17 +23,17 @@
     </div>
 
     <div class="form-group">
-        @Html.Label("Start Date", new { @class = "control-label col-md-2" })
+        @Html.Label("Start Date", new {@class = "control-label col-md-3"})
         <div class="col-md-6">
-            @Html.DatePickerFor("StartDate", DateTime.Now, new { @class = "form-control datepicker" })
+            @Html.DatePickerFor("StartDate", DateTime.Now, new {@class = "form-control datepicker"})
             @Html.ValidationMessageFor(model => model.StartDate)
         </div>
     </div>
 
     <div class="form-group">
-        @Html.Label("End Date", new { @class = "control-label col-md-2" })
+        @Html.Label("End Date", new {@class = "control-label col-md-3"})
         <div class="col-md-6">
-            @Html.DatePickerFor("EndDate", DateTime.Now, new { @class = "form-control datepicker" })
+            @Html.DatePickerFor("EndDate", DateTime.Now, new {@class = "form-control datepicker"})
             @Html.ValidationMessageFor(model => model.EndDate)
         </div>
     </div>
@@ -44,5 +44,5 @@
 @section ModalFooter
 {
     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-    <button type="submit" class="btn btn-primary">Save changes</button>
+    <button type="button" class="btn btn-primary">Save changes</button>
 }

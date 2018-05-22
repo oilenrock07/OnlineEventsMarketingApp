@@ -32,7 +32,8 @@ namespace OnlineEventsMarketingApp
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/bootstrap-datepicker.min.css",
-                      "~/Content/site.css"));
+                      "~/Content/site.css",
+                      "~/css/font-awesome.min.css"));
         }
     }
 }

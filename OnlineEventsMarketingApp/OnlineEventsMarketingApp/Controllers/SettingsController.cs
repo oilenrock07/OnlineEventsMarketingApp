@@ -22,69 +22,162 @@ namespace OnlineEventsMarketingApp.Controllers
         private readonly IRepository<Tag> _tagRepository;
         private readonly TagService _tagService;
 
-        public SettingsController(IRepository<Tag> tagRepository, TagService tagService)
+        public SettingsController(IUnitOfWork unitOfWork, IRepository<Tag> tagRepository, TagService tagService)
         {
+            _unitOfWork = unitOfWork;
             _tagRepository = tagRepository;
             _tagService = tagService;
         }
 
         // GET: Settings
-        public ActionResult Tags()
+        [Authorize(Roles = "Admin")]
+        public ActionResult Tags(int? month = null, int? year = null)
         {
             var now = DateTime.Now;
-            var currentMonth = now.Month;
-            var currentYear = now.Year;
+            var currentMonth = month ?? now.Month;
+            var currentYear = year ?? now.Year;
+            
+            var tags = _tagService.GetTags(currentYear, currentMonth);
 
             var viewModel = new TagListViewModel
             {
                 Year = currentYear,
                 Month = currentMonth,
                 Months = GetMonthList(),
-                Years = GetYearList()
-            };
-
-            return View(viewModel);
-        }
-
-        public PartialViewResult TagsContent(int year, int month)
-        {
-            var tags = _tagService.GetTags(year, month);
-            var viewModel = new TagListViewModel
-            {
+                Years = GetYearList(),
                 Tags = tags
             };
-            return PartialView("_TagContent", viewModel);
+
+            return View(viewModel);
         }
 
-        // GET: Settings/CreateTag
-        public ActionResult CreateTag(int month)
+        //public PartialViewResult TagsContent(int year, int month)
+        //{
+        //    var tags = _tagService.GetTags(year, month);
+        //    var viewModel = new TagListViewModel
+        //    {
+        //        Tags = tags
+        //    };
+        //    return PartialView("_TagContent", viewModel);
+        //}
+
+        [Authorize(Roles = "Admin")]
+        public ActionResult CreateTag()
         {
+            var now = DateTime.Now;
+            var currentMonth = now.Month;
+            var currentYear = now.Year;
+
             var viewModel = new TagCreateViewModel
             {
-                Month = month
+                Month = currentMonth,
+                Year = currentYear,
+                Months = GetMonthList(),
+                Years = GetYearList(),
             };
 
             return View(viewModel);
         }
 
-        //// POST: Settings/Create
-        //// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        //// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public PartialViewResult Create([Bind(Include = "TagId,TagName,Year,Month,StartDate,EndDate")] TagCreateViewModel viewModel)
+        public ActionResult CreateTag(TagCreateViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
                 var tag = viewModel.MapItem<Tag>();
                 _tagRepository.Add(tag);
                 _unitOfWork.Commit();
+
+                return RedirectToAction("Tags");
             }
 
-            return TagsContent(viewModel.Year, viewModel.Month);
+            viewModel.Months = GetMonthList();
+            viewModel.Years = GetYearList();
+            return View(viewModel);
         }
 
-        
+        [Authorize(Roles = "Admin")]
+        public ActionResult EditTag(int id)
+        {
+            var tag = _tagRepository.GetById(id);
+            if (tag == null)
+                return RedirectToAction("Tags");
+
+            var viewModel = tag.MapItem<TagCreateViewModel>();
+            viewModel.Months = GetMonthList();
+            viewModel.Years = GetYearList();
+            
+            return View(viewModel);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public ActionResult EditTag(TagCreateViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var tag = _tagRepository.GetById(viewModel.TagId);
+
+                _tagRepository.Update(tag);
+                tag.Month = viewModel.Month;
+                tag.Year = viewModel.Year;
+                tag.TagName = viewModel.TagName;
+                tag.StartDate = viewModel.StartDate;
+                tag.EndDate = viewModel.EndDate;
+
+                _unitOfWork.Commit();
+                return RedirectToAction("Tags", new { month = viewModel.Month, year = viewModel.Year});
+            }
+
+            viewModel.Months = GetMonthList();
+            viewModel.Years = GetYearList();
+            return View(viewModel);
+        }
+
+        [Authorize(Roles = "Admin")]
+        public ActionResult DeleteTag(int id)
+        {
+            var tag = _tagRepository.GetById(id);
+            if (tag == null)
+                return RedirectToAction("Tags");
+
+            _tagRepository.Update(tag);
+            tag.IsDeleted = true;
+
+            _unitOfWork.Commit();
+            return RedirectToAction("Tags", new {month = tag.Month, year = tag.Year});
+        }
+
+        // GET: Settings/CreateTag
+        //public ActionResult CreateTag(int month)
+        //{
+        //    var viewModel = new TagCreateViewModel
+        //    {
+        //        Month = month
+        //    };
+
+        //    return View(viewModel);
+        //}
+
+        //// POST: Settings/Create
+        //// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        //// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public PartialViewResult CreateTag([Bind(Include = "TagId,TagName,Year,Month,StartDate,EndDate")] TagCreateViewModel viewModel)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var tag = viewModel.MapItem<Tag>();
+        //        _tagRepository.Add(tag);
+        //        _unitOfWork.Commit();
+        //    }
+
+        //    return TagsContent(viewModel.Year, viewModel.Month);
+        //}
+
+
 
         //// GET: Settings/Edit/5
         //public ActionResult Edit(int? id)
@@ -154,7 +247,7 @@ namespace OnlineEventsMarketingApp.Controllers
 
         private IEnumerable<SelectListItem> GetMonthList()
         {
-            var months = MonthHelper.GetMonths().Select(x => new SelectListItem
+            var months = MonthYearHelper.GetMonths().Select(x => new SelectListItem
             {
                 Text = x.Item2,
                 Value = x.Item1.ToString()
@@ -165,7 +258,7 @@ namespace OnlineEventsMarketingApp.Controllers
 
         private IEnumerable<SelectListItem> GetYearList()
         {
-            var months = MonthHelper.GetYears().Select(x => new SelectListItem
+            var months = MonthYearHelper.GetYears().Select(x => new SelectListItem
             {
                 Text = x.ToString(),
                 Value = x.ToString()
