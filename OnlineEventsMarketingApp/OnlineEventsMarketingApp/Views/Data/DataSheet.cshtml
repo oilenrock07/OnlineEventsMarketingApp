@@ -15,7 +15,7 @@
             <div class="pull-right">
                 @Html.TextBoxFor(model => model.File, new { type = "file", @class = "form-control, hidden" })
                 <button class="btn btn-default">Import Data</button>
-                <button class="btn btn-success">Export Data</button>
+                @Html.ActionLink("Export Data", "ExportToExcel", new { month = Model.Month, year = Model.Year }, new { @class = "btn btn-success" })
             </div>
         </div>
     </div>
