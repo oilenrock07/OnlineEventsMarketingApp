@@ -1,15 +1,22 @@
 ﻿$(function () {
 
-    function handleCreate(e) {
-        if (!confirm('Are you sure you want to delete this user?')) {
+    function handleDelete(e) {
+        if (!confirm('Are you sure you want to delete this tag?')) {
             e.preventDefault();
             return;
         }
+    }
 
+    function handleYearMonthChange() {
+        var month = $('.js-month').val();
+        var year = $('.js-year').val();
+        window.location = '/Settings/Tags/' + month + '/' + year;
     }
 
     function init() {
-        $('.js-createTag').on('click', handleCreate);
+        $('.js-delete').on('click', handleDelete);
+        $('.js-year').on('change', handleYearMonthChange);
+        $('.js-month').on('change', handleYearMonthChange);
     }
 
     init();

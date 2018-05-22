@@ -20,7 +20,7 @@ namespace OnlineEventsMarketingApp.Services.Implementations
 
         public IEnumerable<Tag> GetTags(int year, int month)
         {
-            return _tagRepository.Find(x => x.Month == month && x.Year == year).ToList();
+            return _tagRepository.Find(x => x.Month == month && x.Year == year && !x.IsDeleted).ToList();
         }
     }
 }

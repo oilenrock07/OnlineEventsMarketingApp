@@ -21,15 +21,14 @@
                 @Html.DisplayFor(modelItem => item.TagName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.StartDate)
+                @item.StartDate.ToShortDateString()
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.EndDate)
+                @item.EndDate.ToShortDateString()
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.TagId }) |
-                @Html.ActionLink("Details", "Details", new { id = item.TagId }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.TagId })
+                @Html.ActionLink("Edit", "EditTag", new { id = item.TagId }) |
+                @Html.ActionLink("Delete", "DeleteTag", new { id = item.TagId  }, new { @class = "js-delete" })
             </td>
         </tr>
     }

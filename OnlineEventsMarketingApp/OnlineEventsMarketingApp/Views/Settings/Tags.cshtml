@@ -1,31 +1,30 @@
-﻿@using OnlineEventsMarketingApp.Extensions
-@using OnlineEventsMarketingApp.Models.Settings
-@model OnlineEventsMarketingApp.Models.Settings.TagListViewModel
+﻿@model OnlineEventsMarketingApp.Models.Settings.TagListViewModel
 
 @{
     ViewBag.Title = "Tags";
 }
 
 <h2>Index</h2>
-@Html.DatePickerFor("Test", DateTime.Now, new { @class = "form-control datepicker" })
-@Html.Partial("_CreateTag", new TagCreateViewModel())
+
 <div class="row t1">
     <div class="col-md-6 pull-left">
-        <a href="javascript:void(0)" data-target="#ModalCreateTags" data-toggle="modal">Create Tag</a>
+       @Html.ActionLink("Create New", "CreateTag")
     </div>
     <div class="col-md-6 pull-right">
         <div class="col-md-6 t1">
-            @Html.DropDownListFor(m => m.Year, Model.Years, new {@class = "form-control"})
+            @Html.DropDownListFor(m => m.Year, Model.Years, new {@class = "form-control js-year"})
         </div>
         <div class="col-md-6 t1">
-            @Html.DropDownListFor(m => m.Month, Model.Months, new {@class = "form-control"})
+            @Html.DropDownListFor(m => m.Month, Model.Months, new {@class = "form-control js-month" })
         </div>
     </div>
 </div>
 
 
-@{Html.RenderAction("TagsContent", new { year = Model.Year, month = Model.Month });}
+@Html.Partial("_TagContent", Model)
+
+@*@{Html.RenderAction("TagsContent", new { year = Model.Year, month = Model.Month });}*@
 
 @section Scripts {
-    @*<script src="" type="text/javascript"></script>*@
+    <script src="~/Scripts/Settings/tags.js" type="text/javascript"></script>
 }

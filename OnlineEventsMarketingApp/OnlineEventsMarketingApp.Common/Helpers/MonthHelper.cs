@@ -31,7 +31,7 @@ namespace OnlineEventsMarketingApp.Common.Helpers
             var yearNow = DateTime.Now.Year;
             var years = new List<int>();
 
-            for (var a = yearNow - 5; a <= a + 5; a++)
+            for (var a = yearNow - 5; a <= yearNow + 5; a++)
                 years.Add(a);
 
             return years;

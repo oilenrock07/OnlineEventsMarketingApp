@@ -1,0 +1,70 @@
+﻿@using OnlineEventsMarketingApp.Extensions
+@model OnlineEventsMarketingApp.Models.Settings.TagCreateViewModel
+
+@{
+    ViewBag.Title = "Edit Tag";
+}
+
+<h2>Edit Tag</h2>
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(x => x.TagId)
+   
+    <div class="form-horizontal">
+        <h4>Modify existing Tag</h4>
+        <hr/>
+
+        @Html.ValidationSummary()
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Year, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.DropDownListFor(model => model.Year, Model.Years, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Year, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Month, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.DropDownListFor(model => model.Month, Model.Months, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Month, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Tag Name", new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(model => model.TagName, new {@class = "form-control"})
+                @Html.ValidationMessageFor(model => model.TagName, "", new {@class = "text-danger"})
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Start Date", new {@class = "control-label col-md-2"})
+            <div class="col-md-4">
+                @Html.DatePickerFor("StartDate", DateTime.Now, new {@class = "form-control datepicker"})
+                @Html.ValidationMessageFor(model => model.StartDate, "", new {@class = "text-danger"})
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("End Date", new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.DatePickerFor("EndDate", DateTime.Now, new { @class = "form-control datepicker" })
+                @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-4">
+                <input type="submit" value="Update" class="btn btn-success" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
