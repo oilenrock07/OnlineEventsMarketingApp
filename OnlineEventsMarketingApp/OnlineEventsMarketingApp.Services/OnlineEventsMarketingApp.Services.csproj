@@ -60,6 +60,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\OnlineEventsMarketingApp.Common\OnlineEventsMarketingApp.Common.csproj">
+      <Project>{73d6d90d-1f50-4471-a93c-ee622e9caec9}</Project>
+      <Name>OnlineEventsMarketingApp.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OnlineEventsMarketingApp.Entities\OnlineEventsMarketingApp.Entities.csproj">
       <Project>{6c4337f7-2d29-4980-8e0f-bd9eab96be98}</Project>
       <Name>OnlineEventsMarketingApp.Entities</Name>

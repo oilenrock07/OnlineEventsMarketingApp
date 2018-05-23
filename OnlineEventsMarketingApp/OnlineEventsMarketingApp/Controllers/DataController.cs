@@ -1,23 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
+using LumenWorks.Framework.IO.Csv;
 using OnlineEventsMarketingApp.Common.Enums;
 using OnlineEventsMarketingApp.Common.Helpers;
 using OnlineEventsMarketingApp.Entities;
 using OnlineEventsMarketingApp.Helpers;
 using OnlineEventsMarketingApp.Infrastructure.Interfaces;
 using OnlineEventsMarketingApp.Models.Data;
+using OnlineEventsMarketingApp.Services.Interfaces;
 
 namespace OnlineEventsMarketingApp.Controllers
 {
     public class DataController : Controller
     {
         private readonly IRepository<DataSheet> _dataSheetRepository;
+        private readonly IDataSheetService _dataSheetService;
 
-        public DataController(IRepository<DataSheet> dataSheetRepository)
+        public DataController(IDataSheetService dataSheetService, IRepository<DataSheet> dataSheetRepository)
         {
+            _dataSheetService = dataSheetService;
             _dataSheetRepository = dataSheetRepository;
         }
 
@@ -38,8 +44,26 @@ namespace OnlineEventsMarketingApp.Controllers
 
         [Authorize]
         [HttpPost]
-        public ActionResult DataSheet(HttpPostedFileBase file)
+        public ActionResult DataSheet(int month, int year, HttpPostedFileBase file)
         {
+            if (file != null && file.ContentLength > 0)
+            {
+                if (file.FileName.EndsWith(".csv"))
+                {
+                    using (var stream = file.InputStream)
+                    {
+                        using (var csvTable = new DataTable())
+                        {
+                            using (var reader = new CsvReader(new StreamReader(stream), true))
+                            {
+                                csvTable.Load(reader);
+                                _dataSheetService.UploadDataSheet(month, year, csvTable);
+                            }
+                        }
+                    }
+                }
+            }
+
             return View();
         }
 
@@ -70,7 +94,7 @@ namespace OnlineEventsMarketingApp.Controllers
 
             var startDate = new DateTime(year, month, 1);
             var endDate = startDate.AddMonths(1);
-            var datasheet = _dataSheetRepository.Find(x => x.Date >= startDate && x.Date < endDate);
+            var datasheet = _dataSheetRepository.Find(x => x.Date >= startDate && x.Date < endDate && x.IsDeleted != true);
 
             var fileName = String.Format("Nepro Report {0} {1}", startDate.ToString("MMMM"), year);
 
@@ -104,7 +128,7 @@ namespace OnlineEventsMarketingApp.Controllers
 
                 row["New Users"] = item.NewUsers;
                 row["Existing Users"] = item.ExistingUsers;
-                row["Status"] = (DataStatus) item.Status;
+                row["Status"] = (DataStatus)item.Status;
                 row["No Of Patients"] = item.NoOfPatients;
                 row["Tag"] = item.TagId;
                 dt.Rows.Add(row);

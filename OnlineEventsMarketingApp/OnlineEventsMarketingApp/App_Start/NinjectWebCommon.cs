@@ -78,11 +78,8 @@ namespace OnlineEventsMarketingApp.App_Start
             //Services
             kernel.Bind<IUserService>().To<UserService>().InRequestScope();
             kernel.Bind<ITagService>().To<TagService>().InRequestScope();
+            kernel.Bind<IDataSheetService>().To<DataSheetService>().InRequestScope(); 
             kernel.Bind<IPaginationService>().To<PaginationService>().InRequestScope();
-
-            //Repositories
-            //kernel.Bind(typeof(IRepository<User>)).To(typeof(Repository<User>));
-            //kernel.Bind<IRepository<User>>().To<Repository<User>>().InRequestScope();
         }        
     }
 }
