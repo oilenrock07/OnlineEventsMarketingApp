@@ -34,7 +34,7 @@ namespace OnlineEventsMarketingApp.Entities
 
         public int NoOfPatients { get; set; }
 
-        public int TagId { get; set; }
+        public int ? TagId { get; set; }
 
         public bool IsDeleted { get; set; }
     }

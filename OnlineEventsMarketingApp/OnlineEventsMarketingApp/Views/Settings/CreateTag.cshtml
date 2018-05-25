@@ -7,20 +7,20 @@
 
 <h2>Create Tag</h2>
 
-@using (Html.BeginForm()) 
+@using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         <h4>Create a new Tag</h4>
-        <hr/>
+        <hr />
 
         @Html.ValidationSummary()
 
         <div class="form-group">
             @Html.LabelFor(model => model.Year, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-4">
-                @Html.DropDownListFor(model => model.Year, Model.Years, new { @class = "form-control" })
+                @Html.DropDownListFor(model => model.Year, Model.Years, new { @class = "form-control js-year" })
                 @Html.ValidationMessageFor(model => model.Year, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -28,7 +28,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Month, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-4">
-                @Html.DropDownListFor(model => model.Month, Model.Months, new { @class = "form-control" })
+                @Html.DropDownListFor(model => model.Month, Model.Months, new { @class = "form-control js-month" })
                 @Html.ValidationMessageFor(model => model.Month, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -36,16 +36,16 @@
         <div class="form-group">
             @Html.Label("Tag Name", new { @class = "control-label col-md-2" })
             <div class="col-md-4">
-                @Html.TextBoxFor(model => model.TagName, new {@class = "form-control"})
-                @Html.ValidationMessageFor(model => model.TagName, "", new {@class = "text-danger"})
+                @Html.TextBoxFor(model => model.TagName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.TagName, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.Label("Start Date", new {@class = "control-label col-md-2"})
+            @Html.Label("Start Date", new { @class = "control-label col-md-2" })
             <div class="col-md-4">
-                @Html.DatePickerFor("StartDate", DateTime.Now, new {@class = "form-control datepicker"})
-                @Html.ValidationMessageFor(model => model.StartDate, "", new {@class = "text-danger"})
+                @Html.DatePickerFor("StartDate", DateTime.Now, new { @class = "form-control datepicker" })
+                @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">
@@ -67,3 +67,33 @@
 <div>
     @Html.ActionLink("Back to List", "Index")
 </div>
+
+
+@section scripts
+{
+    <script type="text/javascript">
+        var month = $('.js-month').val();
+        var year = $('.js-year').val();
+
+        var startDate = new Date(year, month - 1, 1);
+        var endDate = new Date(year, month, 0);
+
+        $(".datepicker").datepicker({
+            startDate: startDate,
+            endDate: endDate
+        });
+
+        $('.js-month').change(function() {
+            var month = $('.js-month').val();
+            var year = $('.js-year').val();
+
+            var startDate = new Date(year, month - 1, 1);
+            var endDate = new Date(year, month, 0);
+
+            $(".datepicker").datepicker({
+                startDate: startDate,
+                endDate: endDate
+            });
+        });
+    </script>
+}

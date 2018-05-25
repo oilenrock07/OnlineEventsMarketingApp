@@ -15,5 +15,10 @@ namespace OnlineEventsMarketingApp.Infrastructure.Implementations
         {
             _databaseFactory.GetContext().SaveChanges();
         }
+
+        public void ExecuteSqlCommand(string command, params object[] parameters)
+        {
+            _databaseFactory.GetContext().Database.ExecuteSqlCommand(command, parameters);
+        }
     }
 }
