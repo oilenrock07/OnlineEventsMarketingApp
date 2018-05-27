@@ -115,5 +115,25 @@ namespace OnlineEventsMarketingApp.Services.Implementations
 
             return result;
         }
+
+        public IEnumerable<WeeklyInhouseSummaryDTO> GetWeeklyInHouseSummary(int month, int year)
+        {
+            var startDate = new DateTime(year, month, 1);
+            var endDate = startDate.AddMonths(1);
+
+            var weeklyReport = (from data in _dataSheetRepository.GetAll()
+                                join tag in _tagRepository.GetAll() on data.TagId equals tag.TagId
+                                where !data.IsDeleted && data.Date >= startDate && data.Date < endDate && data.Status == 1 && !tag.IsDeleted
+                                group new { data, tag } by new { data.InHouse, data.TagId, tag.TagName } into g
+                                select new WeeklyInhouseSummaryDTO
+                                {
+                                    InHouse = g.Key.InHouse,
+                                    TagId = g.Key.TagId.Value,
+                                    TagName = g.Key.TagName,
+                                    Count = g.Count()
+                                }).ToList();
+
+            return weeklyReport;
+        }
     }
 }

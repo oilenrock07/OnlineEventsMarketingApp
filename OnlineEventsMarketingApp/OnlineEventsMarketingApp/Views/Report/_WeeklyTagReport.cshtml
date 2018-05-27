@@ -1,0 +1,68 @@
+﻿@model OnlineEventsMarketingApp.Models.Reports.WeeklyTagRunViewModel
+
+<table class="table t1 table-responsive table-striped">
+    <tr>
+        <th>
+            DIS
+        </th>
+        <th>
+            TE
+        </th>
+        <th>
+            TM
+        </th>
+        <th>
+            InHouse
+        </th>
+
+        @foreach (var item in Model.Tags)
+            {
+            <th>
+                @item.TagName
+            </th>
+        }
+
+        <th>
+            Total
+        </th>
+        <th>
+            Variance
+        </th>
+    </tr>
+
+    @foreach (var item in Model.WeeklyReport)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.DIS)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TE)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TM)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.InHouse)
+            </td>
+
+            @foreach (var tag in Model.Tags)
+            {
+                <td>
+                    @item.GetTagCount(tag.TagId)
+                </td>
+            }
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Total)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Variance)
+            </td>
+        </tr>
+    }
+
+</table>
+
+
+

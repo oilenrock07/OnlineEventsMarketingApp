@@ -1,0 +1,33 @@
+﻿@model OnlineEventsMarketingApp.Models.Reports.WeeklyTagRunViewModel
+
+@{
+    ViewBag.Title = "Weekly Tags Run";
+}
+
+<h2>Weekly Tags Run</h2>
+
+<div class="row">
+    <div class="col-xs-12 col-sm-6 t1">
+        <div class="col-md-6">
+            @Html.DropDownListFor(m => m.Month, Model.Months, new {@class = "form-control js-month t1"})
+        </div>
+        <div class="col-md-6">
+            @Html.DropDownListFor(m => m.Year, Model.Years, new {@class = "form-control js-year t1"})
+        </div>
+    </div>
+</div>
+
+@if (Model.WeeklyReport != null && Model.WeeklyReport.Any())
+{
+    @Html.Partial("_WeeklyTagReport", Model)
+}
+
+@if (Model.WeeklyInhouseSummary != null && Model.WeeklyInhouseSummary.Any())
+{
+    @Html.Partial("_WeeklyInhouseSummary", Model)
+}
+
+@section scripts
+{
+    <script type="text/javascript" src="~/Scripts/Reports/weeklyreport.js"></script>
+}

@@ -8,5 +8,6 @@ namespace OnlineEventsMarketingApp.Services.Interfaces
     {
         void UploadDataSheet(int month, int year, DataTable table);
         IEnumerable<WeeklyReportDTO> GetWeeklyReport(int month, int year);
+        IEnumerable<WeeklyInhouseSummaryDTO> GetWeeklyInHouseSummary(int month, int year);
     }
 }

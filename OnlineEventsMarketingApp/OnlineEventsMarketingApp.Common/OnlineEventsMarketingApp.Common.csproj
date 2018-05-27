@@ -49,7 +49,6 @@
     <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="Extensions\ValueInjectorExtensions.cs" />
     <Compile Include="Helpers\EnumHelper.cs" />
-    <Compile Include="Helpers\MonthHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

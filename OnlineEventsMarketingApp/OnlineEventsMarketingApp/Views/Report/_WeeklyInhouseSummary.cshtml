@@ -1,0 +1,55 @@
+﻿@model OnlineEventsMarketingApp.Models.Reports.WeeklyTagRunViewModel
+
+<table class="table t1 table-responsive table-striped">
+    <tr>
+        <th></th>
+        @foreach (var item in Model.Tags)
+        {
+            <th>
+                @item.TagName
+            </th>
+        }
+
+        <th>
+            Total
+        </th>
+    </tr>
+
+    @foreach (var item in Model.WeeklyInhouseSummary.GroupBy(x => x.InHouse))
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Key)
+            </td>
+
+            @foreach (var tag in Model.Tags)
+            {
+                <td>
+                    @Model.GetWeeklyInhouseCount(tag.TagId, item.Key)
+                </td>
+            }
+
+            <td>
+                @Model.GetWeeklyInhouseTotal(item.Key)
+            </td>
+        </tr>
+    }
+
+    <tr>
+        <td>Overall Total</td>
+        @foreach (var tag in Model.Tags)
+        {
+            <td>
+                @Model.GetWeeklyInhouseOverAllTotal(tag.TagId)
+            </td>
+        }
+
+        <td>
+            @Model.GetWeeklyInhouseTotalCount()
+        </td>
+    </tr>
+
+</table>
+
+
+

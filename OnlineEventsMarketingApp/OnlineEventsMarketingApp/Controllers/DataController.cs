@@ -7,7 +7,6 @@ using System.Web;
 using System.Web.Mvc;
 using LumenWorks.Framework.IO.Csv;
 using OnlineEventsMarketingApp.Common.Enums;
-using OnlineEventsMarketingApp.Common.Helpers;
 using OnlineEventsMarketingApp.Entities;
 using OnlineEventsMarketingApp.Helpers;
 using OnlineEventsMarketingApp.Infrastructure.Interfaces;
@@ -36,8 +35,8 @@ namespace OnlineEventsMarketingApp.Controllers
             {
                 Year = now.Year,
                 Month = now.Month,
-                Years = GetYearList(),
-                Months = GetMonthList()
+                Years = MonthYearHelper.GetYearList(),
+                Months = MonthYearHelper.GetMonthList()
             };
             return View(viewModel);
         }
@@ -67,27 +66,7 @@ namespace OnlineEventsMarketingApp.Controllers
             return View();
         }
 
-        private IEnumerable<SelectListItem> GetMonthList()
-        {
-            var months = MonthYearHelper.GetMonths().Select(x => new SelectListItem
-            {
-                Text = x.Item2,
-                Value = x.Item1.ToString()
-            });
 
-            return months;
-        }
-
-        private IEnumerable<SelectListItem> GetYearList()
-        {
-            var months = MonthYearHelper.GetYears().Select(x => new SelectListItem
-            {
-                Text = x.ToString(),
-                Value = x.ToString()
-            });
-
-            return months;
-        }
 
         public void ExportToExcel(int month, int year)
         {

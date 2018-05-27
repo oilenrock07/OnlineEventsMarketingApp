@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Web.Mvc;
 using System.Collections.Generic;
+using System.Linq;
 
-namespace OnlineEventsMarketingApp.Common.Helpers
+namespace OnlineEventsMarketingApp.Helpers
 {
     public static class MonthYearHelper
     {
@@ -35,6 +37,28 @@ namespace OnlineEventsMarketingApp.Common.Helpers
                 years.Add(a);
 
             return years;
+        }
+
+        public static IEnumerable<SelectListItem> GetMonthList()
+        {
+            var months = MonthYearHelper.GetMonths().Select(x => new SelectListItem
+            {
+                Text = x.Item2,
+                Value = x.Item1.ToString()
+            });
+
+            return months;
+        }
+
+        public static IEnumerable<SelectListItem> GetYearList()
+        {
+            var months = MonthYearHelper.GetYears().Select(x => new SelectListItem
+            {
+                Text = x.ToString(),
+                Value = x.ToString()
+            });
+
+            return months;
         }
     }
 }

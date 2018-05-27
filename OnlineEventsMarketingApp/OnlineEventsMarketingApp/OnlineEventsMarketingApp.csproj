@@ -201,6 +201,7 @@
     <Compile Include="Controllers\SettingsController.cs" />
     <Compile Include="Extensions\HtmlExtension.cs" />
     <Compile Include="Helpers\Export.cs" />
+    <Compile Include="Helpers\MonthYearHelper.cs" />
     <Compile Include="Interfaces\IPaginationModel.cs" />
     <Compile Include="BusinessLogic\PaginationService.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -216,8 +217,10 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\PaginationModel.cs" />
+    <Compile Include="Models\Reports\WeeklyTagRunViewModel.cs" />
     <Compile Include="Models\Settings\TagCreateViewModel.cs" />
     <Compile Include="Models\Settings\TagListViewModel.cs" />
+    <Compile Include="MoreLinq\MoreEnumerable.DistinctBy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -255,6 +258,7 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\pagination.js" />
+    <Content Include="Scripts\Reports\weeklyreport.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\Settings\createtag.js" />
@@ -304,10 +308,12 @@
     <Content Include="Views\Data\DataSheet.cshtml" />
     <Content Include="Views\Settings\CreateTag.cshtml" />
     <Content Include="Views\Settings\EditTag.cshtml" />
+    <Content Include="Views\Report\WeeklyTagsRun.cshtml" />
+    <Content Include="Views\Report\_WeeklyTagReport.cshtml" />
+    <Content Include="Views\Report\_WeeklyInhouseSummary.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Report\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

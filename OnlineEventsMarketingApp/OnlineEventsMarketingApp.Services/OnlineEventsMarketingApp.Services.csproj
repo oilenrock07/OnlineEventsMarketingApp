@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="DataTransferObjects\TagReportDTO.cs" />
     <Compile Include="DataTransferObjects\UserDTO.cs" />
+    <Compile Include="DataTransferObjects\WeeklyInhouseSummaryDTO.cs" />
     <Compile Include="DataTransferObjects\WeeklyReportDTO.cs" />
     <Compile Include="Implementations\BaseRepository.cs" />
     <Compile Include="Implementations\DataSheetService.cs" />

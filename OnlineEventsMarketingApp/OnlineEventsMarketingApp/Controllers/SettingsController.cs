@@ -10,6 +10,7 @@ using OnlineEventsMarketingApp.Common.Extensions;
 using OnlineEventsMarketingApp.Common.Helpers;
 using OnlineEventsMarketingApp.Entities;
 using OnlineEventsMarketingApp.Entities.Contexts;
+using OnlineEventsMarketingApp.Helpers;
 using OnlineEventsMarketingApp.Infrastructure.Interfaces;
 using OnlineEventsMarketingApp.Models.Settings;
 using OnlineEventsMarketingApp.Services.Implementations;
@@ -43,8 +44,8 @@ namespace OnlineEventsMarketingApp.Controllers
             {
                 Year = currentYear,
                 Month = currentMonth,
-                Months = GetMonthList(),
-                Years = GetYearList(),
+                Months = MonthYearHelper.GetMonthList(),
+                Years = MonthYearHelper.GetYearList(),
                 Tags = tags
             };
 
@@ -72,8 +73,8 @@ namespace OnlineEventsMarketingApp.Controllers
             {
                 Month = currentMonth,
                 Year = currentYear,
-                Months = GetMonthList(),
-                Years = GetYearList(),
+                Months = MonthYearHelper.GetMonthList(),
+                Years = MonthYearHelper.GetYearList(),
             };
 
             return View(viewModel);
@@ -87,8 +88,8 @@ namespace OnlineEventsMarketingApp.Controllers
             {
                 if (viewModel.StartDate > viewModel.EndDate)
                 {
-                    viewModel.Months = GetMonthList();
-                    viewModel.Years = GetYearList();
+                    viewModel.Months = MonthYearHelper.GetMonthList();
+                    viewModel.Years = MonthYearHelper.GetYearList();
                     ModelState.AddModelError("", "End date must not be greater than Start Date");
                     return View(viewModel);
                 }
@@ -100,8 +101,8 @@ namespace OnlineEventsMarketingApp.Controllers
                 return RedirectToAction("Tags");
             }
 
-            viewModel.Months = GetMonthList();
-            viewModel.Years = GetYearList();
+            viewModel.Months = MonthYearHelper.GetMonthList();
+            viewModel.Years = MonthYearHelper.GetYearList();
             return View(viewModel);
         }
 
@@ -113,9 +114,9 @@ namespace OnlineEventsMarketingApp.Controllers
                 return RedirectToAction("Tags");
 
             var viewModel = tag.MapItem<TagCreateViewModel>();
-            viewModel.Months = GetMonthList();
-            viewModel.Years = GetYearList();
-            
+            viewModel.Months = MonthYearHelper.GetMonthList();
+            viewModel.Years = MonthYearHelper.GetYearList();
+
             return View(viewModel);
         }
 
@@ -127,8 +128,8 @@ namespace OnlineEventsMarketingApp.Controllers
             {
                 if (viewModel.StartDate > viewModel.EndDate)
                 {
-                    viewModel.Months = GetMonthList();
-                    viewModel.Years = GetYearList();
+                    viewModel.Months = MonthYearHelper.GetMonthList();
+                    viewModel.Years = MonthYearHelper.GetYearList();
                     ModelState.AddModelError("", "End date must not be greater than Start Date");
                     return View(viewModel);
                 }
@@ -146,8 +147,8 @@ namespace OnlineEventsMarketingApp.Controllers
                 return RedirectToAction("Tags", new { month = viewModel.Month, year = viewModel.Year});
             }
 
-            viewModel.Months = GetMonthList();
-            viewModel.Years = GetYearList();
+            viewModel.Months = MonthYearHelper.GetMonthList();
+            viewModel.Years = MonthYearHelper.GetYearList();
             return View(viewModel);
         }
 
@@ -261,26 +262,5 @@ namespace OnlineEventsMarketingApp.Controllers
         //    base.Dispose(disposing);
         //}
 
-        private IEnumerable<SelectListItem> GetMonthList()
-        {
-            var months = MonthYearHelper.GetMonths().Select(x => new SelectListItem
-            {
-                Text = x.Item2,
-                Value = x.Item1.ToString()
-            });
-
-            return months;
-        }
-
-        private IEnumerable<SelectListItem> GetYearList()
-        {
-            var months = MonthYearHelper.GetYears().Select(x => new SelectListItem
-            {
-                Text = x.ToString(),
-                Value = x.ToString()
-            });
-
-            return months;
-        }
     }
 }

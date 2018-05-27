@@ -29,5 +29,17 @@ namespace OnlineEventsMarketingApp.Services.DataTransferObjects
         {
             get { return Total - 4; }
         }
+
+        public int GetTagCount(int tagId)
+        {
+            if (TagReport != null)
+            {
+                var tag = TagReport.FirstOrDefault(x => x.TagId == tagId);
+                if (tag != null)
+                    return tag.TagCounts;
+            }
+
+            return 0;
+        }
     }
 }
