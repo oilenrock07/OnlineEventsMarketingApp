@@ -85,6 +85,14 @@ namespace OnlineEventsMarketingApp.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (viewModel.StartDate > viewModel.EndDate)
+                {
+                    viewModel.Months = GetMonthList();
+                    viewModel.Years = GetYearList();
+                    ModelState.AddModelError("", "End date must not be greater than Start Date");
+                    return View(viewModel);
+                }
+
                 var tag = viewModel.MapItem<Tag>();
                 _tagRepository.Add(tag);
                 _unitOfWork.Commit();
@@ -117,6 +125,14 @@ namespace OnlineEventsMarketingApp.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (viewModel.StartDate > viewModel.EndDate)
+                {
+                    viewModel.Months = GetMonthList();
+                    viewModel.Years = GetYearList();
+                    ModelState.AddModelError("", "End date must not be greater than Start Date");
+                    return View(viewModel);
+                }
+
                 var tag = _tagRepository.GetById(viewModel.TagId);
 
                 _tagRepository.Update(tag);

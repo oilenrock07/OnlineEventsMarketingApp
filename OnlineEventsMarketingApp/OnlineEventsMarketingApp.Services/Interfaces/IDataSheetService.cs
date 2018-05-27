@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Data;
-using OnlineEventsMarketingApp.Entities;
+using OnlineEventsMarketingApp.Services.DataTransferObjects;
 
 namespace OnlineEventsMarketingApp.Services.Interfaces
 {
     public interface IDataSheetService
     {
         void UploadDataSheet(int month, int year, DataTable table);
-        void UploadDataSheet(int month, int year, IEnumerable<DataSheet> datasheet);
+        IEnumerable<WeeklyReportDTO> GetWeeklyReport(int month, int year);
     }
 }

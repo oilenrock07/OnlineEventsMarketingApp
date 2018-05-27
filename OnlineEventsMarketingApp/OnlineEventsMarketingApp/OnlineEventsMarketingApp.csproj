@@ -197,6 +197,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\DataController.cs" />
+    <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\SettingsController.cs" />
     <Compile Include="Extensions\HtmlExtension.cs" />
     <Compile Include="Helpers\Export.cs" />
@@ -256,6 +257,7 @@
     <Content Include="Scripts\pagination.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\Settings\createtag.js" />
     <Content Include="Scripts\Settings\tags.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config" />
@@ -305,6 +307,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Report\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

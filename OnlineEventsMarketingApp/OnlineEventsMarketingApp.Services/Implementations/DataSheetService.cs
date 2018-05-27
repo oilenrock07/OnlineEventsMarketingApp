@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using OnlineEventsMarketingApp.Common.Enums;
 using OnlineEventsMarketingApp.Common.Extensions;
 using OnlineEventsMarketingApp.Common.Helpers;
 using OnlineEventsMarketingApp.Entities;
 using OnlineEventsMarketingApp.Infrastructure.Interfaces;
+using OnlineEventsMarketingApp.Services.DataTransferObjects;
 using OnlineEventsMarketingApp.Services.Interfaces;
 
 namespace OnlineEventsMarketingApp.Services.Implementations
@@ -65,21 +67,53 @@ namespace OnlineEventsMarketingApp.Services.Implementations
                     };
 
                     _dataSheetRepository.Add(data);
-                }                    
+                }
             }
 
             _unitOfWork.Commit();
         }
 
-        public void UploadDataSheet(int month, int year, IEnumerable<DataSheet> datasheet)
+        public IEnumerable<WeeklyReportDTO> GetWeeklyReport(int month, int year)
         {
-            //delete first the content for the month
-            _dataSheetRepository.ExecuteSqlCommand("UPDATE DataSheet SET IsDeleted = 1 WHERE Date BETWEEN {0} AND {1}", month, year);
+            var startDate = new DateTime(year, month, 1);
+            var endDate = startDate.AddMonths(1);
 
-            foreach (var data in datasheet)
-                _dataSheetRepository.Add(data);
+            var weeklyReport = (from data in _dataSheetRepository.GetAll()
+                                join tag in _tagRepository.GetAll() on data.TagId equals tag.TagId
+                                where !data.IsDeleted && data.Date >= startDate && data.Date < endDate && data.Status == 1 && !tag.IsDeleted
+                                group new { data, tag } by new { data.DIS, data.TE, data.TM, data.InHouse, data.TagId, tag.TagName } into g
+                                select new
+                                {
+                                    g.Key.DIS,
+                                    g.Key.TE,
+                                    g.Key.TM,
+                                    g.Key.InHouse,
+                                    g.Key.TagId,
+                                    g.Key.TagName,
+                                    Count = g.Count()
+                                }).ToList();
 
-            _unitOfWork.Commit();
+            var result = weeklyReport.GroupBy(x => new
+            {
+                x.DIS,
+                x.TE,
+                x.TM,
+                x.InHouse
+            }).Select(x => new WeeklyReportDTO
+            {
+                DIS = x.Key.DIS,
+                TE = x.Key.TE,
+                TM = x.Key.TM,
+                InHouse = x.Key.InHouse,
+                TagReport = x.Select(y => new TagReportDTO
+                {
+                    TagId = y.TagId.Value,
+                    TagCounts = y.Count,
+                    TagName = y.TagName
+                })
+            });
+
+            return result;
         }
     }
 }
