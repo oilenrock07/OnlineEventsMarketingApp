@@ -169,3 +169,15 @@ textarea {
 input[type="file"] {
   line-height: 10px;
 }
+
+.ptop1 {
+    padding-top: 1em;
+}
+
+.ptop2 {
+    padding-top: 2em;
+}
+
+.ptop3 {
+    padding-top: 3em;
+}
