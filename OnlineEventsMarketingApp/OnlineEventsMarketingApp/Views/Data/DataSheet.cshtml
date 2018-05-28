@@ -9,12 +9,12 @@
 @using (Html.BeginForm("DataSheet", "Data", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     <div class="row">
-        <div class="col-xs-12 col-md-6 t1">
+        <div class="col-xs-12 col-md-6">
             <div class="col-md-6">
-                @Html.DropDownListFor(m => m.Month, Model.Months, new { @class = "form-control" })
+                @Html.DropDownListFor(m => m.Month, Model.Months, new { @class = "form-control t1" })
             </div>
             <div class="col-md-6">
-                @Html.DropDownListFor(m => m.Year, Model.Years, new { @class = "form-control" })
+                @Html.DropDownListFor(m => m.Year, Model.Years, new { @class = "form-control t1" })
             </div>
         </div>
         <div class="col-xs-12 col-md-6 pull-right">
@@ -32,28 +32,84 @@
     </div>
 }
 
-<table>
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>DIS</th>
-            <th>TE</th>
-            <th>TM</th>
-            <th>Area</th>
-            <th>In House</th>
-            <th>RND</th>
-            <th>Date</th>
-            <th>New Users</th>
-            <th>Existing Users</th>
-            <th>Status</th>
-            <th># Of Patients</th>
-            <th>Tag</th>
-        </tr>
-    </thead>
+<table class="table t1 table-responsive table-striped">
+    <tr>
+        <th>ID</th>
+        <th>DIS</th>
+        <th>TE</th>
+        <th>TM</th>
+        <th>Area</th>
+        <th>In House</th>
+        <th>RND</th>
+        <th>Date</th>
+        <th>New Users</th>
+        <th>Existing Users</th>
+        <th>Status</th>
+        <th># Of Patients</th>
+        <th>Tag</th>
+    </tr>
     <tbody data-bind="foreach: datasheet">
         <tr>
             <td data-bind="text: DataSheetId"></td>
+            <!-- ko if: $root.isAdmin == 'True' -->
+            <td>
+                <input type="text" class="form-control" data-bind="value: DIS" />
+            </td>
+            <!-- /ko -->
+            <!-- ko if: $root.isAdmin == 'False' -->
             <td data-bind="text: DIS"></td>
+            <!-- /ko -->
+
+            <!-- ko if: $root.isAdmin == 'True' -->
+            <td>
+                <input type="text" class="form-control" data-bind="value: TE" />
+            </td>
+            <!-- /ko -->
+            <!-- ko if: $root.isAdmin == 'False' -->
+            <td data-bind="text: TE"></td>
+            <!-- /ko -->
+
+            <!-- ko if: $root.isAdmin == 'True' -->
+            <td>
+                <input type="text" class="form-control" data-bind="value: TM" />
+            </td>
+            <!-- /ko -->
+            <!-- ko if: $root.isAdmin == 'False' -->
+            <td data-bind="text: TM"></td>
+            <!-- /ko -->
+
+            <!-- ko if: $root.isAdmin == 'True' -->
+            <td>
+                <input type="text" class="form-control" data-bind="value: Area" />
+            </td>
+            <!-- /ko -->
+            <!-- ko if: $root.isAdmin == 'False' -->
+            <td data-bind="text: Area"></td>
+            <!-- /ko -->
+
+            <!-- ko if: $root.isAdmin == 'True' -->
+            <td>
+                <input type="text" class="form-control" data-bind="value: InHouse" />
+            </td>
+            <!-- /ko -->
+            <!-- ko if: $root.isAdmin == 'False' -->
+            <td data-bind="text: InHouse"></td>
+            <!-- /ko -->
+
+            <!-- ko if: $root.isAdmin == 'True' -->
+            <td>
+                <input type="text" class="form-control" data-bind="value: Rnd" />
+            </td>
+            <!-- /ko -->
+            <!-- ko if: $root.isAdmin == 'False' -->
+            <td data-bind="text: Rnd"></td>
+            <!-- /ko -->
+            <td><input class='form-control' data-bind='value: Date' /></td>
+            <td><input class='form-control' data-bind='value: NewUsers'/></td>
+            <td><input class='form-control' data-bind='value: ExistingUsers'/></td>
+            <td><input class='form-control' data-bind='value: Status'/></td>
+            <td><input class='form-control' data-bind='value: NoOfPatients'/></td>
+            <td><input class='form-control' data-bind='value: TagId' /></td>
         </tr>
     </tbody>
 </table>
@@ -67,26 +123,37 @@
             var self = this;
             self.DataSheetId = ko.observable();
             self.DIS = ko.observable();
+            self.TE = ko.observable();
+            self.TM = ko.observable();
+            self.Area = ko.observable();
+            self.InHouse = ko.observable();
+            self.Rnd = ko.observable();
+            self.Date = ko.observable();
+            self.NewUsers = ko.observable();
+            self.ExistingUsers = ko.observable();
+            self.Status = ko.observable();
+            self.NoOfPatients = ko.observable();
+            self.TagId = ko.observable();
         };
 
         var viewModel = function() {
             var self = this;
             self.datasheet = ko.observableArray([]);
+            self.isAdmin = '@User.IsInRole("Admin")';
 
             var month = $('#Month').val();
             var year = $('#Year').val();
-            var args = { month: 3, year: year };
+            var args = { month: month, year: year };
 
             $.ajax({
                 dataType: "json",
                 url: "/Data/GetDataSheet",
                 data: args,
                 success: function (returnData) {
-                    //ko.mapping.fromJS(returnData, {}, self.datasheet);
+                    ko.mapping.fromJS(returnData, {}, self.datasheet);
                 },
                 error: function (err) {
-                    alert('Error getting data');
-                    alert(JSON.stringify(err));
+                    alert('Error getting data: ' + err);
                 }
             });
         }
