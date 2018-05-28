@@ -7,12 +7,12 @@
 <h2>Weekly Tags Run</h2>
 
 <div class="row">
-    <div class="col-xs-12 col-sm-6 t1">
+    <div class="col-xs-12 col-sm-6 t1 pull-right">
         <div class="col-md-6">
-            @Html.DropDownListFor(m => m.Month, Model.Months, new {@class = "form-control js-month t1"})
+            @Html.DropDownListFor(m => m.Year, Model.Years, new { @class = "form-control js-year t1" })
         </div>
         <div class="col-md-6">
-            @Html.DropDownListFor(m => m.Year, Model.Years, new {@class = "form-control js-year t1"})
+            @Html.DropDownListFor(m => m.Month, Model.Months, new {@class = "form-control js-month t1"})
         </div>
     </div>
 </div>

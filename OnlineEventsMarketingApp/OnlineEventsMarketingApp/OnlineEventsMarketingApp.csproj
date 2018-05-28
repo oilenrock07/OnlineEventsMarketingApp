@@ -236,8 +236,6 @@
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Images\logo.png" />
-    <Content Include="Images\logo_menu.png" />
-    <Content Include="Images\OEC.png" />
     <Content Include="Scripts\Account\userlist.js" />
     <Content Include="Scripts\app.js" />
     <Content Include="Scripts\bootstrap-datepicker.min.js" />
