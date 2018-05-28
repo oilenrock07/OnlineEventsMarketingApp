@@ -1,5 +1,4 @@
 ﻿@model OnlineEventsMarketingApp.Models.Reports.WeeklyTagRunViewModel
-
 <table class="table t1 table-responsive table-striped">
     <tr>
         <th>
@@ -32,6 +31,8 @@
 
     @foreach (var item in Model.WeeklyReport)
     {
+        var varianceClass = item.Variance < 0 ? "variance-not-met" : "variance-met";
+
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.DIS)
@@ -56,7 +57,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Total)
             </td>
-            <td>
+            <td class="@varianceClass">
                 @Html.DisplayFor(modelItem => item.Variance)
             </td>
         </tr>

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Routing;
 using OnlineEventsMarketingApp.Common.Extensions;
 using OnlineEventsMarketingApp.Common.Helpers;
 using OnlineEventsMarketingApp.Entities;
@@ -98,7 +99,7 @@ namespace OnlineEventsMarketingApp.Controllers
                 _tagRepository.Add(tag);
                 _unitOfWork.Commit();
 
-                return RedirectToAction("Tags");
+                return RedirectToAction("Tags", new { month = viewModel.Month, year = viewModel.Year});
             }
 
             viewModel.Months = MonthYearHelper.GetMonthList();

@@ -32,22 +32,23 @@ namespace OnlineEventsMarketingApp.Services.Implementations
                 return;
 
             //get the tags for the month
-            var tags = _tagRepository.Find(x => !x.IsDeleted && x.Month == month && x.Year == year);
+            var tags = _tagRepository.Find(x => !x.IsDeleted && x.Month == month && x.Year == year).ToList();
 
             //delete first the content for the month
             var start = new DateTime(year, month, 1);
             var end = start.AddMonths(1);
-            _unitOfWork.ExecuteSqlCommand(string.Format("UPDATE DataSheets SET IsDeleted = 'True' WHERE Date >= '{0}' AND Date < '{1}'", start.ToSqlDate(), end.ToSqlDate()));
 
             if (table.Rows.Count > 0)
             {
                 foreach (DataRow row in table.Rows)
                 {
-                    var dataTag = row["Tag"].ToString();
-                    var date = row["Rnd"].ToDateTime();
+                    var date = row["Date"].ToDateTime();
+                    if (!(date >= start && date < end)) continue;
+
+                    var dataTag = row["Tag"].ToString();                    
                     var tag = tags.FirstOrDefault(x => string.Equals(x.TagName, dataTag, StringComparison.InvariantCultureIgnoreCase));
                     if (tag == null) //use logic to default the tag
-                        tag = tags.FirstOrDefault(x => x.StartDate >= date && x.EndDate <= date);
+                        tag = tags.FirstOrDefault(x => date >= x.StartDate && date <= x.EndDate);
 
                     var status = EnumHelper.ParseEnum<DataStatus>(row["Status"].ToString());
                     var data = new DataSheet
@@ -55,9 +56,9 @@ namespace OnlineEventsMarketingApp.Services.Implementations
                         DIS = row["DIS"].ToInt(),
                         TE = row["TE"].ToInt(),
                         TM = row["TM"].ToString(),
-                        Area = row["DIS"].ToString(),
+                        Area = row["Area"].ToString(),
                         InHouse = row["InHouse"].ToString(),
-                        Rnd = row["Rnd"].ToString(),
+                        Rnd = row["RND"].ToString(),
                         Date = date,
                         NewUsers = row["New Users"].ToInt(),
                         ExistingUsers = row["Existing Users"].ToInt(),
@@ -70,7 +71,16 @@ namespace OnlineEventsMarketingApp.Services.Implementations
                 }
             }
 
+            _unitOfWork.ExecuteSqlCommand(string.Format("DELETE FROM DataSheets WHERE Date >= '{0}' AND Date < '{1}'", start.ToSqlDate(), end.ToSqlDate()));
             _unitOfWork.Commit();
+        }
+
+        public IEnumerable<DataSheet> GetDataSheet(int month, int year)
+        {
+            var startDate = new DateTime(year, month, 1);
+            var endDate = startDate.AddMonths(1);
+
+            return _dataSheetRepository.Find(x => x.Date >= startDate && x.Date < endDate).ToList();
         }
 
         public IEnumerable<WeeklyReportDTO> GetWeeklyReport(int month, int year)
@@ -80,7 +90,7 @@ namespace OnlineEventsMarketingApp.Services.Implementations
 
             var weeklyReport = (from data in _dataSheetRepository.GetAll()
                                 join tag in _tagRepository.GetAll() on data.TagId equals tag.TagId
-                                where !data.IsDeleted && data.Date >= startDate && data.Date < endDate && data.Status == 1 && !tag.IsDeleted
+                                where data.Date >= startDate && data.Date < endDate && data.Status == 1 && !tag.IsDeleted
                                 group new { data, tag } by new { data.DIS, data.TE, data.TM, data.InHouse, data.TagId, tag.TagName } into g
                                 select new
                                 {
@@ -123,7 +133,7 @@ namespace OnlineEventsMarketingApp.Services.Implementations
 
             var weeklyReport = (from data in _dataSheetRepository.GetAll()
                                 join tag in _tagRepository.GetAll() on data.TagId equals tag.TagId
-                                where !data.IsDeleted && data.Date >= startDate && data.Date < endDate && data.Status == 1 && !tag.IsDeleted
+                                where data.Date >= startDate && data.Date < endDate && data.Status == 1 && !tag.IsDeleted
                                 group new { data, tag } by new { data.InHouse, data.TagId, tag.TagName } into g
                                 select new WeeklyInhouseSummaryDTO
                                 {

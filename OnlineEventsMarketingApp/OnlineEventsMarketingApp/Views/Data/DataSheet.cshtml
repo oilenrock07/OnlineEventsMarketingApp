@@ -1,4 +1,5 @@
-﻿@model OnlineEventsMarketingApp.Models.Data.DataSheetViewModel
+﻿@using Newtonsoft.Json
+@model OnlineEventsMarketingApp.Models.Data.DataSheetViewModel
 @{
     ViewBag.Title = "Data Sheet";
 }
@@ -14,7 +15,7 @@
             </div>
             <div class="col-md-6">
                 @Html.DropDownListFor(m => m.Year, Model.Years, new { @class = "form-control" })
-            </div>            
+            </div>
         </div>
         <div class="col-xs-12 col-md-6 pull-right">
 
@@ -31,6 +32,67 @@
     </div>
 }
 
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>DIS</th>
+            <th>TE</th>
+            <th>TM</th>
+            <th>Area</th>
+            <th>In House</th>
+            <th>RND</th>
+            <th>Date</th>
+            <th>New Users</th>
+            <th>Existing Users</th>
+            <th>Status</th>
+            <th># Of Patients</th>
+            <th>Tag</th>
+        </tr>
+    </thead>
+    <tbody data-bind="foreach: datasheet">
+        <tr>
+            <td data-bind="text: DataSheetId"></td>
+            <td data-bind="text: DIS"></td>
+        </tr>
+    </tbody>
+</table>
+
 @section Scripts {
     <script src="~/Scripts/Data/datasheet.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+
+        var data = function() {
+            var self = this;
+            self.DataSheetId = ko.observable();
+            self.DIS = ko.observable();
+        };
+
+        var viewModel = function() {
+            var self = this;
+            self.datasheet = ko.observableArray([]);
+
+            var month = $('#Month').val();
+            var year = $('#Year').val();
+            var args = { month: 3, year: year };
+
+            $.ajax({
+                dataType: "json",
+                url: "/Data/GetDataSheet",
+                data: args,
+                success: function (returnData) {
+                    //ko.mapping.fromJS(returnData, {}, self.datasheet);
+                },
+                error: function (err) {
+                    alert('Error getting data');
+                    alert(JSON.stringify(err));
+                }
+            });
+        }
+
+        ko.applyBindings(new viewModel());
+    </script>
+
+
 }

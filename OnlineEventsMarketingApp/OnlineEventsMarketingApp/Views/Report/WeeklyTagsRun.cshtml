@@ -22,8 +22,10 @@
     @Html.Partial("_WeeklyTagReport", Model)
 }
 
+
 @if (Model.WeeklyInhouseSummary != null && Model.WeeklyInhouseSummary.Any())
 {
+    <h2 class="t1">Summary</h2>
     @Html.Partial("_WeeklyInhouseSummary", Model)
 }
 
