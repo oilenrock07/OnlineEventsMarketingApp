@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
+using OnlineEventsMarketingApp.Entities;
 
 namespace OnlineEventsMarketingApp.Models.Data
 {
@@ -8,6 +9,8 @@ namespace OnlineEventsMarketingApp.Models.Data
     {
         [DataType(DataType.Upload)]
         public string File { get; set; }
+
+        public IEnumerable<DataSheet> DataSheets { get; set; }
 
         public int Year { get; set; }
         public IEnumerable<SelectListItem> Years { get; set; }

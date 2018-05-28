@@ -12,6 +12,7 @@ namespace OnlineEventsMarketingApp.Extensions
             textbox.Attributes.Add("type", "text");
             textbox.Attributes.Add("name", name);
             textbox.Attributes.Add("id", name);
+            textbox.Attributes.Add("autocomplete", "off");
 
             if (value != null && value != DateTime.MinValue)
             {

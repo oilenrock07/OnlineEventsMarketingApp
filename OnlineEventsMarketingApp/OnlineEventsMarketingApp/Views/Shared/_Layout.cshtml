@@ -19,11 +19,11 @@
                 </button>
 
                 <a href="/Home/Index" class="navbar-brand">
-                    <img src="~/Images/logo.png" alt="Online Events" />
+                    <img src="~/Images/logo.png" alt="Online Events" style="height: 45px"/>
                 </a>               
             </div>
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav ptop2">
+                <ul class="nav navbar-nav ptop1">
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
                     @if (User.IsInRole("Admin"))
                     {

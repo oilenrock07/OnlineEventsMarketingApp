@@ -36,6 +36,6 @@ namespace OnlineEventsMarketingApp.Entities
 
         public int ? TagId { get; set; }
 
-        public bool IsDeleted { get; set; }
+        //public bool IsDeleted { get; set; }
     }
 }

@@ -30,7 +30,6 @@ namespace OnlineEventsMarketingApp.Controllers
         public ActionResult DataSheet()
         {
             var now = DateTime.Now;
-
             var viewModel = new DataSheetViewModel
             {
                 Year = now.Year,
@@ -39,6 +38,13 @@ namespace OnlineEventsMarketingApp.Controllers
                 Months = MonthYearHelper.GetMonthList()
             };
             return View(viewModel);
+        }
+
+        [HttpGet]
+        public JsonResult GetDataSheet(int month, int year)
+        {
+            var dateSheet = _dataSheetService.GetDataSheet(month, year);           
+            return Json(dateSheet, JsonRequestBehavior.AllowGet);
         }
 
         [Authorize]
@@ -63,7 +69,15 @@ namespace OnlineEventsMarketingApp.Controllers
                 }
             }
 
-            return View();
+            TempData["Message"] = "Datasheet has been successfully uploaded";
+            var viewModel = new DataSheetViewModel
+            {
+                Year = year,
+                Month = month,
+                Years = MonthYearHelper.GetYearList(),
+                Months = MonthYearHelper.GetMonthList()
+            };
+            return View(viewModel);
         }
 
 
@@ -73,7 +87,7 @@ namespace OnlineEventsMarketingApp.Controllers
 
             var startDate = new DateTime(year, month, 1);
             var endDate = startDate.AddMonths(1);
-            var datasheet = _dataSheetRepository.Find(x => x.Date >= startDate && x.Date < endDate && x.IsDeleted != true);
+            var datasheet = _dataSheetRepository.Find(x => x.Date >= startDate && x.Date < endDate);
 
             var fileName = String.Format("Nepro Report {0} {1}", startDate.ToString("MMMM"), year);
 

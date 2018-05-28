@@ -7,7 +7,7 @@
 <h2>Weekly Tags Run</h2>
 
 <div class="row">
-    <div class="col-xs-12 col-sm-6 t1">
+    <div class="col-xs-12 col-sm-6 t1 pull-right">
         <div class="col-md-6">
             @Html.DropDownListFor(m => m.Month, Model.Months, new {@class = "form-control js-month t1"})
         </div>
@@ -22,8 +22,10 @@
     @Html.Partial("_WeeklyTagReport", Model)
 }
 
+
 @if (Model.WeeklyInhouseSummary != null && Model.WeeklyInhouseSummary.Any())
 {
+    <h2 class="t1">Summary</h2>
     @Html.Partial("_WeeklyInhouseSummary", Model)
 }
 
