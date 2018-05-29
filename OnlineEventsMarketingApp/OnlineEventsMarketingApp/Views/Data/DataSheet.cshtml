@@ -2,6 +2,7 @@
 @model OnlineEventsMarketingApp.Models.Data.DataSheetViewModel
 @{
     ViewBag.Title = "Data Sheet";
+    ViewBag.Container = "container-fluid";
 }
 
 <h2>Data Sheet</h2>
@@ -32,114 +33,181 @@
     </div>
 }
 
-<table class="table t1 table-responsive table-striped">
-    <tr>
-        <th>ID</th>
-        <th>DIS</th>
-        <th>TE</th>
-        <th>TM</th>
-        <th>Area</th>
-        <th>In House</th>
-        <th>RND</th>
-        <th>Date</th>
-        <th>New Users</th>
-        <th>Existing Users</th>
-        <th>Status</th>
-        <th># Of Patients</th>
-        <th>Tag</th>
-    </tr>
-    <tbody data-bind="foreach: datasheet">
+<div class="row">
+    <table class="table t1 table-responsive table-striped">
         <tr>
-            <td data-bind="text: DataSheetId"></td>
-            <!-- ko if: $root.isAdmin == 'True' -->
-            <td>
-                <input type="text" class="form-control" data-bind="value: DIS" />
-            </td>
-            <!-- /ko -->
-            <!-- ko if: $root.isAdmin == 'False' -->
-            <td data-bind="text: DIS"></td>
-            <!-- /ko -->
-
-            <!-- ko if: $root.isAdmin == 'True' -->
-            <td>
-                <input type="text" class="form-control" data-bind="value: TE" />
-            </td>
-            <!-- /ko -->
-            <!-- ko if: $root.isAdmin == 'False' -->
-            <td data-bind="text: TE"></td>
-            <!-- /ko -->
-
-            <!-- ko if: $root.isAdmin == 'True' -->
-            <td>
-                <input type="text" class="form-control" data-bind="value: TM" />
-            </td>
-            <!-- /ko -->
-            <!-- ko if: $root.isAdmin == 'False' -->
-            <td data-bind="text: TM"></td>
-            <!-- /ko -->
-
-            <!-- ko if: $root.isAdmin == 'True' -->
-            <td>
-                <input type="text" class="form-control" data-bind="value: Area" />
-            </td>
-            <!-- /ko -->
-            <!-- ko if: $root.isAdmin == 'False' -->
-            <td data-bind="text: Area"></td>
-            <!-- /ko -->
-
-            <!-- ko if: $root.isAdmin == 'True' -->
-            <td>
-                <input type="text" class="form-control" data-bind="value: InHouse" />
-            </td>
-            <!-- /ko -->
-            <!-- ko if: $root.isAdmin == 'False' -->
-            <td data-bind="text: InHouse"></td>
-            <!-- /ko -->
-
-            <!-- ko if: $root.isAdmin == 'True' -->
-            <td>
-                <input type="text" class="form-control" data-bind="value: Rnd" />
-            </td>
-            <!-- /ko -->
-            <!-- ko if: $root.isAdmin == 'False' -->
-            <td data-bind="text: Rnd"></td>
-            <!-- /ko -->
-            <td><input class='form-control' data-bind='value: Date' /></td>
-            <td><input class='form-control' data-bind='value: NewUsers'/></td>
-            <td><input class='form-control' data-bind='value: ExistingUsers'/></td>
-            <td><input class='form-control' data-bind='value: Status'/></td>
-            <td><input class='form-control' data-bind='value: NoOfPatients'/></td>
-            <td><input class='form-control' data-bind='value: TagId' /></td>
+            @*<th>ID</th>*@
+            <th>DIS</th>
+            <th>TE</th>
+            <th>TM</th>
+            <th>Area</th>
+            <th>In House</th>
+            <th>RND</th>
+            <th>Date</th>
+            <th>New Users</th>
+            <th>Existing Users</th>
+            <th>Status</th>
+            <th># Of Patients</th>
+            <th>Tag</th>
         </tr>
-    </tbody>
-</table>
+        <tbody data-bind="foreach: datasheets">
+            <tr>
+                @*<td data-bind="text: DataSheetId"></td>*@
+                <!-- ko if: $root.isAdmin == 'True' -->
+                <td>
+                    <input type="text" class="form-control" data-bind="value: DIS" />
+                </td>
+                <!-- /ko -->
+                <!-- ko if: $root.isAdmin == 'False' -->
+                <td data-bind="text: DIS"></td>
+                <!-- /ko -->
+                <!-- ko if: $root.isAdmin == 'True' -->
+                <td>
+                    <input type="text" class="form-control" data-bind="value: TE" />
+                </td>
+                <!-- /ko -->
+                <!-- ko if: $root.isAdmin == 'False' -->
+                <td data-bind="text: TE"></td>
+                <!-- /ko -->
+                <!-- ko if: $root.isAdmin == 'True' -->
+                <td>
+                    <input type="text" class="form-control" data-bind="value: TM" />
+                </td>
+                <!-- /ko -->
+                <!-- ko if: $root.isAdmin == 'False' -->
+                <td data-bind="text: TM"></td>
+                <!-- /ko -->
+                <!-- ko if: $root.isAdmin == 'True' -->
+                <td>
+                    <input type="text" class="form-control" data-bind="value: Area" />
+                </td>
+                <!-- /ko -->
+                <!-- ko if: $root.isAdmin == 'False' -->
+                <td data-bind="text: Area"></td>
+                <!-- /ko -->
+                <!-- ko if: $root.isAdmin == 'True' -->
+                <td>
+                    <input type="text" class="form-control" data-bind="value: InHouse" />
+                </td>
+                <!-- /ko -->
+                <!-- ko if: $root.isAdmin == 'False' -->
+                <td data-bind="text: InHouse"></td>
+                <!-- /ko -->
+                <!-- ko if: $root.isAdmin == 'True' -->
+                <td>
+                    <input type="text" class="form-control" data-bind="value: Rnd" />
+                </td>
+                <!-- /ko -->
+                <!-- ko if: $root.isAdmin == 'False' -->
+                <td data-bind="text: Rnd"></td>
+                <!-- /ko -->
+                <td><input class='form-control datepicker' data-bind='datePicker: Date' /></td>
+                <td><input class='form-control' data-bind='value: NewUsers' type="number" /></td>
+                <td><input class='form-control' data-bind='value: ExistingUsers' type="number" /></td>
+                <td>
+                    <input class='form-control' data-bind='value: TagId' />
+                </td>
+                <td><input class='form-control' data-bind='value: NoOfPatients' type="number" /></td>
+                <td width="120">
+                    <select data-bind='options: $root.tags, optionsText: "TagName", optionsValue: "TagId", value:TagId' class="form-control"></select>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<div class="row">
+    <input type="button" class="btn btn-success" data-bind="click: submitChanges"/>
+</div>
 
 @section Scripts {
     <script src="~/Scripts/Data/datasheet.js" type="text/javascript"></script>
 
     <script type="text/javascript">
 
-        var data = function() {
-            var self = this;
-            self.DataSheetId = ko.observable();
-            self.DIS = ko.observable();
-            self.TE = ko.observable();
-            self.TM = ko.observable();
-            self.Area = ko.observable();
-            self.InHouse = ko.observable();
-            self.Rnd = ko.observable();
-            self.Date = ko.observable();
-            self.NewUsers = ko.observable();
-            self.ExistingUsers = ko.observable();
-            self.Status = ko.observable();
-            self.NoOfPatients = ko.observable();
-            self.TagId = ko.observable();
+        //var datasheet = function(data) {
+        //    var self = this;
+        //    self.DataSheetId = data.DataSheetId;
+        //    self.DIS = ko.observable(data.DIS);
+        //    self.TE = ko.observable(data.TE);
+        //    self.TM = ko.observable(data.TM);
+        //    self.Area = ko.observable(data.Area);
+        //    self.InHouse = ko.observable(data.InHouse);
+        //    self.Rnd = ko.observable(data.Rnd);
+        //    self.Date = ko.observable(data.Date);
+        //    self.NewUsers = ko.observable(data.NewUsers);
+        //    self.ExistingUsers = ko.observable();
+        //    self.Status = ko.observable(data.Status);
+        //    self.NoOfPatients = ko.observable(data.NoOfPatients);
+        //    self.TagId = ko.observable(data.TagId);
+        //};
+
+        ko.bindingHandlers.datePicker = {
+            init: function (element, valueAccessor, allBindingsAccessor, viewModel) {
+                var unwrap = ko.utils.unwrapObservable;
+                var dataSource = valueAccessor();
+                var binding = allBindingsAccessor();
+                var options = {
+                    keyboardNavigation: true,
+                    todayHighlight: true,
+                    autoclose: true,
+                    daysOfWeekDisabled: [0, 6],
+                    format: 'mm/dd/yyyy'
+                };
+                if (binding.datePickerOptions) {
+                    options = $.extend(options, binding.datePickerOptions);
+                }
+                $(element).datepicker(options);
+                $(element).datepicker('update', dataSource());
+                $(element).on("changeDate", function (ev) {
+                    var observable = valueAccessor();
+                    if ($(element).is(':focus')) {
+                        // Don't update while the user is in the field...
+                        // Instead, handle focus loss
+                        $(element).one('blur', function (ev) {
+                            var dateVal = $(element).datepicker("getDate");
+                            observable(dateVal);
+                        });
+                    }
+                    else {
+                        observable(ev.date);
+                    }
+                });
+                //handle removing an element from the dom
+                ko.utils.domNodeDisposal.addDisposeCallback(element, function () {
+                    $(element).datepicker('remove');
+                });
+            },
+            update: function (element, valueAccessor) {
+                var value = ko.utils.unwrapObservable(valueAccessor());
+                $(element).datepicker('update', value);
+            }
         };
+
 
         var viewModel = function() {
             var self = this;
-            self.datasheet = ko.observableArray([]);
+            self.datasheets = ko.observableArray([]);
             self.isAdmin = '@User.IsInRole("Admin")';
+            self.tags = ko.observableArray(@Html.Raw(Model.Tags));
+
+            self.submitChanges = function () {
+                alert(JSON.stringify(self.datasheets()[0]));
+                return;
+                $.ajax({
+                    dataType: "json",
+                    type: 'POST',
+                    url: "/Data/PostDataSheetChanges",
+                    data: { data: JSON.stringify(self.datasheets()) },
+                    success: function (returnData) {
+                        alert('Datasheet has been successfully updated');
+                    },
+                    error: function (err) {
+                        alert('Error submitting the data: ' + err);
+                    }
+                });
+            };
 
             var month = $('#Month').val();
             var year = $('#Year').val();
@@ -150,7 +218,8 @@
                 url: "/Data/GetDataSheet",
                 data: args,
                 success: function (returnData) {
-                    ko.mapping.fromJS(returnData, {}, self.datasheet);
+
+                    ko.mapping.fromJS(returnData, {}, self.datasheets);
                 },
                 error: function (err) {
                     alert('Error getting data: ' + err);
@@ -159,6 +228,7 @@
         }
 
         ko.applyBindings(new viewModel());
+
     </script>
 
 

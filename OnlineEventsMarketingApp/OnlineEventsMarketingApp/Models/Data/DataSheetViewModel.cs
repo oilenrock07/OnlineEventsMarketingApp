@@ -10,6 +10,7 @@ namespace OnlineEventsMarketingApp.Models.Data
         [DataType(DataType.Upload)]
         public string File { get; set; }
 
+        public string Tags { get; set; }
         public IEnumerable<DataSheet> DataSheets { get; set; }
 
         public int Year { get; set; }

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using LumenWorks.Framework.IO.Csv;
+using Newtonsoft.Json;
 using OnlineEventsMarketingApp.Common.Enums;
 using OnlineEventsMarketingApp.Entities;
 using OnlineEventsMarketingApp.Helpers;
@@ -18,10 +19,12 @@ namespace OnlineEventsMarketingApp.Controllers
     public class DataController : Controller
     {
         private readonly IRepository<DataSheet> _dataSheetRepository;
+        private readonly ITagService _tagService;
         private readonly IDataSheetService _dataSheetService;
 
-        public DataController(IDataSheetService dataSheetService, IRepository<DataSheet> dataSheetRepository)
+        public DataController(IDataSheetService dataSheetService, ITagService tagService, IRepository<DataSheet> dataSheetRepository)
         {
+            _tagService = tagService;
             _dataSheetService = dataSheetService;
             _dataSheetRepository = dataSheetRepository;
         }
@@ -30,10 +33,13 @@ namespace OnlineEventsMarketingApp.Controllers
         public ActionResult DataSheet()
         {
             var now = DateTime.Now;
+            var tags = _tagService.GetTags(now.Year, now.Month);
+
             var viewModel = new DataSheetViewModel
             {
                 Year = now.Year,
                 Month = now.Month,
+                Tags = JsonConvert.SerializeObject(tags),
                 Years = MonthYearHelper.GetYearList(),
                 Months = MonthYearHelper.GetMonthList()
             };
@@ -78,6 +84,13 @@ namespace OnlineEventsMarketingApp.Controllers
                 Months = MonthYearHelper.GetMonthList()
             };
             return View(viewModel);
+        }
+
+        [HttpPost]
+        public JsonResult PostDataSheetChanges(string data)
+        {
+            var datasheet = JsonConvert.DeserializeObject<IEnumerable<DataSheet>>(data);
+            return Json("success");
         }
 
 

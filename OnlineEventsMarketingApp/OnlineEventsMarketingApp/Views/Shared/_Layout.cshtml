@@ -9,57 +9,61 @@
 
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
 
-                <a href="/Home/Index" class="navbar-brand">
-                    <img src="~/Images/logo.png" alt="Online Events" style="height: 45px"/>
-                </a>               
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav ptop1">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Reports <span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                <li>@Html.ActionLink("Monthly Tags Run", "Tags", "Settings")</li>
-                                <li>@Html.ActionLink("Weekly Tags Run", "WeeklyTagsRun", "Report")</li>
-                            </ul>
-                        </li>
-                    }
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Data <span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                <li>@Html.ActionLink("Tag Data Sheet", "DataSheet", "Data")</li>
-                            </ul>
-                        </li>
-                    }
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Settings <span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                <li>@Html.ActionLink("Manage Tags", "Tags", "Settings")</li>
-                                <li>@Html.ActionLink("Manage Users", "Index", "Account")</li>
-                            </ul>
-                        </li>
-                    }
-                </ul>
-                @Html.Partial("_LoginPartial")
-            </div>
+            <a href="/Home/Index" class="navbar-brand">
+                <img src="~/Images/logo.png" alt="Online Events" style="height: 45px"/>
+            </a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav ptop1">
+                <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                @if (User.IsInRole("Admin"))
+                {
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Reports <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("Monthly Tags Run", "Tags", "Settings")</li>
+                            <li>@Html.ActionLink("Weekly Tags Run", "WeeklyTagsRun", "Report")</li>
+                        </ul>
+                    </li>
+                }
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Data <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("Tag Data Sheet", "DataSheet", "Data")</li>
+                        </ul>
+                    </li>
+                }
+                @if (User.IsInRole("Admin"))
+                {
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Settings <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("Manage Tags", "Tags", "Settings")</li>
+                            <li>@Html.ActionLink("Manage Users", "Index", "Account")</li>
+                        </ul>
+                    </li>
+                }
+            </ul>
+            @Html.Partial("_LoginPartial")
         </div>
     </div>
-    <div class="container body-content ptop3">
+</div>
+    @{
+        var container = ViewBag.Container ?? "container";
+    }
+
+<div class="@container body-content ptop3">
         @RenderBody()
         <hr />
         <footer>
