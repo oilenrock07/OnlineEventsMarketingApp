@@ -30,7 +30,8 @@ namespace OnlineEventsMarketingApp.Entities
 
         public int ExistingUsers { get; set; }
 
-        public byte Status { get; set; }
+        [StringLength(250)]
+        public string Status { get; set; }
 
         public int NoOfPatients { get; set; }
 

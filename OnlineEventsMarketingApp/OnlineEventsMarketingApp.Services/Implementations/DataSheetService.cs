@@ -50,7 +50,6 @@ namespace OnlineEventsMarketingApp.Services.Implementations
                     if (tag == null) //use logic to default the tag
                         tag = tags.FirstOrDefault(x => date >= x.StartDate && date <= x.EndDate);
 
-                    var status = EnumHelper.ParseEnum<DataStatus>(row["Status"].ToString());
                     var data = new DataSheet
                     {
                         DIS = row["DIS"].ToInt(),
@@ -62,7 +61,7 @@ namespace OnlineEventsMarketingApp.Services.Implementations
                         Date = date,
                         NewUsers = row["New Users"].ToInt(),
                         ExistingUsers = row["Existing Users"].ToInt(),
-                        Status = (byte)status,
+                        Status = row["Status"].ToString().ToUpper(),
                         NoOfPatients = row["No Of Patients"].ToInt(),
                         TagId = tag == null ? default(int) : tag.TagId
                     };
@@ -90,7 +89,7 @@ namespace OnlineEventsMarketingApp.Services.Implementations
 
             var weeklyReport = (from data in _dataSheetRepository.GetAll()
                                 join tag in _tagRepository.GetAll() on data.TagId equals tag.TagId
-                                where data.Date >= startDate && data.Date < endDate && data.Status == 1 && !tag.IsDeleted
+                                where data.Date >= startDate && data.Date < endDate && data.Status == "RUN" && !tag.IsDeleted
                                 group new { data, tag } by new { data.DIS, data.TE, data.TM, data.InHouse, data.TagId, tag.TagName } into g
                                 select new
                                 {
@@ -133,7 +132,7 @@ namespace OnlineEventsMarketingApp.Services.Implementations
 
             var weeklyReport = (from data in _dataSheetRepository.GetAll()
                                 join tag in _tagRepository.GetAll() on data.TagId equals tag.TagId
-                                where data.Date >= startDate && data.Date < endDate && data.Status == 1 && !tag.IsDeleted
+                                where data.Date >= startDate && data.Date < endDate && data.Status == "RUN" && !tag.IsDeleted
                                 group new { data, tag } by new { data.InHouse, data.TagId, tag.TagName } into g
                                 select new WeeklyInhouseSummaryDTO
                                 {

@@ -101,7 +101,7 @@
                 <!-- ko if: $root.isAdmin == 'False' -->
                 <td data-bind="text: Rnd"></td>
                 <!-- /ko -->
-                <td><input class='form-control datepicker' data-bind='datePicker: Date' /></td>
+                <td><input class='form-control' data-bind="datePicker: Date"  /></td>
                 <td><input class='form-control' data-bind='value: NewUsers' type="number" /></td>
                 <td><input class='form-control' data-bind='value: ExistingUsers' type="number" /></td>
                 <td>
@@ -116,48 +116,47 @@
     </table>
 </div>
 
-
 <div class="row">
-    <input type="button" class="btn btn-success" data-bind="click: submitChanges"/>
+        <div class="col-md-12"><input type="button" value="Submit" class="btn btn-success" data-bind="click: submitChanges" /></div>
 </div>
+
+<textarea data-bind="value: ko.toJSON(datasheets)"></textarea>
 
 @section Scripts {
     <script src="~/Scripts/Data/datasheet.js" type="text/javascript"></script>
 
     <script type="text/javascript">
 
-        //var datasheet = function(data) {
-        //    var self = this;
-        //    self.DataSheetId = data.DataSheetId;
-        //    self.DIS = ko.observable(data.DIS);
-        //    self.TE = ko.observable(data.TE);
-        //    self.TM = ko.observable(data.TM);
-        //    self.Area = ko.observable(data.Area);
-        //    self.InHouse = ko.observable(data.InHouse);
-        //    self.Rnd = ko.observable(data.Rnd);
-        //    self.Date = ko.observable(data.Date);
-        //    self.NewUsers = ko.observable(data.NewUsers);
-        //    self.ExistingUsers = ko.observable();
-        //    self.Status = ko.observable(data.Status);
-        //    self.NoOfPatients = ko.observable(data.NoOfPatients);
-        //    self.TagId = ko.observable(data.TagId);
-        //};
+        var datasheet = function(data) {
+            var self = this;
+            self.DataSheetId = data.DataSheetId;
+            self.DIS = ko.observable(data.DIS);
+            self.TE = ko.observable(data.TE);
+            self.TM = ko.observable(data.TM);
+            self.Area = ko.observable(data.Area);
+            self.InHouse = ko.observable(data.InHouse);
+            self.Rnd = ko.observable(data.Rnd);
+            self.Date = ko.observable(data.Date);
+            self.NewUsers = ko.observable(data.NewUsers);
+            self.ExistingUsers = ko.observable();
+            self.Status = ko.observable(data.Status);
+            self.NoOfPatients = ko.observable(data.NoOfPatients);
+            self.TagId = ko.observable(data.TagId);
+        };
 
         ko.bindingHandlers.datePicker = {
             init: function (element, valueAccessor, allBindingsAccessor, viewModel) {
-                var unwrap = ko.utils.unwrapObservable;
                 var dataSource = valueAccessor();
-                var binding = allBindingsAccessor();
+
                 var options = {
                     keyboardNavigation: true,
                     todayHighlight: true,
                     autoclose: true,
-                    daysOfWeekDisabled: [0, 6],
+                    //daysOfWeekDisabled: [0, 6],
                     format: 'mm/dd/yyyy'
+
                 };
-                if (binding.datePickerOptions) {
-                    options = $.extend(options, binding.datePickerOptions);
-                }
+
                 $(element).datepicker(options);
                 $(element).datepicker('update', dataSource());
                 $(element).on("changeDate", function (ev) {
@@ -166,12 +165,13 @@
                         // Don't update while the user is in the field...
                         // Instead, handle focus loss
                         $(element).one('blur', function (ev) {
-                            var dateVal = $(element).datepicker("getDate");
+                            var dateVal = $(element).datepicker("getDate");                            
                             observable(dateVal);
                         });
                     }
                     else {
                         observable(ev.date);
+                        alert(ev.date);
                     }
                 });
                 //handle removing an element from the dom
@@ -181,30 +181,74 @@
             },
             update: function (element, valueAccessor) {
                 var value = ko.utils.unwrapObservable(valueAccessor());
+
+                value = (typeof (value) !== 'object') ? new Date(parseFloat(value.replace(/[^0-9]/g, ''))) : value;
                 $(element).datepicker('update', value);
             }
         };
+        
+
+        //ko.bindingHandlers.dateTimePicker = {
+        //    init: function (element, valueAccessor, allBindingsAccessor) {
+        //        //initialize datepicker with some optional options
+        //        var options = allBindingsAccessor().dateTimePickerOptions || {};
+        //        $(element).datetimepicker(options);
+
+        //        //when a user changes the date, update the view model
+        //        ko.utils.registerEventHandler(element, "dp.change", function (event) {
+        //            var value = valueAccessor();
+        //            if (ko.isObservable(value)) {
+        //                if (event.date != null && !(event.date instanceof Date)) {
+        //                    value(event.date.toDate());
+        //                } else {
+        //                    value(event.date);
+        //                }
+        //            }
+        //        });
+
+        //        ko.utils.domNodeDisposal.addDisposeCallback(element, function () {
+        //            var picker = $(element).data("DateTimePicker");
+        //            if (picker) {
+        //                picker.destroy();
+        //            }
+        //        });
+        //    },
+        //    update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+
+        //        var picker = $(element).data("DateTimePicker");
+        //        //when the view model is updated, update the widget
+        //        if (picker) {
+        //            var koDate = ko.utils.unwrapObservable(valueAccessor());
+
+        //            //in case return from server datetime i am get in this form for example /Date(93989393)/ then fomat this
+        //            koDate = (typeof (koDate) !== 'object') ? new Date(parseFloat(koDate.replace(/[^0-9]/g, ''))) : koDate;
+
+        //            picker.date(koDate);
+        //        }
+        //    }
+        //};
 
 
-        var viewModel = function() {
+        var viewModel = function () {
             var self = this;
             self.datasheets = ko.observableArray([]);
             self.isAdmin = '@User.IsInRole("Admin")';
             self.tags = ko.observableArray(@Html.Raw(Model.Tags));
-
+            
             self.submitChanges = function () {
-                alert(JSON.stringify(self.datasheets()[0]));
-                return;
+                $('.btn').attr('disabled', 'disabled');
                 $.ajax({
                     dataType: "json",
                     type: 'POST',
                     url: "/Data/PostDataSheetChanges",
-                    data: { data: JSON.stringify(self.datasheets()) },
+                    data: { sheet: ko.toJSON(self.datasheets()) },
                     success: function (returnData) {
                         alert('Datasheet has been successfully updated');
+                        $('.btn').removeAttr('disabled');
                     },
                     error: function (err) {
                         alert('Error submitting the data: ' + err);
+                        $('.btn').removeAttr('disabled');
                     }
                 });
             };

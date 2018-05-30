@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using LumenWorks.Framework.IO.Csv;
 using Newtonsoft.Json;
 using OnlineEventsMarketingApp.Common.Enums;
+using OnlineEventsMarketingApp.Common.Extensions;
 using OnlineEventsMarketingApp.Entities;
 using OnlineEventsMarketingApp.Helpers;
 using OnlineEventsMarketingApp.Infrastructure.Interfaces;
@@ -21,9 +22,11 @@ namespace OnlineEventsMarketingApp.Controllers
         private readonly IRepository<DataSheet> _dataSheetRepository;
         private readonly ITagService _tagService;
         private readonly IDataSheetService _dataSheetService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public DataController(IDataSheetService dataSheetService, ITagService tagService, IRepository<DataSheet> dataSheetRepository)
+        public DataController(IUnitOfWork unitOfWork, IDataSheetService dataSheetService, ITagService tagService, IRepository<DataSheet> dataSheetRepository)
         {
+            _unitOfWork = unitOfWork;
             _tagService = tagService;
             _dataSheetService = dataSheetService;
             _dataSheetRepository = dataSheetRepository;
@@ -87,9 +90,37 @@ namespace OnlineEventsMarketingApp.Controllers
         }
 
         [HttpPost]
-        public JsonResult PostDataSheetChanges(string data)
+        public JsonResult PostDataSheetChanges(string sheet)
         {
-            var datasheet = JsonConvert.DeserializeObject<IEnumerable<DataSheet>>(data);
+            var datasheet = JsonConvert.DeserializeObject<IEnumerable<DataSheet>>(sheet);
+            if (datasheet != null && datasheet.Any())
+            {
+                var idsToEdit = datasheet.Select(x => x.DataSheetId);
+                var result = _dataSheetRepository.Find(x => idsToEdit.Contains(x.DataSheetId)).ToList();
+                foreach (var data in result)
+                {
+                    var updatedSheet = datasheet.FirstOrDefault(x => x.DataSheetId == data.DataSheetId);
+                    if (updatedSheet != null)
+                    {
+                        _dataSheetRepository.Update(data);
+                        data.Area = updatedSheet.Area;
+                        data.DIS = updatedSheet.DIS;
+                        data.Date = updatedSheet.Date;
+                        data.ExistingUsers = updatedSheet.ExistingUsers;
+                        data.InHouse = updatedSheet.InHouse;
+                        data.NewUsers = updatedSheet.NewUsers;
+                        data.NoOfPatients = updatedSheet.NoOfPatients;
+                        data.Rnd = updatedSheet.Rnd;
+                        data.Status = updatedSheet.Status.ToUpper();
+                        data.TE = updatedSheet.TE;
+                        data.TM = updatedSheet.TM;
+                        data.TagId = updatedSheet.TagId;
+                    }
+                }
+
+                _unitOfWork.Commit();
+            }
+
             return Json("success");
         }
 
@@ -134,7 +165,7 @@ namespace OnlineEventsMarketingApp.Controllers
 
                 row["New Users"] = item.NewUsers;
                 row["Existing Users"] = item.ExistingUsers;
-                row["Status"] = (DataStatus)item.Status;
+                row["Status"] = item.Status.ToUpper();
                 row["No Of Patients"] = item.NoOfPatients;
                 row["Tag"] = item.TagId;
                 dt.Rows.Add(row);
