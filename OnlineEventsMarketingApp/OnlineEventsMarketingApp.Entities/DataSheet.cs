@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OnlineEventsMarketingApp.Entities
 {
@@ -34,9 +35,10 @@ namespace OnlineEventsMarketingApp.Entities
         public string Status { get; set; }
 
         public int NoOfPatients { get; set; }
-
+        
         public int ? TagId { get; set; }
-
+        [ForeignKey("TagId")]
+        public virtual Tag Tag { get; set; }
         //public bool IsDeleted { get; set; }
     }
 }

@@ -12,26 +12,37 @@
     <div class="row">
         <div class="col-xs-12 col-md-6">
             <div class="col-md-6">
-                @Html.DropDownListFor(m => m.Month, Model.Months, new { @class = "form-control t1" })
+                @Html.DropDownListFor(m => m.Month, Model.Months, new {@class = "form-control t1"})
             </div>
             <div class="col-md-6">
-                @Html.DropDownListFor(m => m.Year, Model.Years, new { @class = "form-control t1" })
+                @Html.DropDownListFor(m => m.Year, Model.Years, new {@class = "form-control t1"})
             </div>
         </div>
         <div class="col-xs-12 col-md-6 pull-right">
 
             <div class="pull-right">
                 <div class="col-md-6">
-                    @Html.TextBoxFor(model => model.File, new { type = "file", @class = "form-control t1", accept = ".xlsx, .xls, .csv" })
+                    @Html.TextBoxFor(model => model.File, new {type = "file", @class = "form-control t1", accept = ".xlsx, .xls, .csv"})
                 </div>
                 <div class="col-md-6">
                     <button class="btn btn-default t1">Import Data</button>
-                    @Html.ActionLink("Export Data", "ExportToExcel", new { month = Model.Month, year = Model.Year }, new { @class = "btn btn-success t1 js-export" })
+                    @Html.ActionLink("Export Data", "ExportToExcel", new {month = Model.Month, year = Model.Year}, new {@class = "btn btn-success t1 js-export"})
                 </div>
             </div>
         </div>
     </div>
 }
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="col-md-3 t1">
+            <div class="input-group">
+                <input type="search" data-bind="value: currentFilter" id="search" placeholder="Filter DIS, TE, TM, Area, RND" class="form-control">
+                <label class="input-group-addon" for="search"><i class="fa fa-search"></i></label>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="row">
     <table class="table t1 table-responsive table-striped">
@@ -50,7 +61,7 @@
             <th># Of Patients</th>
             @*<th>Tag</th>*@
         </tr>
-        <tbody data-bind="foreach: datasheets">
+        <tbody data-bind="foreach: filteredDatasheet">
             <tr>
                 @*<td data-bind="text: DataSheetId"></td>*@
                 <!-- ko if: $root.isAdmin == 'True' -->
@@ -129,27 +140,37 @@
             var self = this;
             self.datasheets = ko.observableArray([]);
             self.isAdmin = '@User.IsInRole("Admin")';
+            self.currentFilter = ko.observable();
             //self.tags = ko.observableArray(@Html.Raw(Model.Tags));
 
 
             self.submitChanges = function () {
-                $('.btn').attr('disabled', 'disabled');
+                showLoading();
                 $.ajax({
                     dataType: "json",
                     type: 'POST',
                     url: "/Data/PostDataSheetChanges",
                     data: { sheet: ko.toJSON(self.datasheets()) },
                     success: function (returnData) {
-                        
                         alert('Datasheet has been successfully updated');
-                        $('.btn').removeAttr('disabled');
+                        hideLoading();
                     },
                     error: function (err) {
                         alert('Error submitting the data: ' + err);
-                        $('.btn').removeAttr('disabled');
+                        hideLoading();
                     }
                 });
             };
+
+            self.filteredDatasheet = ko.computed(function () {
+                if (!self.currentFilter()) {
+                    return self.datasheets();
+                } else {
+                    return ko.utils.arrayFilter(self.datasheets(), function (data) {
+                        return data.DIS == self.currentFilter();
+                    });
+                }
+            });
 
             
             var month = $('#Month').val();

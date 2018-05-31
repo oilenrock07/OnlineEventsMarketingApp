@@ -39,8 +39,8 @@ namespace OnlineEventsMarketingApp.Controllers
             //var tags = _tagService.GetTags(now.Year, now.Month);
             var viewModel = new DataSheetViewModel
             {
-                Year = now.Year,
-                Month = now.Month,
+                Year = year ?? now.Year,
+                Month = month ?? now.Month,
                 //Tags = JsonConvert.SerializeObject(tags),
                 Years = MonthYearHelper.GetYearList(),
                 Months = MonthYearHelper.GetMonthList()
@@ -130,7 +130,7 @@ namespace OnlineEventsMarketingApp.Controllers
 
             var startDate = new DateTime(year, month, 1);
             var endDate = startDate.AddMonths(1);
-            var datasheet = _dataSheetRepository.Find(x => x.Date >= startDate && x.Date < endDate);
+            var datasheet = _dataSheetRepository.Find(x => x.Date >= startDate && x.Date < endDate).ToList();
 
             var fileName = String.Format("Nepro Report {0} {1}", startDate.ToString("MMMM"), year);
 
@@ -146,9 +146,9 @@ namespace OnlineEventsMarketingApp.Controllers
 
             dt.Columns.Add("New Users", typeof(int));
             dt.Columns.Add("Existing Users", typeof(int));
-            dt.Columns.Add("Status", typeof(int));
+            dt.Columns.Add("Status", typeof(string));
             dt.Columns.Add("No Of Patients", typeof(int));
-            dt.Columns.Add("Tag", typeof(int));
+            dt.Columns.Add("Tag", typeof(string));
 
             foreach (var item in datasheet)
             {
@@ -160,13 +160,13 @@ namespace OnlineEventsMarketingApp.Controllers
                 row["Area"] = item.Area;
                 row["InHouse"] = item.InHouse;
                 row["Rnd"] = item.Rnd;
-                row["Date"] = item.Date;
+                row["Date"] = item.Date.ToShortDateString();
 
                 row["New Users"] = item.NewUsers;
                 row["Existing Users"] = item.ExistingUsers;
                 row["Status"] = item.Status.ToUpper();
                 row["No Of Patients"] = item.NoOfPatients;
-                row["Tag"] = item.TagId;
+                row["Tag"] = item.Tag != null ? item.Tag.TagName : "";
                 dt.Rows.Add(row);
             }
 
