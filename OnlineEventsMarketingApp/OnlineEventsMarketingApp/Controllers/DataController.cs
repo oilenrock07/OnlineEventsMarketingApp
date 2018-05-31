@@ -33,16 +33,15 @@ namespace OnlineEventsMarketingApp.Controllers
         }
 
         [Authorize]
-        public ActionResult DataSheet()
+        public ActionResult DataSheet(int? month = null, int? year=null)
         {
             var now = DateTime.Now;
-            var tags = _tagService.GetTags(now.Year, now.Month);
-
+            //var tags = _tagService.GetTags(now.Year, now.Month);
             var viewModel = new DataSheetViewModel
             {
                 Year = now.Year,
                 Month = now.Month,
-                Tags = JsonConvert.SerializeObject(tags),
+                //Tags = JsonConvert.SerializeObject(tags),
                 Years = MonthYearHelper.GetYearList(),
                 Months = MonthYearHelper.GetMonthList()
             };
@@ -52,7 +51,7 @@ namespace OnlineEventsMarketingApp.Controllers
         [HttpGet]
         public JsonResult GetDataSheet(int month, int year)
         {
-            var dateSheet = _dataSheetService.GetDataSheet(month, year);           
+            var dateSheet = _dataSheetService.GetDataSheet(month, year);
             return Json(dateSheet, JsonRequestBehavior.AllowGet);
         }
 
@@ -105,7 +104,7 @@ namespace OnlineEventsMarketingApp.Controllers
                         _dataSheetRepository.Update(data);
                         data.Area = updatedSheet.Area;
                         data.DIS = updatedSheet.DIS;
-                        data.Date = updatedSheet.Date;
+                        data.Date = updatedSheet.Date.AddDays(1); //bug on the UI that is submitting -1 days
                         data.ExistingUsers = updatedSheet.ExistingUsers;
                         data.InHouse = updatedSheet.InHouse;
                         data.NewUsers = updatedSheet.NewUsers;

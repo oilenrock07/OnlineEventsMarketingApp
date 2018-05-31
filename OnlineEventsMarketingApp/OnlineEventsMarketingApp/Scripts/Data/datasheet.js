@@ -17,9 +17,17 @@
         
     }
 
+    function handleMonthYearChange() {
+        var month = $('#Month').val();
+        var year = $('#Year').val();
+        window.location = '/Data/DataSheet/' + month + '/' + year;
+    }
+
     function init() {
         $('form').on('submit', handleSubmit);
         $('.js-export').on('click', handleExportClick);
+        $('#Month').on('change', handleMonthYearChange);
+        $('#Year').on('change', handleMonthYearChange);
     }
 
     init();

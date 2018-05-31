@@ -235,6 +235,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Images\Double Ring-1.6s-115px.gif" />
     <Content Include="Images\logo.png" />
     <Content Include="Scripts\Account\userlist.js" />
     <Content Include="Scripts\app.js" />
@@ -247,6 +248,7 @@
     <Content Include="fonts\fontawesome-webfont.woff" />
     <Content Include="fonts\fontawesome-webfont.ttf" />
     <Content Include="fonts\fontawesome-webfont.eot" />
+    <Content Include="Scripts\datepicker.knockout.js" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\Data\datasheet.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
