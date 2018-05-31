@@ -36,12 +36,10 @@ namespace OnlineEventsMarketingApp.Controllers
         public ActionResult DataSheet(int? month = null, int? year=null)
         {
             var now = DateTime.Now;
-            //var tags = _tagService.GetTags(now.Year, now.Month);
             var viewModel = new DataSheetViewModel
             {
                 Year = year ?? now.Year,
                 Month = month ?? now.Month,
-                //Tags = JsonConvert.SerializeObject(tags),
                 Years = MonthYearHelper.GetYearList(),
                 Months = MonthYearHelper.GetMonthList()
             };
@@ -51,7 +49,7 @@ namespace OnlineEventsMarketingApp.Controllers
         [HttpGet]
         public JsonResult GetDataSheet(int month, int year)
         {
-            var dateSheet = _dataSheetService.GetDataSheet(month, year);
+            var dateSheet = _dataSheetService.GetDataSheet(month, year).OrderBy(x => x.Date);
             return Json(dateSheet, JsonRequestBehavior.AllowGet);
         }
 

@@ -1,5 +1,4 @@
-﻿@using Newtonsoft.Json
-@model OnlineEventsMarketingApp.Models.Data.DataSheetViewModel
+﻿@model OnlineEventsMarketingApp.Models.Data.DataSheetViewModel
 @{
     ViewBag.Title = "Data Sheet";
     ViewBag.Container = "container-fluid";
@@ -37,7 +36,7 @@
     <div class="col-xs-12">
         <div class="col-md-3 t1">
             <div class="input-group">
-                <input type="search" data-bind="value: currentFilter" id="search" placeholder="Filter DIS, TE, TM, Area, RND" class="form-control">
+                <input type="search" data-bind="value: currentFilter, valueUpdate: 'keyup'" id="search" placeholder="Filter DIS, TE, TM, Area, RND" class="form-control">
                 <label class="input-group-addon" for="search"><i class="fa fa-search"></i></label>
             </div>
         </div>
@@ -45,90 +44,94 @@
 </div>
 
 <div class="row">
-    <table class="table t1 table-responsive table-striped">
-        <tr>
-            @*<th>ID</th>*@
-            <th>DIS</th>
-            <th>TE</th>
-            <th>TM</th>
-            <th>Area</th>
-            <th>In House</th>
-            <th>RND</th>
-            <th>Date</th>
-            <th>New Users</th>
-            <th>Existing Users</th>
-            <th>Status</th>
-            <th># Of Patients</th>
-            @*<th>Tag</th>*@
-        </tr>
-        <tbody data-bind="foreach: filteredDatasheet">
+    <div class="col-xs-12">
+        <table class="table t1 table-responsive table-striped">
             <tr>
-                @*<td data-bind="text: DataSheetId"></td>*@
-                <!-- ko if: $root.isAdmin == 'True' -->
-                <td>
-                    <input type="text" class="form-control" data-bind="value: DIS" />
-                </td>
-                <!-- /ko -->
-                <!-- ko if: $root.isAdmin == 'False' -->
-                <td data-bind="text: DIS"></td>
-                <!-- /ko -->
-                <!-- ko if: $root.isAdmin == 'True' -->
-                <td>
-                    <input type="text" class="form-control" data-bind="value: TE" />
-                </td>
-                <!-- /ko -->
-                <!-- ko if: $root.isAdmin == 'False' -->
-                <td data-bind="text: TE"></td>
-                <!-- /ko -->
-                <!-- ko if: $root.isAdmin == 'True' -->
-                <td>
-                    <input type="text" class="form-control" data-bind="value: TM" />
-                </td>
-                <!-- /ko -->
-                <!-- ko if: $root.isAdmin == 'False' -->
-                <td data-bind="text: TM"></td>
-                <!-- /ko -->
-                <!-- ko if: $root.isAdmin == 'True' -->
-                <td>
-                    <input type="text" class="form-control" data-bind="value: Area" />
-                </td>
-                <!-- /ko -->
-                <!-- ko if: $root.isAdmin == 'False' -->
-                <td data-bind="text: Area"></td>
-                <!-- /ko -->
-                <!-- ko if: $root.isAdmin == 'True' -->
-                <td>
-                    <input type="text" class="form-control" data-bind="value: InHouse" />
-                </td>
-                <!-- /ko -->
-                <!-- ko if: $root.isAdmin == 'False' -->
-                <td data-bind="text: InHouse"></td>
-                <!-- /ko -->
-                <!-- ko if: $root.isAdmin == 'True' -->
-                <td>
-                    <input type="text" class="form-control" data-bind="value: Rnd" />
-                </td>
-                <!-- /ko -->
-                <!-- ko if: $root.isAdmin == 'False' -->
-                <td data-bind="text: Rnd"></td>
-                <!-- /ko -->
-                <td><input class='form-control' data-bind="datePicker: Date"  /></td>
-                <td><input class='form-control' data-bind='value: NewUsers' type="number" /></td>
-                <td><input class='form-control' data-bind='value: ExistingUsers' type="number" /></td>
-                <td><input class='form-control' data-bind='value: Status' autocomplete="on" /></td>
-                <td><input class='form-control' data-bind='value: NoOfPatients' type="number" /></td>
-                @*<td width="120">
-                    <select data-bind='options: $root.tags, optionsText: "TagName", optionsValue: "TagId", value:TagId' class="form-control"></select>
-                </td>*@
+                <th>ID</th>
+                <th>DIS</th>
+                <th>TE</th>
+                <th>TM</th>
+                <th>Area</th>
+                <th>In House</th>
+                <th>RND</th>
+                <th>Date</th>
+                <th>New Users</th>
+                <th>Existing Users</th>
+                <th>Status</th>
+                <th># Of Patients</th>
+                @*<th>Tag</th>*@
             </tr>
-        </tbody>
-    </table>
+            <tbody data-bind="foreach: filteredDatasheet">
+                <tr>
+                    <td data-bind="text: DataSheetId"></td>
+                    <!-- ko if: $root.isAdmin == 'True' -->
+                    <td>
+                        <input type="text" class="form-control" data-bind="value: DIS" />
+                    </td>
+                    <!-- /ko -->
+                    <!-- ko if: $root.isAdmin == 'False' -->
+                    <td data-bind="text: DIS"></td>
+                    <!-- /ko -->
+                    <!-- ko if: $root.isAdmin == 'True' -->
+                    <td>
+                        <input type="text" class="form-control" data-bind="value: TE" />
+                    </td>
+                    <!-- /ko -->
+                    <!-- ko if: $root.isAdmin == 'False' -->
+                    <td data-bind="text: TE"></td>
+                    <!-- /ko -->
+                    <!-- ko if: $root.isAdmin == 'True' -->
+                    <td>
+                        <input type="text" class="form-control" data-bind="value: TM" />
+                    </td>
+                    <!-- /ko -->
+                    <!-- ko if: $root.isAdmin == 'False' -->
+                    <td data-bind="text: TM"></td>
+                    <!-- /ko -->
+                    <!-- ko if: $root.isAdmin == 'True' -->
+                    <td>
+                        <input type="text" class="form-control" data-bind="value: Area" />
+                    </td>
+                    <!-- /ko -->
+                    <!-- ko if: $root.isAdmin == 'False' -->
+                    <td data-bind="text: Area"></td>
+                    <!-- /ko -->
+                    <!-- ko if: $root.isAdmin == 'True' -->
+                    <td data-bind="style: {backgroundColor: (InHouse().toLowerCase() === 'in house' || InHouse().toLowerCase() === 'online')  ? '' : '#f8d7da'}">
+                        <input type="text" class="form-control" data-bind="value: InHouse" />
+                    </td>
+                    <!-- /ko -->
+                    <!-- ko if: $root.isAdmin == 'False' -->
+                    <td data-bind="text: InHouse"></td>
+                    <!-- /ko -->
+                    <!-- ko if: $root.isAdmin == 'True' -->
+                    <td>
+                        <input type="text" class="form-control" data-bind="value: Rnd" />
+                    </td>
+                    <!-- /ko -->
+                    <!-- ko if: $root.isAdmin == 'False' -->
+                    <td data-bind="text: Rnd"></td>
+                    <!-- /ko -->
+                    <td><input class='form-control' data-bind="datePicker: Date" /></td>
+                    <td><input class='form-control' data-bind='value: NewUsers' type="number" /></td>
+                    <td><input class='form-control' data-bind='value: ExistingUsers' type="number" /></td>
+                    <td data-bind="style: {backgroundColor: Status().toLowerCase() === 'run' ? '#5cb85c' : ''}"><input class='form-control' data-bind="value: Status" autocomplete="on" /></td>
+                    <td><input class='form-control' data-bind='value: NoOfPatients' type="number" /></td>
+                    @*<td width="120">
+                        <select data-bind='options: $root.tags, optionsText: "TagName", optionsValue: "TagId", value:TagId' class="form-control"></select>
+                    </td>*@
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
 </div>
 
 <div class="row">
     <div class="col-md-12"><input type="button" value="Submit" class="btn btn-success" data-bind="click: submitChanges"/>
     </div>
 </div>
+
 <div class="loading-modal"></div>
 
 @section Scripts {
@@ -141,8 +144,9 @@
             self.datasheets = ko.observableArray([]);
             self.isAdmin = '@User.IsInRole("Admin")';
             self.currentFilter = ko.observable();
-            //self.tags = ko.observableArray(@Html.Raw(Model.Tags));
-
+            self.inhouseBg = ko.computed(function() {
+                return 'red';
+            });
 
             self.submitChanges = function () {
                 showLoading();
@@ -166,9 +170,15 @@
                 if (!self.currentFilter()) {
                     return self.datasheets();
                 } else {
-                    return ko.utils.arrayFilter(self.datasheets(), function (data) {
-                        return data.DIS == self.currentFilter();
+                    var f = self.currentFilter();
+                    var exist = function(obj) {
+                        return obj.toString().toLowerCase().indexOf(f) >= 0;
+                    };
+                    return ko.utils.arrayFilter(self.datasheets(), function (item) {
+                        var i = ko.toJS(item);
+                        return exist(i.DIS) || exist(i.TE) || exist(i.TM) || exist(i.Area) || exist(i.Rnd);
                     });
+
                 }
             });
 
