@@ -1,10 +1,11 @@
 ﻿@model OnlineEventsMarketingApp.Models.Data.NewUserDataSheetViewModel
+@{
     ViewBag.Title = "New Users Data Sheet";
 }
 
 <h2>New Users MTD Sheet</h2>
 
-@using (Html.BeginForm("NewUserMTDDataSheet", "Data", FormMethod.Post, new { enctype = "multipart/form-data" }))
+@using (Html.BeginForm("NewUserMTDDataSheet", "Data", FormMethod.Post, new { enctype = "multipart/form-data", location= "NewUserMTDDataSheet", id = "DateSheetForm" }))
 {
     <div class="row">
         <div class="col-xs-12 col-md-6">
@@ -22,7 +23,7 @@
                     @Html.TextBoxFor(model => model.File, new { type = "file", @class = "form-control t1", accept = ".xlsx, .xls, .csv" })
                 </div>
                 <div class="col-md-6">
-                    <button class="btn btn-default t1">Import Data</button>
+                    <button class="btn btn-success t1">Import Data</button>
                 </div>
             </div>
         </div>
@@ -45,4 +46,9 @@
     </div>
 </div>
 
-<script src="~/Scripts/Data/datasheet.js" type="text/javascript"></script>
+<div class="loading-modal"></div>
+
+@section scripts
+{
+    <script src="~/Scripts/Data/datasheet.js" type="text/javascript"></script>   
+}

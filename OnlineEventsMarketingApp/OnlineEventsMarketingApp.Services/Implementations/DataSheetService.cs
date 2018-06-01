@@ -79,23 +79,27 @@ namespace OnlineEventsMarketingApp.Services.Implementations
             if (table == null)
                 return;
 
-            var datasheet = _dataSheetRepository.Find(x => x.Date.Year == year && x.Status == "RUN")
-                            .Select(x => new DataSheet
-                            {
-                                Date = x.Date,
-                                InHouse = x.InHouse,
-                                TE = x.TE
-                            }).ToList();
+            var startDate = new DateTime(year, 1, 1);
+            var endDate = startDate.AddYears(1);
+
+            var datasheet = _dataSheetRepository.Find(x => x.Date >= startDate && x.Date <= endDate && x.Status == "RUN")//.ToList();
+                            .Select(x => new
+                             {
+                                 x.Date,
+                                 x.InHouse,
+                                 x.TE
+                             }).ToList();
 
             if (table.Rows.Count > 0)
             {
                 var result = (from row in table.AsEnumerable()
                              join data in datasheet on row.Field<string>("TM CODE") equals data.TE.ToString()
                              where row.Field<string>("BRAND") == Constants.BRAND_NEPROVANILA && row.Field<string>("FIRST USE") == "YES" &&
-                                   row.Field<DateTime>("DATE").Year == year
-                             group row by new { data.Date.Month, data.Date.Year, data.InHouse} into g
+                                   row["Date"].ToDateTime() >= startDate && row["Date"].ToDateTime() < endDate
+                              group row by new { data.Date.Month, data.Date.Year, data.InHouse} into g
                              select new NewUserMTD
                              {
+                                 Inhouse = g.Key.InHouse,
                                  Month = g.Key.Month,
                                  Year = g.Key.Year,
                                  ActualCount = g.Count()
@@ -108,7 +112,7 @@ namespace OnlineEventsMarketingApp.Services.Implementations
                 }
             }
 
-            _unitOfWork.ExecuteSqlCommand(string.Format("DELETE FROM NewUserMTDDataSheet WHERE year = '{0}'", year));
+            _unitOfWork.ExecuteSqlCommand(string.Format("DELETE FROM NewUserMTDs WHERE year = '{0}'", year));
             _unitOfWork.Commit();
         }
 

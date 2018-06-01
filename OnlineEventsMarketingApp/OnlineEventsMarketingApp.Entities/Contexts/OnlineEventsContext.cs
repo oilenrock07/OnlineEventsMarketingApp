@@ -14,6 +14,7 @@ namespace OnlineEventsMarketingApp.Entities.Contexts
 
         public virtual IDbSet<Tag> Tags { get; set; }
         public virtual IDbSet<DataSheet> DataSheets { get; set; }
+        public virtual IDbSet<NewUserMTD> NewUserMTDs { get; set; }
 
         //Users
         public virtual IDbSet<Role> Roles { get; set; }

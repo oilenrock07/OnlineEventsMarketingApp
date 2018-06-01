@@ -9,7 +9,7 @@
 
 <h2>Data Sheet</h2>
 
-@using (Html.BeginForm("DataSheet", "Data", FormMethod.Post, new { enctype = "multipart/form-data" }))
+@using (Html.BeginForm("DataSheet", "Data", FormMethod.Post, new { enctype = "multipart/form-data", location= "DataSheet", id="DateSheetForm" }))
 {
     <div class="row">
         <div class="col-xs-12 col-md-6">

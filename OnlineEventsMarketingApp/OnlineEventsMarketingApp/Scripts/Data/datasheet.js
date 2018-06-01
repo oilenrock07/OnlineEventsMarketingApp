@@ -11,6 +11,7 @@
         if (!answer) {
             e.preventDefault();
         }
+        showLoading();
     }
 
     function handleExportClick(e) {
@@ -20,7 +21,7 @@
     function handleMonthYearChange() {
         var month = $('#Month').val();
         var year = $('#Year').val();
-        var action = $('form').attr('action');
+        var action = $('#DateSheetForm').attr('location');
         window.location = '/Data/' + action + '/' + month + '/' + year;
     }
 

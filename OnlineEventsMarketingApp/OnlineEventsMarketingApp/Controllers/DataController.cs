@@ -155,7 +155,7 @@ namespace OnlineEventsMarketingApp.Controllers
                             using (var reader = new CsvReader(new StreamReader(stream), true))
                             {
                                 csvTable.Load(reader);
-                                _dataSheetService.UploadDataSheet(month, year, csvTable);
+                                _dataSheetService.UploadNewUserMTDDataSheet(year, csvTable);
                             }
                         }
                     }
@@ -163,14 +163,7 @@ namespace OnlineEventsMarketingApp.Controllers
             }
 
             TempData["Message"] = "New User MTD Datasheet has been successfully uploaded";
-            var viewModel = new DataSheetViewModel
-            {
-                Year = year,
-                Month = month,
-                Years = MonthYearHelper.GetYearList(),
-                Months = MonthYearHelper.GetMonthList()
-            };
-            return View(viewModel);
+            return RedirectToAction("NewUserMTDDataSheet", new { month, year});
         }
 
         public void ExportToExcel(int month, int year)
