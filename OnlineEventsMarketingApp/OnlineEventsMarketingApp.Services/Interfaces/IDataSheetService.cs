@@ -8,8 +8,10 @@ namespace OnlineEventsMarketingApp.Services.Interfaces
     public interface IDataSheetService
     {
         void UploadDataSheet(int month, int year, DataTable table);
+        void UploadNewUserMTDDataSheet(int year, DataTable table);
         IEnumerable<DataSheet> GetDataSheet(int month, int year);
         IEnumerable<WeeklyReportDTO> GetWeeklyReport(int month, int year);
         IEnumerable<WeeklyInhouseSummaryDTO> GetWeeklyInHouseSummary(int month, int year);
+        IEnumerable<MonthlyConsultationACTDTO> GetMonthlyConsultationReport(int year);
     }
 }

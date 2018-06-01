@@ -1,0 +1,48 @@
+﻿@model OnlineEventsMarketingApp.Models.Data.NewUserDataSheetViewModel
+    ViewBag.Title = "New Users Data Sheet";
+}
+
+<h2>New Users MTD Sheet</h2>
+
+@using (Html.BeginForm("NewUserMTDDataSheet", "Data", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="row">
+        <div class="col-xs-12 col-md-6">
+            <div class="col-md-6">
+                @Html.DropDownListFor(m => m.Month, Model.Months, new { @class = "form-control t1" })
+            </div>
+            <div class="col-md-6">
+                @Html.DropDownListFor(m => m.Year, Model.Years, new { @class = "form-control t1" })
+            </div>
+        </div>
+        <div class="col-xs-12 col-md-6 pull-right">
+
+            <div class="pull-right">
+                <div class="col-md-6">
+                    @Html.TextBoxFor(model => model.File, new { type = "file", @class = "form-control t1", accept = ".xlsx, .xls, .csv" })
+                </div>
+                <div class="col-md-6">
+                    <button class="btn btn-default t1">Import Data</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="row">
+    <div class="col-xs-12">
+        <table class="table t1 table-responsive table-striped">
+            <tr>
+                <th>Type</th>
+                <th>Actual New Users</th>
+            </tr>
+            @foreach (var item in Model.DataSheets)
+            {
+                <td>@item.Inhouse</td>
+                <td>@item.ActualCount</td>
+            }
+        </table>
+    </div>
+</div>
+
+<script src="~/Scripts/Data/datasheet.js" type="text/javascript"></script>

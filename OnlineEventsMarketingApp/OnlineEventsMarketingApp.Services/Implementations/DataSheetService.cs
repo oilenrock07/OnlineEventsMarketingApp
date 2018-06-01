@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using OnlineEventsMarketingApp.Common.Constants;
 using OnlineEventsMarketingApp.Common.Enums;
 using OnlineEventsMarketingApp.Common.Extensions;
 using OnlineEventsMarketingApp.Common.Helpers;
@@ -16,14 +17,16 @@ namespace OnlineEventsMarketingApp.Services.Implementations
     public class DataSheetService : IDataSheetService
     {
         private readonly IRepository<Tag> _tagRepository;
+        private readonly IRepository<NewUserMTD> _newUserMtdRepository;
         private readonly IRepository<DataSheet> _dataSheetRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public DataSheetService(IUnitOfWork unitOfWork, IRepository<DataSheet> dataSheetRepository, IRepository<Tag> tagRepository)
+        public DataSheetService(IUnitOfWork unitOfWork, IRepository<DataSheet> dataSheetRepository, IRepository<Tag> tagRepository, IRepository<NewUserMTD> newUserMtdRepository)
         {
             _unitOfWork = unitOfWork;
             _tagRepository = tagRepository;
             _dataSheetRepository = dataSheetRepository;
+            _newUserMtdRepository = newUserMtdRepository;
         }
 
         public void UploadDataSheet(int month, int year, DataTable table)
@@ -45,10 +48,7 @@ namespace OnlineEventsMarketingApp.Services.Implementations
                     var date = row["Date"].ToDateTime();
                     if (!(date >= start && date < end)) continue;
 
-                    var dataTag = row["Tag"].ToString();                    
-                    var tag = tags.FirstOrDefault(x => string.Equals(x.TagName, dataTag, StringComparison.InvariantCultureIgnoreCase));
-                    if (tag == null) //use logic to default the tag
-                        tag = tags.FirstOrDefault(x => date >= x.StartDate && date <= x.EndDate);
+                    var tag = tags.FirstOrDefault(x => date >= x.StartDate && date <= x.EndDate);
 
                     var data = new DataSheet
                     {
@@ -56,7 +56,7 @@ namespace OnlineEventsMarketingApp.Services.Implementations
                         TE = row["TE"].ToInt(),
                         TM = row["TM"].ToString(),
                         Area = row["Area"].ToString(),
-                        InHouse = row["InHouse"].ToString(),
+                        InHouse = row["InHouse"].ToString().ToUpper(),
                         Rnd = row["RND"].ToString(),
                         Date = date,
                         NewUsers = row["New Users"].ToInt(),
@@ -74,12 +74,62 @@ namespace OnlineEventsMarketingApp.Services.Implementations
             _unitOfWork.Commit();
         }
 
+        public void UploadNewUserMTDDataSheet(int year, DataTable table)
+        {
+            if (table == null)
+                return;
+
+            var datasheet = _dataSheetRepository.Find(x => x.Date.Year == year && x.Status == "RUN")
+                            .Select(x => new DataSheet
+                            {
+                                Date = x.Date,
+                                InHouse = x.InHouse,
+                                TE = x.TE
+                            }).ToList();
+
+            if (table.Rows.Count > 0)
+            {
+                var result = (from row in table.AsEnumerable()
+                             join data in datasheet on row.Field<string>("TM CODE") equals data.TE.ToString()
+                             where row.Field<string>("BRAND") == Constants.BRAND_NEPROVANILA && row.Field<string>("FIRST USE") == "YES" &&
+                                   row.Field<DateTime>("DATE").Year == year
+                             group row by new { data.Date.Month, data.Date.Year, data.InHouse} into g
+                             select new NewUserMTD
+                             {
+                                 Month = g.Key.Month,
+                                 Year = g.Key.Year,
+                                 ActualCount = g.Count()
+                             }).ToList();
+
+                if (result.Any())
+                {
+                    foreach (var row in result)
+                        _newUserMtdRepository.Add(row);
+                }
+            }
+
+            _unitOfWork.ExecuteSqlCommand(string.Format("DELETE FROM NewUserMTDDataSheet WHERE year = '{0}'", year));
+            _unitOfWork.Commit();
+        }
+
         public IEnumerable<DataSheet> GetDataSheet(int month, int year)
         {
             var startDate = new DateTime(year, month, 1);
             var endDate = startDate.AddMonths(1);
 
             return _dataSheetRepository.Find(x => x.Date >= startDate && x.Date < endDate).ToList();
+        }
+
+        public IEnumerable<MonthlyConsultationACTDTO> GetMonthlyConsultationReport(int year)
+        {
+            var report = _dataSheetRepository.Find(x => x.Date.Year == year && x.Status == "RUN").GroupBy(x => x.Date.Month)
+                .Select(x => new MonthlyConsultationACTDTO
+                {
+                    Month = x.Key,
+                    ACT = x.Sum(y => y.NewUsers + y.ExistingUsers)
+                }).ToList();
+
+            return report;
         }
 
         public IEnumerable<WeeklyReportDTO> GetWeeklyReport(int month, int year)

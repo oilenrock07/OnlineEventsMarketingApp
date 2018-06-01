@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="Contexts\OnlineEventsContext.cs" />
     <Compile Include="DataSheet.cs" />
+    <Compile Include="NewUserMTD.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tag.cs" />
     <Compile Include="Users\Role.cs" />

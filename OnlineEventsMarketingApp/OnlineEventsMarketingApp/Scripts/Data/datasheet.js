@@ -20,7 +20,8 @@
     function handleMonthYearChange() {
         var month = $('#Month').val();
         var year = $('#Year').val();
-        window.location = '/Data/DataSheet/' + month + '/' + year;
+        var action = $('form').attr('action');
+        window.location = '/Data/' + action + '/' + month + '/' + year;
     }
 
     function init() {

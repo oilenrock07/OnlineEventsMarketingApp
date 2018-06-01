@@ -41,5 +41,18 @@ namespace OnlineEventsMarketingApp.Controllers
 
             return View(viewModel);
         }
+
+        [Authorize(Roles = "Admin")]
+        public ActionResult MonthlyTagsRun(int? year = null)
+        {
+            var viewModel = new MonthlyTagRunViewModel
+            {
+                Year = year ?? DateTime.Now.Year,
+                Years = MonthYearHelper.GetYearList()
+            };
+
+            viewModel.MonthlyConsultations = _dataSheetService.GetMonthlyConsultationReport(viewModel.Year);
+            return View(viewModel);
+        }
     }
 }

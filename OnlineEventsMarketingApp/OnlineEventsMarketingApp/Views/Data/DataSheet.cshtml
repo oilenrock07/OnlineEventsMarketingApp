@@ -1,7 +1,10 @@
-﻿@model OnlineEventsMarketingApp.Models.Data.DataSheetViewModel
+﻿@using OnlineEventsMarketingApp.Common.Constants
+@model OnlineEventsMarketingApp.Models.Data.DataSheetViewModel
 @{
     ViewBag.Title = "Data Sheet";
     ViewBag.Container = "container-fluid";
+    var inHouse = Constants.INHOUSE.ToLower();
+    var online = Constants.ONLINE.ToLower();
 }
 
 <h2>Data Sheet</h2>
@@ -49,7 +52,7 @@
             <tr>
                 <th>ID</th>
                 <th>DIS</th>
-                <th>TE</th>
+                <th>TE (TM Code)</th>
                 <th>TM</th>
                 <th>Area</th>
                 <th>In House</th>
@@ -97,7 +100,7 @@
                     <td data-bind="text: Area"></td>
                     <!-- /ko -->
                     <!-- ko if: $root.isAdmin == 'True' -->
-                    <td data-bind="style: {backgroundColor: (InHouse().toLowerCase() === 'in house' || InHouse().toLowerCase() === 'online')  ? '' : '#f8d7da'}">
+                    <td data-bind="style: {backgroundColor: (InHouse().toLowerCase() === '@inHouse' || InHouse().toLowerCase() === '@online')  ? '' : '#f8d7da'}">
                         <input type="text" class="form-control" data-bind="value: InHouse" />
                     </td>
                     <!-- /ko -->

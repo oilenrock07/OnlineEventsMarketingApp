@@ -213,10 +213,12 @@
     <Compile Include="Interfaces\IPaginationService.cs" />
     <Compile Include="Models\Accounts\UserListViewModel.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\Data\NewUserDataSheetViewModel.cs" />
     <Compile Include="Models\Data\DataSheetViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\PaginationModel.cs" />
+    <Compile Include="Models\Reports\MonthlyTagRunViewModel.cs" />
     <Compile Include="Models\Reports\WeeklyTagRunViewModel.cs" />
     <Compile Include="Models\Settings\TagCreateViewModel.cs" />
     <Compile Include="Models\Settings\TagListViewModel.cs" />
@@ -318,6 +320,7 @@
     <Content Include="Views\Report\WeeklyTagsRun.cshtml" />
     <Content Include="Views\Report\_WeeklyTagReport.cshtml" />
     <Content Include="Views\Report\_WeeklyInhouseSummary.cshtml" />
+    <Content Include="Views\Data\NewUserMTDDataSheet.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

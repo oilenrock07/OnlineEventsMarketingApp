@@ -20,15 +20,15 @@ namespace OnlineEventsMarketingApp.Controllers
     public class DataController : Controller
     {
         private readonly IRepository<DataSheet> _dataSheetRepository;
-        private readonly ITagService _tagService;
+        private readonly IRepository<NewUserMTD> _newUserMTdRepository;
         private readonly IDataSheetService _dataSheetService;
         private readonly IUnitOfWork _unitOfWork;
 
-        public DataController(IUnitOfWork unitOfWork, IDataSheetService dataSheetService, ITagService tagService, IRepository<DataSheet> dataSheetRepository)
+        public DataController(IUnitOfWork unitOfWork, IDataSheetService dataSheetService, IRepository<NewUserMTD> newUserMTdRepository, IRepository<DataSheet> dataSheetRepository)
         {
             _unitOfWork = unitOfWork;
-            _tagService = tagService;
             _dataSheetService = dataSheetService;
+            _newUserMTdRepository = newUserMTdRepository;
             _dataSheetRepository = dataSheetRepository;
         }
 
@@ -121,7 +121,57 @@ namespace OnlineEventsMarketingApp.Controllers
             return Json("success");
         }
 
+        [Authorize]
+        public ActionResult NewUserMTDDataSheet(int? month = null, int ? year = null)
+        {
+            var now = DateTime.Now;
+            var m = month ?? now.Month;
+            var y = year ?? now.Year;
 
+            var datasheet = _newUserMTdRepository.Find(x => x.Month == m && x.Year == y).ToList();
+            var viewModel = new NewUserDataSheetViewModel
+            {
+                Year = y,
+                Month = m,
+                DataSheets = datasheet,
+                Years = MonthYearHelper.GetYearList(),                
+                Months = MonthYearHelper.GetMonthList()                
+            };
+            return View(viewModel);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult NewUserMTDDataSheet(int month, int year, HttpPostedFileBase file)
+        {
+            if (file != null && file.ContentLength > 0)
+            {
+                if (file.FileName.EndsWith(".csv"))
+                {
+                    using (var stream = file.InputStream)
+                    {
+                        using (var csvTable = new DataTable())
+                        {
+                            using (var reader = new CsvReader(new StreamReader(stream), true))
+                            {
+                                csvTable.Load(reader);
+                                _dataSheetService.UploadDataSheet(month, year, csvTable);
+                            }
+                        }
+                    }
+                }
+            }
+
+            TempData["Message"] = "New User MTD Datasheet has been successfully uploaded";
+            var viewModel = new DataSheetViewModel
+            {
+                Year = year,
+                Month = month,
+                Years = MonthYearHelper.GetYearList(),
+                Months = MonthYearHelper.GetMonthList()
+            };
+            return View(viewModel);
+        }
 
         public void ExportToExcel(int month, int year)
         {
