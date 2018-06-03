@@ -10,8 +10,10 @@ namespace OnlineEventsMarketingApp.Services.Interfaces
         void UploadDataSheet(int month, int year, DataTable table);
         void UploadNewUserMTDDataSheet(int year, DataTable table);
         IEnumerable<DataSheet> GetDataSheet(int month, int year);
+        IEnumerable<MonthlyRunsCountDTO> GetMonthlyRunsCount(int year);
         IEnumerable<WeeklyReportDTO> GetWeeklyReport(int month, int year);
         IEnumerable<WeeklyInhouseSummaryDTO> GetWeeklyInHouseSummary(int month, int year);
+        IEnumerable<NewUserMTD> GetMonthlyNewUserReport(int year);
         IEnumerable<MonthlyConsultationACTDTO> GetMonthlyConsultationReport(int year);
     }
 }

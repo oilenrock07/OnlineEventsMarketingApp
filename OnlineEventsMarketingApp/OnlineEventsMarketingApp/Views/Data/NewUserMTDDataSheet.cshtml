@@ -39,8 +39,10 @@
             </tr>
             @foreach (var item in Model.DataSheets)
             {
-                <td>@item.Inhouse</td>
-                <td>@item.ActualCount</td>
+                <tr>
+                    <td>@item.Inhouse</td>
+                    <td>@item.ActualCount</td>
+                </tr>
             }
         </table>
     </div>

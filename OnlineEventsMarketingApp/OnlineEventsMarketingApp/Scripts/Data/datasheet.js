@@ -10,6 +10,7 @@
         var answer = confirm("Are you sure you want to submit this new datasheet? This will delete the existing one and replaced by this one.");
         if (!answer) {
             e.preventDefault();
+            return;
         }
         showLoading();
     }

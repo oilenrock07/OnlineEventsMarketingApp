@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataTransferObjects\MonthlyConsultationACTDTO.cs" />
+    <Compile Include="DataTransferObjects\MonthlyRunsCountDTO.cs" />
     <Compile Include="DataTransferObjects\TagReportDTO.cs" />
     <Compile Include="DataTransferObjects\UserDTO.cs" />
     <Compile Include="DataTransferObjects\WeeklyInhouseSummaryDTO.cs" />

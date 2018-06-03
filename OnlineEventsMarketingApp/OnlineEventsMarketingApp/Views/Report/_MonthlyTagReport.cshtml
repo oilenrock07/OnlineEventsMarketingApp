@@ -1,0 +1,36 @@
+﻿@model IEnumerable<OnlineEventsMarketingApp.Models.Reports.MonthlyReportData>
+
+<table class="table t1 table-responsive table-striped">
+    <tr>
+        <th colspan="2" class="border-right"></th>
+        <th colspan="3" class="border-right">
+            Consultation
+        </th>
+        <th colspan="3">
+            NU
+        </th>
+    </tr>
+    <tr>
+        <th>Month</th>
+        <th class="border-right"># Of Runs</th>
+        <th>TGT</th>
+        <th>ACT</th>
+        <th class="border-right" width="150">ACT vs TCT %</th>
+        <th>TGT</th>
+        <th>ACT</th>
+        <th>ACT vs TGT %</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Month</td>
+            <td class="border-right">@item.NoOfRuns</td>
+            <td>@item.ConsultationTGT</td>
+            <td>@item.ConsultationACT</td>
+            <td class="border-right">@item.ConsultationACTVsTGT</td>
+            <td>@item.NUTGT</td>
+            <td>@item.NUACT</td>
+            <td>@item.NUACTVsTGT</td>
+        </tr>
+    }
+</table>

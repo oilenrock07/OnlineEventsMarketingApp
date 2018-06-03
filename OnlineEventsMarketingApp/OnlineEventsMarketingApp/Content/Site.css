@@ -249,3 +249,7 @@ body.loading {
 body.loading .loading-modal {
     display: block;
 }
+
+.border-right {
+    border-right: 1px dotted gray;
+}

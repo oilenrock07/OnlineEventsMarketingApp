@@ -218,6 +218,7 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\PaginationModel.cs" />
+    <Compile Include="Models\Reports\MonthlyReportData.cs" />
     <Compile Include="Models\Reports\MonthlyTagRunViewModel.cs" />
     <Compile Include="Models\Reports\WeeklyTagRunViewModel.cs" />
     <Compile Include="Models\Settings\TagCreateViewModel.cs" />
@@ -265,6 +266,7 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\pagination.js" />
+    <Content Include="Scripts\Reports\monthlyreport.js" />
     <Content Include="Scripts\Reports\weeklyreport.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
@@ -321,6 +323,8 @@
     <Content Include="Views\Report\_WeeklyTagReport.cshtml" />
     <Content Include="Views\Report\_WeeklyInhouseSummary.cshtml" />
     <Content Include="Views\Data\NewUserMTDDataSheet.cshtml" />
+    <Content Include="Views\Report\MonthlyTagsRun.cshtml" />
+    <Content Include="Views\Report\_MonthlyTagReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,0 +1,33 @@
+﻿@model OnlineEventsMarketingApp.Models.Reports.MonthlyTagRunViewModel
+
+@{
+    ViewBag.Title = "Monthly Tags Run";
+}
+
+<h2>Monthly Tags Run</h2>
+
+<div class="row">
+    <div class="col-xs-12 col-sm-3 t1 pull-right">
+        @Html.DropDownListFor(m => m.Year, Model.Years, new { @class = "form-control js-month t1" })
+    </div>
+</div>
+
+<div class="row">
+    <h2>Online RNDS</h2>
+    @Html.Partial("_MonthlyTagReport", Model.OnlineMonthlyReport)
+</div>
+
+<div class="row">
+    <h2>Inhouse</h2>
+    @Html.Partial("_MonthlyTagReport", Model.InhouseMonthlyReport)
+</div>
+
+
+@section scripts
+{
+    <script type="text/javascript" src="~/Scripts/Reports/weeklyreport.js"></script>
+}
+
+
+
+

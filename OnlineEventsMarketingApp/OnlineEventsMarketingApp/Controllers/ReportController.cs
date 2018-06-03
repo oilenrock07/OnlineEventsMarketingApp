@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using MoreLinq;
@@ -6,6 +7,7 @@ using OnlineEventsMarketingApp.Entities;
 using OnlineEventsMarketingApp.Helpers;
 using OnlineEventsMarketingApp.Infrastructure.Interfaces;
 using OnlineEventsMarketingApp.Models.Reports;
+using OnlineEventsMarketingApp.Services.DataTransferObjects;
 using OnlineEventsMarketingApp.Services.Interfaces;
 
 namespace OnlineEventsMarketingApp.Controllers
@@ -51,8 +53,56 @@ namespace OnlineEventsMarketingApp.Controllers
                 Years = MonthYearHelper.GetYearList()
             };
 
-            viewModel.MonthlyConsultations = _dataSheetService.GetMonthlyConsultationReport(viewModel.Year);
+            var monthlyRunsCount = _dataSheetService.GetMonthlyRunsCount(viewModel.Year);
+            var monthlyConsultations = _dataSheetService.GetMonthlyConsultationReport(viewModel.Year);
+            var monthlyNewUsers = _dataSheetService.GetMonthlyNewUserReport(viewModel.Year);
+
+            var onlineList = new List<MonthlyReportData>();
+            var inHouseList = new List<MonthlyReportData>();
+            foreach (var month in MonthYearHelper.GetMonths())
+            {
+                //inhouse
+                onlineList.Add(new MonthlyReportData
+                {
+                    Month = month.Item2,
+                    Inhouse = Common.Constants.Constants.INHOUSE,
+                    NoOfRuns = GetMonthlyRunsCount(monthlyRunsCount, month.Item1, Common.Constants.Constants.INHOUSE),
+                    ConsultationACT = GetMonthlyConsultationACTCount(monthlyConsultations, month.Item1, Common.Constants.Constants.INHOUSE),
+                    NUTGT = GetMonthlyNewUserCount(monthlyNewUsers, month.Item1, Common.Constants.Constants.INHOUSE)
+                });
+
+                //online
+                inHouseList.Add(new MonthlyReportData
+                {
+                    Month = month.Item2,
+                    Inhouse = Common.Constants.Constants.INHOUSE,
+                    NoOfRuns = GetMonthlyRunsCount(monthlyRunsCount, month.Item1, Common.Constants.Constants.ONLINE),
+                    ConsultationACT = GetMonthlyConsultationACTCount(monthlyConsultations, month.Item1, Common.Constants.Constants.ONLINE),
+                    NUTGT = GetMonthlyNewUserCount(monthlyNewUsers, month.Item1, Common.Constants.Constants.ONLINE)
+                });
+            }
+
+            viewModel.InhouseMonthlyReport = inHouseList;
+            viewModel.OnlineMonthlyReport = onlineList;
             return View(viewModel);
+        }
+
+        private int GetMonthlyRunsCount(IEnumerable<MonthlyRunsCountDTO> monthlyRunsCount, int month, string type)
+        {
+            var runsCount = monthlyRunsCount.FirstOrDefault(x => x.Month == month && x.InHouse == type);
+            return runsCount != null ? runsCount.Count : 0;
+        }
+
+        private int GetMonthlyConsultationACTCount(IEnumerable<MonthlyConsultationACTDTO> monthlyConsultationCount, int month, string type)
+        {
+            var consultationCount = monthlyConsultationCount.FirstOrDefault(x => x.Month == month && x.Inhouse == type);
+            return consultationCount != null ? consultationCount.ACT : 0;
+        }
+
+        private int GetMonthlyNewUserCount(IEnumerable<NewUserMTD> monthlyNewUserCount, int month, string type)
+        {
+            var newUserCount = monthlyNewUserCount.FirstOrDefault(x => x.Month == month && x.Inhouse == type);
+            return newUserCount != null ? newUserCount.ActualCount : 0;
         }
     }
 }

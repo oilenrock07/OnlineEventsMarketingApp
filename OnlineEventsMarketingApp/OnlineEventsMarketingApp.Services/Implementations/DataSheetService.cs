@@ -52,17 +52,17 @@ namespace OnlineEventsMarketingApp.Services.Implementations
 
                     var data = new DataSheet
                     {
-                        DIS = row["DIS"].ToInt(),
-                        TE = row["TE"].ToInt(),
+                        DIS = row["DISTID"].ToInt(),
+                        TE = row["TERRID"].ToInt(),
                         TM = row["TM"].ToString(),
-                        Area = row["Area"].ToString(),
-                        InHouse = row["InHouse"].ToString().ToUpper(),
+                        Area = row["AREA"].ToString(),
+                        InHouse = row["In House"].ToString().ToUpper(),
                         Rnd = row["RND"].ToString(),
                         Date = date,
-                        NewUsers = row["New Users"].ToInt(),
-                        ExistingUsers = row["Existing Users"].ToInt(),
-                        Status = row["Status"].ToString().ToUpper(),
-                        NoOfPatients = row["No Of Patients"].ToInt(),
+                        NewUsers = row["New User"].ToInt(),
+                        ExistingUsers = row["Existing User"].ToInt(),
+                        Status = row["STATUS"].ToString().ToUpper(),
+                        NoOfPatients = row["# of PATIENTS"].ToInt(),
                         TagId = tag == null ? default(int) : tag.TagId
                     };
 
@@ -82,21 +82,20 @@ namespace OnlineEventsMarketingApp.Services.Implementations
             var startDate = new DateTime(year, 1, 1);
             var endDate = startDate.AddYears(1);
 
-            var datasheet = _dataSheetRepository.Find(x => x.Date >= startDate && x.Date <= endDate && x.Status == "RUN")//.ToList();
+            var datasheet = _dataSheetRepository.Find(x => x.Date >= startDate && x.Date <= endDate && x.Status == "RUN")
                             .Select(x => new
                              {
-                                 x.Date,
                                  x.InHouse,
                                  x.TE
-                             }).ToList();
+                             }).GroupBy(x => new {x.InHouse, x.TE}).ToList();
 
             if (table.Rows.Count > 0)
             {
                 var result = (from row in table.AsEnumerable()
-                             join data in datasheet on row.Field<string>("TM CODE") equals data.TE.ToString()
+                             join data in datasheet on row.Field<string>("TM CODE") equals data.Key.TE.ToString()
                              where row.Field<string>("BRAND") == Constants.BRAND_NEPROVANILA && row.Field<string>("FIRST USE") == "YES" &&
                                    row["Date"].ToDateTime() >= startDate && row["Date"].ToDateTime() < endDate
-                              group row by new { data.Date.Month, data.Date.Year, data.InHouse} into g
+                              group row by new { row["Date"].ToDateTime().Month, row["Date"].ToDateTime().Year, data.Key.InHouse} into g
                              select new NewUserMTD
                              {
                                  Inhouse = g.Key.InHouse,
@@ -126,14 +125,32 @@ namespace OnlineEventsMarketingApp.Services.Implementations
 
         public IEnumerable<MonthlyConsultationACTDTO> GetMonthlyConsultationReport(int year)
         {
-            var report = _dataSheetRepository.Find(x => x.Date.Year == year && x.Status == "RUN").GroupBy(x => x.Date.Month)
+            var report = _dataSheetRepository.Find(x => x.Date.Year == year && x.Status == "RUN").GroupBy(x => new { x.Date.Month, x.InHouse})
                 .Select(x => new MonthlyConsultationACTDTO
                 {
-                    Month = x.Key,
+                    Inhouse = x.Key.InHouse,
+                    Month = x.Key.Month,
                     ACT = x.Sum(y => y.NewUsers + y.ExistingUsers)
                 }).ToList();
 
             return report;
+        }
+
+        public IEnumerable<NewUserMTD> GetMonthlyNewUserReport(int year)
+        {
+            return _newUserMtdRepository.Find(x => x.Year == year).ToList();
+        }
+
+        public IEnumerable<MonthlyRunsCountDTO> GetMonthlyRunsCount(int year)
+        {
+            return _dataSheetRepository.Find(x => x.Date.Year == year && x.Status == "RUN")
+                   .GroupBy(x => new { x.Date.Month, x.InHouse})
+                   .Select(x => new MonthlyRunsCountDTO
+                   {
+                       InHouse = x.Key.InHouse,
+                       Month = x.Key.Month,
+                       Count = x.Count()
+                   }).ToList();
         }
 
         public IEnumerable<WeeklyReportDTO> GetWeeklyReport(int month, int year)
