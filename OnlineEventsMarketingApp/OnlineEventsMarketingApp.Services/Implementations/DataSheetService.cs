@@ -189,9 +189,9 @@ namespace OnlineEventsMarketingApp.Services.Implementations
                             {
                                 g.Key.InHouse,
                                 g.Key.TE
-                            }).ToList();
+                            });
 
-            return (from newUser in query.ToList()
+            return (from newUser in query
                     join data in datasheet on newUser.TMCode equals data.TE
                     group newUser by new { newUser.Month, newUser.Year, data.InHouse } into g
                     select new NewUserMTDDTO
