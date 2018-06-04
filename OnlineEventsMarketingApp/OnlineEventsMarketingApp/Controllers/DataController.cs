@@ -99,7 +99,12 @@ namespace OnlineEventsMarketingApp.Controllers
         [HttpPost]
         public JsonResult PostDataSheetChanges(string sheet)
         {
-            var datasheet = JsonConvert.DeserializeObject<IEnumerable<DataSheet>>(sheet);
+            var settings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                MissingMemberHandling = MissingMemberHandling.Ignore
+            };
+            var datasheet = JsonConvert.DeserializeObject<IEnumerable<DataSheet>>(sheet, settings);
             if (datasheet != null && datasheet.Any())
             {
                 var idsToEdit = datasheet.Select(x => x.DataSheetId);
@@ -138,7 +143,7 @@ namespace OnlineEventsMarketingApp.Controllers
             var m = month ?? now.Month;
             var y = year ?? now.Year;
 
-            var datasheet = _newUserMTdRepository.Find(x => x.Month == m && x.Year == y).ToList();
+            var datasheet = _dataSheetService.GetMonthlyNewUserReport(y, m).ToList();
             var viewModel = new NewUserDataSheetViewModel
             {
                 Year = y,

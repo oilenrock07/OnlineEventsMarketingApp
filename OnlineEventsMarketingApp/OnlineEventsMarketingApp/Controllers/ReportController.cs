@@ -99,9 +99,9 @@ namespace OnlineEventsMarketingApp.Controllers
             return consultationCount != null ? consultationCount.ACT : 0;
         }
 
-        private int GetMonthlyNewUserCount(IEnumerable<NewUserMTD> monthlyNewUserCount, int month, string type)
+        private int GetMonthlyNewUserCount(IEnumerable<NewUserMTDDTO> monthlyNewUserCount, int month, string type)
         {
-            var newUserCount = monthlyNewUserCount.FirstOrDefault(x => x.Month == month && x.Inhouse == type);
+            var newUserCount = monthlyNewUserCount.FirstOrDefault(x => x.Month == month && x.InHouse == type);
             return newUserCount != null ? newUserCount.ActualCount : 0;
         }
     }

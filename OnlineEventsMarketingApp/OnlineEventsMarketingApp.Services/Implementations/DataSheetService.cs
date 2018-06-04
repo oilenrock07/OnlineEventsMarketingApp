@@ -9,6 +9,7 @@ using OnlineEventsMarketingApp.Common.Extensions;
 using OnlineEventsMarketingApp.Common.Helpers;
 using OnlineEventsMarketingApp.Entities;
 using OnlineEventsMarketingApp.Infrastructure.Interfaces;
+//using OnlineEventsMarketingApp.Services.DataAccessObjects;
 using OnlineEventsMarketingApp.Services.DataTransferObjects;
 using OnlineEventsMarketingApp.Services.Interfaces;
 
@@ -82,37 +83,56 @@ namespace OnlineEventsMarketingApp.Services.Implementations
             var startDate = new DateTime(year, 1, 1);
             var endDate = startDate.AddYears(1);
 
-            var datasheet = _dataSheetRepository.Find(x => x.Date >= startDate && x.Date <= endDate && x.Status == "RUN")
-                            .Select(x => new
-                             {
-                                 x.InHouse,
-                                 x.TE
-                             }).GroupBy(x => new {x.InHouse, x.TE}).ToList();
+            var result = (from row in table.AsEnumerable()
+                         where row.Field<string>("BRAND") == Constants.BRAND_NEPROVANILA && row.Field<string>("FIRST USE") == "YES" &&
+                               row["Date"].ToDateTime() >= startDate && row["Date"].ToDateTime() < endDate
+                          select new NewUserMTD
+                          {
+                              Month = row["Date"].ToDateTime().Month,
+                              Year = row["Date"].ToDateTime().Year,
+                              TMCode = row["TM CODE"].ToInt()
+                          });
 
-            if (table.Rows.Count > 0)
+            if (result.Any())
             {
-                var result = (from row in table.AsEnumerable()
-                             join data in datasheet on row.Field<string>("TM CODE") equals data.Key.TE.ToString()
-                             where row.Field<string>("BRAND") == Constants.BRAND_NEPROVANILA && row.Field<string>("FIRST USE") == "YES" &&
-                                   row["Date"].ToDateTime() >= startDate && row["Date"].ToDateTime() < endDate
-                              group row by new { row["Date"].ToDateTime().Month, row["Date"].ToDateTime().Year, data.Key.InHouse} into g
-                             select new NewUserMTD
-                             {
-                                 Inhouse = g.Key.InHouse,
-                                 Month = g.Key.Month,
-                                 Year = g.Key.Year,
-                                 ActualCount = g.Count()
-                             }).ToList();
-
-                if (result.Any())
-                {
-                    foreach (var row in result)
-                        _newUserMtdRepository.Add(row);
-                }
+                foreach (var item in result)
+                    _newUserMtdRepository.Add(item);
             }
 
             _unitOfWork.ExecuteSqlCommand(string.Format("DELETE FROM NewUserMTDs WHERE year = '{0}'", year));
             _unitOfWork.Commit();
+
+            //var datasheet = _dataSheetRepository.Find(x => x.Date >= startDate && x.Date <= endDate && x.Status == "RUN")
+            //                .Select(x => new
+            //                 {
+            //                     x.InHouse,
+            //                     x.TE
+            //                 }).GroupBy(x => new {x.InHouse, x.TE}).ToList();
+
+            //if (table.Rows.Count > 0)
+            //{
+            //    var result = (from row in table.AsEnumerable()
+            //                 join data in datasheet on row.Field<string>("TM CODE") equals data.Key.TE.ToString()
+            //                 where row.Field<string>("BRAND") == Constants.BRAND_NEPROVANILA && row.Field<string>("FIRST USE") == "YES" &&
+            //                       row["Date"].ToDateTime() >= startDate && row["Date"].ToDateTime() < endDate
+            //                  group row by new { row["Date"].ToDateTime().Month, row["Date"].ToDateTime().Year, data.Key.InHouse} into g
+            //                 select new NewUserMTD
+            //                 {
+            //                     Inhouse = g.Key.InHouse,
+            //                     Month = g.Key.Month,
+            //                     Year = g.Key.Year,
+            //                     ActualCount = g.Count()
+            //                 }).ToList();
+
+            //    if (result.Any())
+            //    {
+            //        foreach (var row in result)
+            //            _newUserMtdRepository.Add(row);
+            //    }
+            //}
+
+            //_unitOfWork.ExecuteSqlCommand(string.Format("DELETE FROM NewUserMTDs WHERE year = '{0}'", year));
+            //_unitOfWork.Commit();
         }
 
         public IEnumerable<DataSheet> GetDataSheet(int month, int year)
@@ -136,9 +156,51 @@ namespace OnlineEventsMarketingApp.Services.Implementations
             return report;
         }
 
-        public IEnumerable<NewUserMTD> GetMonthlyNewUserReport(int year)
+        public IEnumerable<NewUserMTDDTO> GetMonthlyNewUserReport(int year)
         {
-            return _newUserMtdRepository.Find(x => x.Year == year).ToList();
+            var startDate = new DateTime(year, 1, 1);
+            var endDate = startDate.AddYears(1);
+
+            var query = _newUserMtdRepository.Find(x => x.Year == year);
+            return GetMonthlyNewUserReport(startDate, endDate, query);
+        }
+
+        public IEnumerable<NewUserMTDDTO> GetMonthlyNewUserReport(int year, int month)
+        {
+            var startDate = new DateTime(year, month, 1);
+            var endDate = startDate.AddMonths(1);
+
+            var query = _newUserMtdRepository.Find(x => x.Year == year && x.Month == month && x.TMCode == 6432);
+            return GetMonthlyNewUserReport(startDate, endDate, query);
+        }
+
+        private IEnumerable<NewUserMTDDTO> GetMonthlyNewUserReport(DateTime startDate, DateTime endDate, IQueryable<NewUserMTD> query)
+        {
+            //var datasheet = _dataSheetRepository.Find(x => x.Date >= startDate && x.Date < endDate && x.Status == "RUN")
+            //       .Select(x => new 
+            //       {
+            //           x.InHouse,
+            //           x.TE
+            //       }).GroupBy(x => new { x.InHouse, x.TE }).ToList();
+
+            var datasheet = (from sheet in _dataSheetRepository.Find(x => x.Date >= startDate && x.Date < endDate && x.Status == "RUN")
+                            group sheet by new { sheet.InHouse, sheet.TE} into g
+                            select new
+                            {
+                                g.Key.InHouse,
+                                g.Key.TE
+                            }).ToList();
+
+            return (from newUser in query.ToList()
+                    join data in datasheet on newUser.TMCode equals data.TE
+                    group newUser by new { newUser.Month, newUser.Year, data.InHouse } into g
+                    select new NewUserMTDDTO
+                    {
+                        InHouse = g.Key.InHouse,
+                        Month = g.Key.Month,
+                        Year = g.Key.Year,
+                        ActualCount = g.Count()
+                    }).ToList();
         }
 
         public IEnumerable<MonthlyRunsCountDTO> GetMonthlyRunsCount(int year)

@@ -13,7 +13,8 @@ namespace OnlineEventsMarketingApp.Services.Interfaces
         IEnumerable<MonthlyRunsCountDTO> GetMonthlyRunsCount(int year);
         IEnumerable<WeeklyReportDTO> GetWeeklyReport(int month, int year);
         IEnumerable<WeeklyInhouseSummaryDTO> GetWeeklyInHouseSummary(int month, int year);
-        IEnumerable<NewUserMTD> GetMonthlyNewUserReport(int year);
+        IEnumerable<NewUserMTDDTO> GetMonthlyNewUserReport(int year);
+        IEnumerable<NewUserMTDDTO> GetMonthlyNewUserReport(int year, int month);
         IEnumerable<MonthlyConsultationACTDTO> GetMonthlyConsultationReport(int year);
     }
 }

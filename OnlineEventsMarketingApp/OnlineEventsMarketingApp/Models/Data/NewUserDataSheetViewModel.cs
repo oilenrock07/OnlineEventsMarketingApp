@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
-using OnlineEventsMarketingApp.Entities;
+using OnlineEventsMarketingApp.Services.DataTransferObjects;
 
 namespace OnlineEventsMarketingApp.Models.Data
 {
@@ -10,7 +10,7 @@ namespace OnlineEventsMarketingApp.Models.Data
         [DataType(DataType.Upload)]
         public string File { get; set; }
 
-        public IEnumerable<NewUserMTD> DataSheets { get; set; }
+        public IEnumerable<NewUserMTDDTO> DataSheets { get; set; }
 
         public int Year { get; set; }
         public IEnumerable<SelectListItem> Years { get; set; }
