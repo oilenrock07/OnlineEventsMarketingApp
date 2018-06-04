@@ -238,7 +238,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="Images\Double Ring-1.6s-115px.gif" />
+    <Content Include="Images\Interwind-1s-200px.gif" />
     <Content Include="Images\logo.png" />
     <Content Include="Scripts\Account\userlist.js" />
     <Content Include="Scripts\app.js" />

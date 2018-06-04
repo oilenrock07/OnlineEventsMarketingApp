@@ -9,8 +9,9 @@
 
 <h2>Data Sheet</h2>
 
-@using (Html.BeginForm("DataSheet", "Data", FormMethod.Post, new { enctype = "multipart/form-data", location= "DataSheet", id="DateSheetForm" }))
+@using (Html.BeginForm("DataSheet", "Data", FormMethod.Post, new { enctype = "multipart/form-data", location = "DataSheet", id = "DateSheetForm" }))
 {
+    @Html.ValidationSummary()
     <div class="row">
         <div class="col-xs-12 col-md-6">
             <div class="col-md-6">
@@ -131,7 +132,7 @@
 </div>
 
 <div class="row">
-    <div class="col-md-12"><input type="button" value="Submit" class="btn btn-success" data-bind="click: submitChanges"/>
+    <div class="col-md-12"><input type="button" value="Submit" class="btn btn-success" data-bind="click: submitChanges, visible: datasheets().length > 0" />
     </div>
 </div>
 
@@ -158,13 +159,13 @@
                     type: 'POST',
                     url: "/Data/PostDataSheetChanges",
                     data: { sheet: ko.toJSON(self.datasheets()) },
-                    success: function (returnData) {
+                    success: function (returnData) {                        
+                        hideLoading();
                         alert('Datasheet has been successfully updated');
-                        hideLoading();
                     },
-                    error: function (err) {
-                        alert('Error submitting the data: ' + err);
+                    error: function (err) {                        
                         hideLoading();
+                        alert('Error submitting the data: ' + err);
                     }
                 });
             };

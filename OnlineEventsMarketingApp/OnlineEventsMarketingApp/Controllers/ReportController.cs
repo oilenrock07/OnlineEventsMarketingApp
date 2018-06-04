@@ -24,7 +24,7 @@ namespace OnlineEventsMarketingApp.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        public ActionResult WeeklyTagsRun(int? month = null, int? year = null)
+        public ActionResult WeeklyTagsRun(int? year = null, int? month= null)
         {
             var viewModel = new WeeklyTagRunViewModel
             {

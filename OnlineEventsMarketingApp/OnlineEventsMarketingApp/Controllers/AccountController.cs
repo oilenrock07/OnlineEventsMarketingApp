@@ -214,7 +214,7 @@ namespace OnlineEventsMarketingApp.Controllers
 
         //
         // GET: /Account/Register
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin")]
         public ActionResult Register()
         {
             var viewModel = new RegisterViewModel
@@ -228,7 +228,7 @@ namespace OnlineEventsMarketingApp.Controllers
         //
         // POST: /Account/Register
         [HttpPost]
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {

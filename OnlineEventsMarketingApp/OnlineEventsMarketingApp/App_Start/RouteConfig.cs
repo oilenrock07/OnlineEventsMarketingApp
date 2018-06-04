@@ -20,8 +20,14 @@ namespace OnlineEventsMarketingApp
                 );
 
             routes.MapRoute(
+                name: "ReportYearRoute",
+                url: "Data/{action}/{year}",
+                defaults: new { controller = "Report", action = "MonthlyTagsRun"}
+                );
+
+            routes.MapRoute(
                 name: "ReportsRoute",
-                url: "Report/{action}/{month}/{year}",
+                url: "Report/{action}/{year}/{month}",
                 defaults: new { controller = "Report", action = "WeeklyTagsRun", month = UrlParameter.Optional, year = UrlParameter.Optional }
                 );
 

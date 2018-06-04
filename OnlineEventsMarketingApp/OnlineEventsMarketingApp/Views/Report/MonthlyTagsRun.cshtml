@@ -8,7 +8,7 @@
 
 <div class="row">
     <div class="col-xs-12 col-sm-3 t1 pull-right">
-        @Html.DropDownListFor(m => m.Year, Model.Years, new { @class = "form-control js-month t1" })
+        @Html.DropDownListFor(m => m.Year, Model.Years, new { @class = "form-control js-year t1" })
     </div>
 </div>
 
@@ -25,7 +25,7 @@
 
 @section scripts
 {
-    <script type="text/javascript" src="~/Scripts/Reports/weeklyreport.js"></script>
+    <script type="text/javascript" src="~/Scripts/Reports/monthlyreport.js"></script>
 }
 
 

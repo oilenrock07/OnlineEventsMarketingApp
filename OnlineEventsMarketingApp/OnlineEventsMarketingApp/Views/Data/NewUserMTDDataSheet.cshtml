@@ -37,12 +37,15 @@
                 <th>Type</th>
                 <th>Actual New Users</th>
             </tr>
-            @foreach (var item in Model.DataSheets)
+            @if (Model.DataSheets != null)
             {
-                <tr>
-                    <td>@item.Inhouse</td>
-                    <td>@item.ActualCount</td>
-                </tr>
+                foreach (var item in Model.DataSheets)
+                {
+                    <tr>
+                        <td>@item.Inhouse</td>
+                        <td>@item.ActualCount</td>
+                    </tr>
+                }
             }
         </table>
     </div>

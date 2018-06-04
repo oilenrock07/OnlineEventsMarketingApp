@@ -9,6 +9,7 @@ using LumenWorks.Framework.IO.Csv;
 using Newtonsoft.Json;
 using OnlineEventsMarketingApp.Common.Enums;
 using OnlineEventsMarketingApp.Common.Extensions;
+using OnlineEventsMarketingApp.Common.Helpers;
 using OnlineEventsMarketingApp.Entities;
 using OnlineEventsMarketingApp.Helpers;
 using OnlineEventsMarketingApp.Infrastructure.Interfaces;
@@ -57,6 +58,14 @@ namespace OnlineEventsMarketingApp.Controllers
         [HttpPost]
         public ActionResult DataSheet(int month, int year, HttpPostedFileBase file)
         {
+            var viewModel = new DataSheetViewModel
+            {
+                Year = year,
+                Month = month,
+                Years = MonthYearHelper.GetYearList(),
+                Months = MonthYearHelper.GetMonthList()
+            };
+
             if (file != null && file.ContentLength > 0)
             {
                 if (file.FileName.EndsWith(".csv"))
@@ -68,6 +77,14 @@ namespace OnlineEventsMarketingApp.Controllers
                             using (var reader = new CsvReader(new StreamReader(stream), true))
                             {
                                 csvTable.Load(reader);
+
+                                var headers = new List<string> { "DISTID", "TERRID", "TM", "AREA", "In House", "RND", "Date", "New User", "Existing User", "STATUS", "# of PATIENTS" };
+                                if (!csvTable.IsHeaderValid(headers))
+                                {
+                                    ModelState.AddModelError("", String.Format("Uploaded file does not contain all the required headers: {0}", String.Join(",", headers)));
+                                    return View(viewModel);
+                                }
+                                    
                                 _dataSheetService.UploadDataSheet(month, year, csvTable);
                             }
                         }
@@ -75,14 +92,7 @@ namespace OnlineEventsMarketingApp.Controllers
                 }
             }
 
-            TempData["Message"] = "Datasheet has been successfully uploaded";
-            var viewModel = new DataSheetViewModel
-            {
-                Year = year,
-                Month = month,
-                Years = MonthYearHelper.GetYearList(),
-                Months = MonthYearHelper.GetMonthList()
-            };
+            //TempData["Message"] = "Datasheet has been successfully uploaded";
             return View(viewModel);
         }
 
@@ -144,6 +154,14 @@ namespace OnlineEventsMarketingApp.Controllers
         [HttpPost]
         public ActionResult NewUserMTDDataSheet(int month, int year, HttpPostedFileBase file)
         {
+            var viewModel = new NewUserDataSheetViewModel
+            {
+                Year = year,
+                Month = month,
+                Years = MonthYearHelper.GetYearList(),
+                Months = MonthYearHelper.GetMonthList()
+            };
+
             if (file != null && file.ContentLength > 0)
             {
                 if (file.FileName.EndsWith(".csv"))
@@ -155,6 +173,12 @@ namespace OnlineEventsMarketingApp.Controllers
                             using (var reader = new CsvReader(new StreamReader(stream), true))
                             {
                                 csvTable.Load(reader);
+                                var headers = new List<string> { "TM CODE", "BRAND", "Date", "FIRST USE"};
+                                if (!csvTable.IsHeaderValid(headers))
+                                {
+                                    ModelState.AddModelError("", String.Format("Uploaded file does not contain all the required headers: {0}", String.Join(",", headers)));
+                                    return View(viewModel);
+                                }
                                 _dataSheetService.UploadNewUserMTDDataSheet(year, csvTable);
                             }
                         }
@@ -162,7 +186,7 @@ namespace OnlineEventsMarketingApp.Controllers
                 }
             }
 
-            TempData["Message"] = "New User MTD Datasheet has been successfully uploaded";
+            //TempData["Message"] = "New User MTD Datasheet has been successfully uploaded";
             return RedirectToAction("NewUserMTDDataSheet", new { month, year});
         }
 
@@ -212,6 +236,6 @@ namespace OnlineEventsMarketingApp.Controllers
             }
 
             Export.ToExcel(Response, dt, fileName);
-        }
+        }        
     }
 }
