@@ -252,6 +252,7 @@
     <Content Include="fonts\fontawesome-webfont.ttf" />
     <Content Include="fonts\fontawesome-webfont.eot" />
     <Content Include="Scripts\datepicker.knockout.js" />
+    <None Include="Properties\PublishProfiles\online-eventscorp.com - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\Data\datasheet.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />

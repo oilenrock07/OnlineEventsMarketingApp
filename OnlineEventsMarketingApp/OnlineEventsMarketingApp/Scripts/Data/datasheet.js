@@ -23,7 +23,7 @@
         var month = $('#Month').val();
         var year = $('#Year').val();
         var action = $('#DateSheetForm').attr('location');
-        window.location = '/Data/' + action + '/' + month + '/' + year;
+        window.location = action + month + '/' + year; //'/Data/' + action + '/' + month + '/' + year;
     }
 
     function init() {
