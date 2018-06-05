@@ -9,7 +9,6 @@ using OnlineEventsMarketingApp.Common.Extensions;
 using OnlineEventsMarketingApp.Common.Helpers;
 using OnlineEventsMarketingApp.Entities;
 using OnlineEventsMarketingApp.Infrastructure.Interfaces;
-//using OnlineEventsMarketingApp.Services.DataAccessObjects;
 using OnlineEventsMarketingApp.Services.DataTransferObjects;
 using OnlineEventsMarketingApp.Services.Interfaces;
 
@@ -176,13 +175,6 @@ namespace OnlineEventsMarketingApp.Services.Implementations
 
         private IEnumerable<NewUserMTDDTO> GetMonthlyNewUserReport(DateTime startDate, DateTime endDate, IQueryable<NewUserMTD> query)
         {
-            //var datasheet = _dataSheetRepository.Find(x => x.Date >= startDate && x.Date < endDate && x.Status == "RUN")
-            //       .Select(x => new 
-            //       {
-            //           x.InHouse,
-            //           x.TE
-            //       }).GroupBy(x => new { x.InHouse, x.TE }).ToList();
-
             var datasheet = (from sheet in _dataSheetRepository.Find(x => x.Date >= startDate && x.Date < endDate && x.Status == "RUN")
                             group sheet by new { sheet.InHouse, sheet.TE} into g
                             select new

@@ -253,3 +253,7 @@ body.loading .loading-modal {
 .border-right {
     border-right: 1px dotted gray;
 }
+
+.home li {
+    margin-left: -25px;   
+}
