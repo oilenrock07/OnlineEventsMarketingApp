@@ -93,6 +93,9 @@ namespace OnlineEventsMarketingApp.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
+            if (String.IsNullOrEmpty(returnUrl) || !returnUrl.Contains(Common.Constants.Constants.SUBDOMAIN))
+                returnUrl = "http://184.173.179.109/plesk-site-preview/www.online-eventscorp.com/184.173.179.109/Home";
+
             var user = _userRepository.Find(x => x.Email == model.Email && !x.IsDeleted).FirstOrDefault();
             if (user != null && UserManager.PasswordHasher.VerifyHashedPassword(user.PasswordHash, model.Password) == PasswordVerificationResult.Success)
             {
