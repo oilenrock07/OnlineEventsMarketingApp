@@ -93,7 +93,12 @@ namespace OnlineEventsMarketingApp.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var user = _userRepository.Find(x => x.Email == model.Email && !x.IsDeleted).FirstOrDefault();
+            var user = _userRepository.Find(x => x.Email == model.Email).FirstOrDefault();
+            if (user != null && user.IsDeleted)
+            {
+                ModelState.AddModelError("", "User is disabled");
+                return View(model);
+            }
             if (user != null && UserManager.PasswordHasher.VerifyHashedPassword(user.PasswordHash, model.Password) == PasswordVerificationResult.Success)
             {
                 var applicationUser = await UserManager.FindByIdAsync(user.Id);

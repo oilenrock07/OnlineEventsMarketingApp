@@ -9,6 +9,7 @@ namespace OnlineEventsMarketingApp.Entities.Users
         [Key]
         public string Id { get; set; }
 
+        [StringLength(256)]
         public string Email { get; set; }
 
         [StringLength(250)]
