@@ -10,7 +10,7 @@
     function handleYearMonthChange() {
         var month = $('.js-month').val();
         var year = $('.js-year').val();
-        window.location = subdomain + '/Settings/Tags/' + month + '/' + year;
+        window.location = '/Settings/Tags/' + month + '/' + year;
     }
 
     function init() {

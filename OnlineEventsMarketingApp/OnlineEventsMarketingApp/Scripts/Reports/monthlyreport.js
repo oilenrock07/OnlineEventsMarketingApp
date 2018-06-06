@@ -2,7 +2,7 @@
 
     function handleYearMonthChange() {
         var year = $('.js-year').val();
-        window.location = subdomain + '/Report/MonthlyTagsRun/' + year;
+        window.location = '/Report/MonthlyTagsRun/' + year;
     }
 
     function init() {

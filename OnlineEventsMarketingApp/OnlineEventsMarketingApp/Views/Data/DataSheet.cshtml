@@ -9,7 +9,7 @@
 
 <h2>Data Sheet</h2>
 
-@using (Html.BeginForm("DataSheet", "Data", FormMethod.Post, new { enctype = "multipart/form-data", location = Constants.SUBDOMAIN + "/Data/DataSheet", id = "DateSheetForm" }))
+@using (Html.BeginForm("DataSheet", "Data", FormMethod.Post, new { enctype = "multipart/form-data", location = "DataSheet", id = "DateSheetForm" }))
 {
     @Html.ValidationSummary()
     <div class="row">
@@ -157,7 +157,7 @@
                 $.ajax({
                     dataType: "json",
                     type: 'POST',
-                    url: '@Constants.SUBDOMAIN' + '/Data/PostDataSheetChanges',//"/Data/PostDataSheetChanges",
+                    url: "/Data/PostDataSheetChanges",
                     data: { sheet: ko.toJSON(self.datasheets()) },
                     success: function (returnData) {                        
                         hideLoading();
@@ -194,7 +194,7 @@
             showLoading();
             $.ajax({
                 dataType: "json",
-                url: '@Constants.SUBDOMAIN' + "/Data/GetDataSheet", //"/Data/GetDataSheet",
+                url: "/Data/GetDataSheet",
                 data: args,
                 success: function (returnData) {
                     hideLoading();
