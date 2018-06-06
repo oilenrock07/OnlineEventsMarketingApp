@@ -95,6 +95,18 @@ namespace OnlineEventsMarketingApp.Controllers
                     return View(viewModel);
                 }
 
+                //check for overlap
+                var overlappedTags = _tagRepository.Find(x => !x.IsDeleted && x.Month == viewModel.Month && x.Year == viewModel.Year &&
+                                                         viewModel.StartDate <= x.EndDate && x.StartDate <= viewModel.EndDate);
+
+                if (overlappedTags != null)
+                {
+                    viewModel.Months = MonthYearHelper.GetMonthList();
+                    viewModel.Years = MonthYearHelper.GetYearList();
+                    ModelState.AddModelError("", "Date must not overlap");
+                    return View(viewModel);
+                }
+
                 var tag = viewModel.MapItem<Tag>();
                 _tagRepository.Add(tag);
                 _unitOfWork.Commit();
@@ -117,7 +129,8 @@ namespace OnlineEventsMarketingApp.Controllers
             var viewModel = tag.MapItem<TagCreateViewModel>();
             viewModel.Months = MonthYearHelper.GetMonthList();
             viewModel.Years = MonthYearHelper.GetYearList();
-
+            viewModel.Year = tag.Year;
+            viewModel.Month = tag.Month;
             return View(viewModel);
         }
 
@@ -132,6 +145,17 @@ namespace OnlineEventsMarketingApp.Controllers
                     viewModel.Months = MonthYearHelper.GetMonthList();
                     viewModel.Years = MonthYearHelper.GetYearList();
                     ModelState.AddModelError("", "End date must not be greater than Start Date");
+                    return View(viewModel);
+                }
+
+                var overlappedTags = _tagRepository.Find(x => !x.IsDeleted && x.Month == viewModel.Month && x.Year == viewModel.Year && x.TagId != viewModel.TagId &&
+                                         viewModel.StartDate <= x.EndDate && x.StartDate <= viewModel.EndDate);
+
+                if (overlappedTags != null)
+                {
+                    viewModel.Months = MonthYearHelper.GetMonthList();
+                    viewModel.Years = MonthYearHelper.GetYearList();
+                    ModelState.AddModelError("", "Date must not overlap");
                     return View(viewModel);
                 }
 
