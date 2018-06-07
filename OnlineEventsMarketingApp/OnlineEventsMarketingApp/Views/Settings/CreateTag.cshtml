@@ -44,14 +44,14 @@
         <div class="form-group">
             @Html.Label("Start Date", new { @class = "control-label col-md-2" })
             <div class="col-md-4">
-                @Html.DatePickerFor("StartDate", default(DateTime), new { @class = "form-control datepicker" })
+                @Html.DatePickerFor("StartDate", Model.StartDate == default(DateTime) ? default(DateTime) : Model.StartDate, new { @class = "form-control datepicker" })
                 @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">
             @Html.Label("End Date", new { @class = "control-label col-md-2" })
             <div class="col-md-4">
-                @Html.DatePickerFor("EndDate", default(DateTime), new { @class = "form-control datepicker" })
+                @Html.DatePickerFor("EndDate", Model.EndDate == default(DateTime) ? default(DateTime) : Model.EndDate, new { @class = "form-control datepicker" })
                 @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -65,7 +65,7 @@
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Back to List", "Tags")
 </div>
 
 @section scripts

@@ -32,29 +32,34 @@
         <th></th>
     </tr>
 
-    @foreach (var item in Model.Users)
+    @if (Model != null && Model.Users != null)
     {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.User.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.User.LastName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Role)
-            </td>
-            @*<td>
-                @Html.DisplayFor(modelItem => item.IsEnabled)
-            </td>*@
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.User.Id }) |
-                @Html.ActionLink("Delete", "Delete", new {id = item.User.Id}, new {@class = "js-userDelete"}) |
-                @Html.ActionLink("Reset Password", "Reset", new { id = item.User.Id })
-            </td>
-        </tr>
-    }
+        foreach (var item in Model.Users.OrderBy(x => x.User.IsDeleted))
+        {
+            var deleteText = item.IsEnabled ? "Disable" : "Enable";
+            var deleteAction = item.IsEnabled ? "Delete" : "Enable";
 
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Role)
+                </td>
+                @*<td>
+                        @Html.DisplayFor(modelItem => item.IsEnabled)
+                    </td>*@
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.User.Id }) |
+                    @Html.ActionLink(deleteText, deleteAction, new { id = item.User.Id }, new { @class = "js-userDelete" }) |
+                    @Html.ActionLink("Reset Password", "Reset", new { id = item.User.Id })
+                </td>
+            </tr>
+        }
+    }
 </table>
 
 

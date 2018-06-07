@@ -7,6 +7,7 @@ namespace OnlineEventsMarketingApp.Entities
     {
         [Key]
         public int TagId { get; set; }
+        [Required]
         [StringLength(50)]
         public string TagName { get; set; }
         public int Year { get; set; }

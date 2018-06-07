@@ -208,10 +208,10 @@ td.variance-not-met {
 }
 
 .container-fluid {
-    padding-right:15px;
-    padding-left:15px;
-    margin-right:auto;
-    margin-left:auto;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
 }
 
 .datepicker {
@@ -225,35 +225,73 @@ td.variance-not-met {
    speak for themselves. Background we set to 80% white with
    our animation centered, and no-repeating */
 .loading-modal {
-    display:    none;
-    position:   fixed;
-    z-index:    1000;
-    top:        0;
-    left:       0;
-    height:     100%;
-    width:      100%;
-    background: rgba( 255, 255, 255, .8 ) 
-                url('../Images/Interwind-1s-200px.gif') 
-                50% 50% 
-                no-repeat;
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: rgba( 255, 255, 255, .8 ) url('../Images/Interwind-1s-200px.gif') 50% 50% no-repeat;
 }
 
 /* When the body has the loading class, we turn
    the scrollbar off with overflow:hidden */
 body.loading {
-    overflow: hidden;   
+    overflow: hidden;
 }
 
-/* Anytime the body has the loading class, our
+    /* Anytime the body has the loading class, our
    modal element will be visible */
-body.loading .loading-modal {
-    display: block;
-}
+    body.loading .loading-modal {
+        display: block;
+    }
 
 .border-right {
     border-right: 1px dotted gray;
 }
 
 .home li {
-    margin-left: -25px;   
+    margin-left: -25px;
+}
+
+.page-heading h1 {
+    margin-top: 0;
+    color: #fff;
+    font-family: pt sans caption,Helvetica,Arial,sans-serif;
+    font-weight: 700;
+}
+
+.page-heading {
+    margin: -16px -16px 30px -16px;
+    position: relative;
+    
+    padding: 30px 15px;
+    text-align: center;
+    color: rgba(255,255,255,.5);
+    background-color: #b84d45;
+    font-size: 1.25rem;
+    background-image: url(/images/bg.png);
+}
+
+@media (min-width: 768px) {
+    .page-heading h1 {
+        font-size: 5rem;
+        line-height: 1;
+    }
+}
+
+@media (min-width: 768px) {
+    .page-heading {
+        margin-left: -230px;
+        margin-right: -230px;
+        padding-top: 60px;
+        padding-bottom: 60px;
+        text-align: left;
+        font-size: 2rem;
+    }
+
+    .container-fluid {
+        padding-left: 215px;
+    }
 }

@@ -68,6 +68,7 @@ namespace OnlineEventsMarketingApp.Models
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]
+        [StringLength(256)]
         public string Email { get; set; }
 
         [Required]
@@ -82,9 +83,11 @@ namespace OnlineEventsMarketingApp.Models
         public string ConfirmPassword { get; set; }
 
         [Required]
+        [StringLength(50)]
         public string FirstName { get; set; }
 
         [Required]
+        [StringLength(50)]
         public string LastName { get; set; }
 
         public string RoleId { get; set; }

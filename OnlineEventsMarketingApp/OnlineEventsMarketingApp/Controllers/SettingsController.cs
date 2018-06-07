@@ -96,8 +96,8 @@ namespace OnlineEventsMarketingApp.Controllers
                 }
 
                 //check for overlap
-                var overlappedTags = _tagRepository.Find(x => !x.IsDeleted && x.Month == viewModel.Month && x.Year == viewModel.Year &&
-                                                         viewModel.StartDate <= x.EndDate && x.StartDate <= viewModel.EndDate);
+                var overlappedTags = _tagRepository.FirstOrDefault(x => !x.IsDeleted && x.Month == viewModel.Month && x.Year == viewModel.Year &&
+                                                                  viewModel.StartDate <= x.EndDate && x.StartDate <= viewModel.EndDate);
 
                 if (overlappedTags != null)
                 {
@@ -148,8 +148,8 @@ namespace OnlineEventsMarketingApp.Controllers
                     return View(viewModel);
                 }
 
-                var overlappedTags = _tagRepository.Find(x => !x.IsDeleted && x.Month == viewModel.Month && x.Year == viewModel.Year && x.TagId != viewModel.TagId &&
-                                         viewModel.StartDate <= x.EndDate && x.StartDate <= viewModel.EndDate);
+                var overlappedTags = _tagRepository.FirstOrDefault(x => !x.IsDeleted && x.Month == viewModel.Month && x.Year == viewModel.Year && x.TagId != viewModel.TagId &&
+                                                                    viewModel.StartDate <= x.EndDate && x.StartDate <= viewModel.EndDate);
 
                 if (overlappedTags != null)
                 {

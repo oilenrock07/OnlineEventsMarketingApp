@@ -528,6 +528,17 @@ namespace OnlineEventsMarketingApp.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = "Admin")]
+        public ActionResult Enable(string id)
+        {
+            var user = _userRepository.FirstOrDefault(x => x.Id == id);
+            _userRepository.Update(user);
+            user.IsDeleted = false;
+            _unitOfWork.Commit();
+
+            return RedirectToAction("Index");
+        }
+
         //
         // GET: /Account/ExternalLoginFailure
         [AllowAnonymous]

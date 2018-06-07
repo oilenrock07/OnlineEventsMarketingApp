@@ -1,7 +1,8 @@
 ﻿$(function () {
 
     function handleUserDeleteClick(e) {
-        if (!confirm('Are you sure you want to delete this user?')) {
+        var text = $(this).text();
+        if (!confirm('Are you sure you want to '+ text + ' this user?')) {
             e.preventDefault();
             return;
         }
