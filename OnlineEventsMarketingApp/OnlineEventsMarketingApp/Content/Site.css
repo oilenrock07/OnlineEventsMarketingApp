@@ -291,7 +291,7 @@ body.loading {
         font-size: 2rem;
     }
 
-    .container-fluid {
+    .page-heading .container-fluid {
         padding-left: 215px;
     }
 }

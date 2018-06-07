@@ -18,7 +18,8 @@ namespace OnlineEventsMarketingApp
                         //"~/Scripts/bootstrap3-typeahead.min.js",
                         "~/Scripts/moment.min.js",
                         "~/Scripts/knockout-3.4.2.js",
-                        "~/Scripts/knockout.mapping-latest.js"));
+                        "~/Scripts/knockout.mapping-latest.js",
+                        "~/Scripts/jquery.floatThead.js"));
 
             // Use the development version of Modernizr to develop with and learn from. Then, when you're
             // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.

@@ -14,10 +14,13 @@ namespace OnlineEventsMarketingApp.Models.Settings
         public string TagName { get; set; }
         public int Year { get; set; }
         public int Month { get; set; }
+
         [Required]
         public DateTime StartDate { get; set; }
         [Required]
         public DateTime EndDate { get; set; }
+
+        public bool HasDataSheet { get; set; }
 
         public IEnumerable<SelectListItem> Months { get; set; }
         public IEnumerable<SelectListItem> Years { get; set; }

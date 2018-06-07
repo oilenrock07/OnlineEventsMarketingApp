@@ -3,9 +3,19 @@
 
 @{
     ViewBag.Title = "Edit Tag";
+    var monthName = new DateTime(Model.Year, Model.Month, 1).ToString("MMMM");
 }
 
 <h2>Edit Tag</h2>
+
+@if (Model.HasDataSheet)
+{
+    <div class="alert alert-warning" role="alert">
+        Tag is already in use by @monthName Data Sheet. <br />
+        Editing this Tag will require reimporting of @monthName Data Sheet to adjust Reports. <br />
+        Please ensure to reimport current data.
+    </div>
+}
 
 @using (Html.BeginForm()) 
 {

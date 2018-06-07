@@ -15,6 +15,7 @@ using OnlineEventsMarketingApp.Helpers;
 using OnlineEventsMarketingApp.Infrastructure.Interfaces;
 using OnlineEventsMarketingApp.Models.Settings;
 using OnlineEventsMarketingApp.Services.Implementations;
+using OnlineEventsMarketingApp.Services.Interfaces;
 
 namespace OnlineEventsMarketingApp.Controllers
 {
@@ -22,12 +23,14 @@ namespace OnlineEventsMarketingApp.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IRepository<Tag> _tagRepository;
+        private readonly IDataSheetService _dataSheetService;
         private readonly TagService _tagService;
 
-        public SettingsController(IUnitOfWork unitOfWork, IRepository<Tag> tagRepository, TagService tagService)
+        public SettingsController(IUnitOfWork unitOfWork, IRepository<Tag> tagRepository, IDataSheetService dataSheetService, TagService tagService)
         {
             _unitOfWork = unitOfWork;
             _tagRepository = tagRepository;
+            _dataSheetService = dataSheetService;
             _tagService = tagService;
         }
 
@@ -125,10 +128,11 @@ namespace OnlineEventsMarketingApp.Controllers
             var tag = _tagRepository.GetById(id);
             if (tag == null)
                 return RedirectToAction("Tags");
-
+           
             var viewModel = tag.MapItem<TagCreateViewModel>();
             viewModel.Months = MonthYearHelper.GetMonthList();
             viewModel.Years = MonthYearHelper.GetYearList();
+            viewModel.HasDataSheet = _dataSheetService.HasDataSheet(tag.Year, tag.Month);
             viewModel.Year = tag.Year;
             viewModel.Month = tag.Month;
             return View(viewModel);

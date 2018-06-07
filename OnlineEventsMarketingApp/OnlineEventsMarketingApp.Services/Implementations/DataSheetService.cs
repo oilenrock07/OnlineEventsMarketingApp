@@ -70,7 +70,7 @@ namespace OnlineEventsMarketingApp.Services.Implementations
                 }
             }
 
-            _unitOfWork.ExecuteSqlCommand(string.Format("DELETE FROM DataSheets WHERE Date >= '{0}' AND Date < '{1}'", start.ToSqlDate(), end.ToSqlDate()));
+            ClearDataSheet(start, end);
             _unitOfWork.Commit();
         }
 
@@ -269,5 +269,18 @@ namespace OnlineEventsMarketingApp.Services.Implementations
 
             return weeklyReport;
         }
+
+        public void ClearDataSheet(DateTime start, DateTime end)
+        {
+            _unitOfWork.ExecuteSqlCommand(string.Format("DELETE FROM DataSheets WHERE Date >= '{0}' AND Date < '{1}'", start.ToSqlDate(), end.ToSqlDate()));
+        }
+
+        public bool HasDataSheet(int year, int month)
+        {
+            var start = new DateTime(year, month, 1);
+            var end = start.AddMonths(1);
+            return _dataSheetRepository.Find(x => x.Date >= start && x.Date < end).Any();
+        }
+
     }
 }

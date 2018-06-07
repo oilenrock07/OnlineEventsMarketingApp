@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Web;
 using System.Web.Mvc;
 using LumenWorks.Framework.IO.Csv;
@@ -21,15 +22,15 @@ namespace OnlineEventsMarketingApp.Controllers
     public class DataController : Controller
     {
         private readonly IRepository<DataSheet> _dataSheetRepository;
-        private readonly IRepository<NewUserMTD> _newUserMTdRepository;
         private readonly IDataSheetService _dataSheetService;
+        private readonly ITagService _tagService;
         private readonly IUnitOfWork _unitOfWork;
 
-        public DataController(IUnitOfWork unitOfWork, IDataSheetService dataSheetService, IRepository<NewUserMTD> newUserMTdRepository, IRepository<DataSheet> dataSheetRepository)
+        public DataController(IUnitOfWork unitOfWork, IDataSheetService dataSheetService, ITagService tagService, IRepository<DataSheet> dataSheetRepository)
         {
             _unitOfWork = unitOfWork;
+            _tagService = tagService;
             _dataSheetService = dataSheetService;
-            _newUserMTdRepository = newUserMTdRepository;
             _dataSheetRepository = dataSheetRepository;
         }
 
@@ -37,10 +38,15 @@ namespace OnlineEventsMarketingApp.Controllers
         public ActionResult DataSheet(int? month = null, int? year=null)
         {
             var now = DateTime.Now;
+            var y = year ?? now.Year;
+            var m = month ?? now.Month;
+            var hasTags = _tagService.HasTags(y, m);
+
             var viewModel = new DataSheetViewModel
             {
-                Year = year ?? now.Year,
-                Month = month ?? now.Month,
+                Year = y,
+                Month = m,
+                HasTags = hasTags,
                 Years = MonthYearHelper.GetYearList(),
                 Months = MonthYearHelper.GetMonthList()
             };
@@ -63,7 +69,8 @@ namespace OnlineEventsMarketingApp.Controllers
                 Year = year,
                 Month = month,
                 Years = MonthYearHelper.GetYearList(),
-                Months = MonthYearHelper.GetMonthList()
+                Months = MonthYearHelper.GetMonthList(),
+                HasTags = true
             };
 
             if (file != null && file.ContentLength > 0)
@@ -90,6 +97,10 @@ namespace OnlineEventsMarketingApp.Controllers
                         }
                     }
                 }
+                else
+                {
+                    ModelState.AddModelError("", "Invalid file format. Please select only .csv file");
+                }
             }
 
             //TempData["Message"] = "Datasheet has been successfully uploaded";
@@ -97,16 +108,17 @@ namespace OnlineEventsMarketingApp.Controllers
         }
 
         [HttpPost]
-        public JsonResult PostDataSheetChanges(string sheet)
+        public JsonResult PostDataSheetChanges(int month, int year, string sheet)
         {
             var settings = new JsonSerializerSettings
             {
                 NullValueHandling = NullValueHandling.Ignore,
                 MissingMemberHandling = MissingMemberHandling.Ignore
             };
-            var datasheet = JsonConvert.DeserializeObject<IEnumerable<DataSheet>>(sheet, settings);
+            var datasheet = JsonConvert.DeserializeObject<IEnumerable<DataSheet>>(sheet, settings);            
             if (datasheet != null && datasheet.Any())
             {
+                var tags = _tagService.GetTags(datasheet.Select(x => x.Date));
                 var idsToEdit = datasheet.Select(x => x.DataSheetId);
                 var result = _dataSheetRepository.Find(x => idsToEdit.Contains(x.DataSheetId)).ToList();
                 foreach (var data in result)
@@ -114,10 +126,19 @@ namespace OnlineEventsMarketingApp.Controllers
                     var updatedSheet = datasheet.FirstOrDefault(x => x.DataSheetId == data.DataSheetId);
                     if (updatedSheet != null)
                     {
+                        var date = updatedSheet.Date.AddDays(1); //bug on the UI that is submitting -1 days
+                        
                         _dataSheetRepository.Update(data);
+
+                        if (data.Date != date)
+                        {
+                            var tag = tags.FirstOrDefault(x => date >= x.StartDate && date <= x.EndDate);
+                            data.TagId = tag != null ? tag.TagId : 0;
+                        }
+
                         data.Area = updatedSheet.Area;
                         data.DIS = updatedSheet.DIS;
-                        data.Date = updatedSheet.Date.AddDays(1); //bug on the UI that is submitting -1 days
+                        data.Date = date;
                         data.ExistingUsers = updatedSheet.ExistingUsers;
                         data.InHouse = updatedSheet.InHouse;
                         data.NewUsers = updatedSheet.NewUsers;
@@ -126,14 +147,14 @@ namespace OnlineEventsMarketingApp.Controllers
                         data.Status = updatedSheet.Status.ToUpper();
                         data.TE = updatedSheet.TE;
                         data.TM = updatedSheet.TM;
-                        data.TagId = updatedSheet.TagId;
                     }
                 }
 
                 _unitOfWork.Commit();
             }
 
-            return Json("success");
+            var dateSheet = _dataSheetService.GetDataSheet(month, year).OrderBy(x => x.Date);
+            return Json(dateSheet, JsonRequestBehavior.AllowGet);
         }
 
         [Authorize]
@@ -241,6 +262,16 @@ namespace OnlineEventsMarketingApp.Controllers
             }
 
             Export.ToExcel(Response, dt, fileName);
-        }        
+        }
+
+        [HttpPost]
+        public JsonResult ClearData(int month, int year)
+        {
+            var start = new DateTime(year, month, 1);
+            var end = start.AddMonths(1);
+            _dataSheetService.ClearDataSheet(start, end);
+
+            return Json("Success", JsonRequestBehavior.AllowGet);
+        }
     }
 }

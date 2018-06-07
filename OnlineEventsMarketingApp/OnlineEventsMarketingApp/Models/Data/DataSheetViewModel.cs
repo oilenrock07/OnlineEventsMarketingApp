@@ -18,5 +18,7 @@ namespace OnlineEventsMarketingApp.Models.Data
 
         public int Month { get; set; }
         public IEnumerable<SelectListItem> Months { get; set; }
+
+        public bool HasTags { get; set; }
     }
 }

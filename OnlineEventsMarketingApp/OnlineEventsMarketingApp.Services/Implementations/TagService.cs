@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using OnlineEventsMarketingApp.Entities;
 using OnlineEventsMarketingApp.Entities.Users;
@@ -21,6 +22,18 @@ namespace OnlineEventsMarketingApp.Services.Implementations
         public IEnumerable<Tag> GetTags(int year, int month)
         {
             return _tagRepository.Find(x => x.Month == month && x.Year == year && !x.IsDeleted).ToList();
+        }
+
+        public IEnumerable<Tag> GetTags(IEnumerable<DateTime> dates)
+        {
+            var months = dates.Select(x => x.Month).Distinct();
+            var years = dates.Select(x => x.Year).Distinct();
+            return _tagRepository.Find(x => !x.IsDeleted && months.Contains(x.Month) && years.Contains(x.Year)).ToList();
+        }
+
+        public bool HasTags(int year, int month)
+        {
+            return _tagRepository.Find(x => !x.IsDeleted && x.Year == year && x.Month == month).Any();
         }
     }
 }
