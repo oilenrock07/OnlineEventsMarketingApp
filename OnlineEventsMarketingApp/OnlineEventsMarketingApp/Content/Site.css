@@ -227,7 +227,7 @@ td.variance-not-met {
 .loading-modal {
     display: none;
     position: fixed;
-    z-index: 1000;
+    z-index: 99999;
     top: 0;
     left: 0;
     height: 100%;
@@ -265,7 +265,6 @@ body.loading {
 .page-heading {
     margin: -16px -16px 30px -16px;
     position: relative;
-    
     padding: 30px 15px;
     text-align: center;
     color: rgba(255,255,255,.5);
@@ -291,7 +290,20 @@ body.loading {
         font-size: 2rem;
     }
 
-    .page-heading .container-fluid {
-        padding-left: 215px;
-    }
+        .page-heading .container-fluid {
+            padding-left: 215px;
+        }
+}
+
+thead th {
+    padding: 8px;
+    line-height: 1.428571429;
+    vertical-align: middle;
+    border-top: 2px solid #dddddd;
+    background-color: #f9f9f9;
+}
+
+.table-wrapper {
+    max-height: 500px;
+    overflow: auto;
 }

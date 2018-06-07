@@ -24,6 +24,12 @@
 				observable(ev.date);
 			}
 		});
+		$(element).on("change", function (ev) {		    
+		    if (!$(element).val()) {
+		        var observable = valueAccessor();
+		        observable($(element).val());
+		    }		        
+		});
 		//handle removing an element from the dom
 		ko.utils.domNodeDisposal.addDisposeCallback(element, function () {
 			$(element).datepicker('remove');
