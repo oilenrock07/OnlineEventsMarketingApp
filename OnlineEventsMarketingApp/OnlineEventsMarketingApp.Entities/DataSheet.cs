@@ -9,9 +9,9 @@ namespace OnlineEventsMarketingApp.Entities
         [Key]
         public int DataSheetId { get; set; }
 
-        public int DIS { get; set; }
+        public int? DIS { get; set; }
 
-        public int TE { get; set; }
+        public int? TE { get; set; }
 
         [StringLength(250)]
         public string TM { get; set; } //sales rep
@@ -25,7 +25,9 @@ namespace OnlineEventsMarketingApp.Entities
         [StringLength(250)]
         public string Rnd { get; set; }
 
-        public DateTime Date { get; set; }
+        public DateTime? Date { get; set; }
+
+        public DateTime? TempDate { get; set; }
 
         public int NewUsers { get; set; }
 

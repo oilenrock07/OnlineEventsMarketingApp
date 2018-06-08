@@ -7,9 +7,9 @@ namespace OnlineEventsMarketingApp.Services.DataTransferObjects
     public class WeeklyReportDTO
     {
 
-        public int DIS { get; set; }
+        public int? DIS { get; set; }
 
-        public int TE { get; set; }
+        public int? TE { get; set; }
 
         public string TM { get; set; }
 

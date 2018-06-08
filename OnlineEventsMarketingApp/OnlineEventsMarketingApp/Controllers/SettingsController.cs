@@ -67,11 +67,11 @@ namespace OnlineEventsMarketingApp.Controllers
         //}
 
         [Authorize(Roles = "Admin")]
-        public ActionResult CreateTag()
+        public ActionResult CreateTag(int? year = null, int?  month = null)
         {
             var now = DateTime.Now;
-            var currentMonth = now.Month;
-            var currentYear = now.Year;
+            var currentMonth = month ?? now.Month;
+            var currentYear = year ?? now.Year;
 
             var viewModel = new TagCreateViewModel
             {

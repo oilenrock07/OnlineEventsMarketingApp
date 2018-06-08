@@ -48,7 +48,7 @@
     <div class="col-xs-12">
         <div class="col-md-3 t1">
             <div class="input-group">
-                <input type="search" data-bind="value: currentFilter, valueUpdate: 'keyup'" id="search" placeholder="Filter DIS, TE, TM, Area, RND" class="form-control">
+                <input type="search" data-bind="value: currentFilter, valueUpdate: 'keyup'" id="search" placeholder="Filter DIS, TE, TM, Area, Type, RND, Status" class="form-control">
                 <label class="input-group-addon" for="search"><i class="fa fa-search"></i></label>
             </div>
         </div>
@@ -232,7 +232,7 @@
                     };
                     return ko.utils.arrayFilter(self.datasheets(), function(item) {
                         var i = ko.toJS(item);
-                        return exist(i.DIS) || exist(i.TE) || exist(i.TM) || exist(i.Area) || exist(i.Rnd);
+                        return exist(i.DIS) || exist(i.TE) || exist(i.TM) || exist(i.Area) || exist(i.Rnd) || exist(i.InHouse) || exist(i.Status);
                     });
 
                 }

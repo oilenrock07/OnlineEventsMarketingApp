@@ -28,6 +28,21 @@ namespace OnlineEventsMarketingApp.Common.Extensions
             }
         }
 
+        public static DateTime ToDateTime(this DateTime? value)
+        {
+            try
+            {
+                if (value == null)
+                    return DateTime.MinValue;
+
+                return value.Value.Date;
+            }
+            catch
+            {
+                return DateTime.MinValue;
+            }
+        }
+
         public static string ToSqlDate(this DateTime value)
         {
             return value.ToString("yyyy-MM-dd");

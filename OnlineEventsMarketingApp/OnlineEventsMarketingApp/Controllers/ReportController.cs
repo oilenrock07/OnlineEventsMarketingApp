@@ -62,7 +62,7 @@ namespace OnlineEventsMarketingApp.Controllers
             foreach (var month in MonthYearHelper.GetMonths())
             {
                 //inhouse
-                onlineList.Add(new MonthlyReportData
+                inHouseList.Add(new MonthlyReportData
                 {
                     Month = month.Item2,
                     Inhouse = Common.Constants.Constants.INHOUSE,
@@ -72,7 +72,7 @@ namespace OnlineEventsMarketingApp.Controllers
                 });
 
                 //online
-                inHouseList.Add(new MonthlyReportData
+                onlineList.Add(new MonthlyReportData
                 {
                     Month = month.Item2,
                     Inhouse = Common.Constants.Constants.INHOUSE,

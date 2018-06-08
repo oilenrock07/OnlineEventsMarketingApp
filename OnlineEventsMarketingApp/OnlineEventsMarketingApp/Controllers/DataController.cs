@@ -118,7 +118,7 @@ namespace OnlineEventsMarketingApp.Controllers
             var datasheet = JsonConvert.DeserializeObject<IEnumerable<DataSheet>>(sheet, settings);            
             if (datasheet != null && datasheet.Any())
             {
-                var tags = _tagService.GetTags(datasheet.Select(x => x.Date));
+                var tags = _tagService.GetTags(datasheet.Where(x => x.Date != null).Select(x => x.Date.Value));
                 var idsToEdit = datasheet.Select(x => x.DataSheetId);
                 var result = _dataSheetRepository.Find(x => idsToEdit.Contains(x.DataSheetId)).ToList();
                 foreach (var data in result)
@@ -126,15 +126,19 @@ namespace OnlineEventsMarketingApp.Controllers
                     var updatedSheet = datasheet.FirstOrDefault(x => x.DataSheetId == data.DataSheetId);
                     if (updatedSheet != null)
                     {
-                        var date = updatedSheet.Date.AddDays(1); //bug on the UI that is submitting -1 days
+                        var d = updatedSheet.Date;
+                        var date = d != null? d.Value.AddDays(1) : default(DateTime?); //bug on the UI that is submitting -1 days
                         
                         _dataSheetRepository.Update(data);
 
-                        if (data.Date != date)
+                        if (data.Date.ToDateTime() != date.ToDateTime())
                         {
                             var tag = tags.FirstOrDefault(x => date >= x.StartDate && date <= x.EndDate);
-                            data.TagId = tag != null ? tag.TagId : 0;
+                            data.TagId = tag?.TagId ?? 0;
                         }
+
+                        if (date == null)
+                            data.TempDate = new DateTime(year, month, 1);
 
                         data.Area = updatedSheet.Area;
                         data.DIS = updatedSheet.DIS;
@@ -221,7 +225,7 @@ namespace OnlineEventsMarketingApp.Controllers
 
             var startDate = new DateTime(year, month, 1);
             var endDate = startDate.AddMonths(1);
-            var datasheet = _dataSheetRepository.Find(x => x.Date >= startDate && x.Date < endDate).ToList();
+            var datasheet = _dataSheetRepository.Find(x => x.Date != null && x.Date >= startDate && x.Date < endDate).ToList();
 
             var fileName = String.Format("Nepro Report {0} {1}", startDate.ToString("MMMM"), year);
 
@@ -251,7 +255,7 @@ namespace OnlineEventsMarketingApp.Controllers
                 row["Area"] = item.Area;
                 row["InHouse"] = item.InHouse;
                 row["Rnd"] = item.Rnd;
-                row["Date"] = item.Date.ToShortDateString();
+                row["Date"] = item.Date.Value.ToShortDateString();
 
                 row["New Users"] = item.NewUsers;
                 row["Existing Users"] = item.ExistingUsers;
