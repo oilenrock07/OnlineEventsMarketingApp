@@ -74,6 +74,7 @@
                         <th>Status</th>
                         <th># Of Patients</th>
                         <th>Tagging</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody data-bind="foreach: filteredDatasheet">
@@ -135,6 +136,7 @@
                         <td data-bind="style: {backgroundColor: $root.statusColor(Status) }"><input class='form-control' data-bind="value: Status" autocomplete="on" /></td>
                         <td><input class='form-control' data-bind='value: NoOfPatients' type="number" /></td>
                         <td data-bind="text: Tag.TagName"></td>
+                        <td><a href="javascript:void(0)" data-bind="click: function() { $root.Delete($data) }">Delete</a></td>
                     </tr>
                 </tbody>
             </table>
@@ -158,20 +160,20 @@
         var month = $('#Month').val();
         var year = $('#Year').val();
 
-        var viewModel = function () {
+        var viewModel = function() {
             var self = this;
             self.datasheets = ko.observableArray([]);
             self.isAdmin = '@User.IsInRole("Admin")';
             self.currentFilter = ko.observable();
 
-            self.dateColor = function (obj) {
+            self.dateColor = function(obj) {
                 if (!obj())
                     return '#f8d7da';
 
                 return '';
             }
 
-            self.statusColor = function (obj) {
+            self.statusColor = function(obj) {
                 if (obj().toLowerCase() === 'run')
                     return '#5cb85c';
                 if (!obj())
@@ -180,26 +182,26 @@
                 return '';
             }
 
-            self.submitChanges = function () {
+            self.submitChanges = function() {
                 showLoading();
                 $.ajax({
                     dataType: "json",
                     type: 'POST',
                     url: "/Data/PostDataSheetChanges",
                     data: { month: month, year: year, sheet: ko.toJSON(self.datasheets()) },
-                    success: function (returnData) {
+                    success: function(returnData) {
                         hideLoading();
                         ko.mapping.fromJS(returnData, {}, self.datasheets);
                         alert('Datasheet has been successfully updated');
                     },
-                    error: function (err) {
+                    error: function(err) {
                         hideLoading();
                         alert('Error submitting the data: ' + err);
                     }
                 });
             };
 
-            self.clearData = function () {
+            self.clearData = function() {
                 var answer = confirm("WARNING!\nAre you sure you want to clear the data for this month? This will permanently delete all the data for this month.");
                 if (answer) {
                     showLoading();
@@ -208,11 +210,11 @@
                         type: 'POST',
                         url: "/Data/ClearData",
                         data: { month: month, year: year },
-                        success: function (returnData) {
+                        success: function(returnData) {
                             hideLoading();
                             self.datasheets([]);
                         },
-                        error: function (err) {
+                        error: function(err) {
                             hideLoading();
                             alert('Error clearing data: ' + JSON.stringify(err));
                         }
@@ -220,21 +222,44 @@
                 }
             }
 
-            self.filteredDatasheet = ko.computed(function () {
+            self.filteredDatasheet = ko.computed(function() {
                 if (!self.currentFilter()) {
                     return self.datasheets();
                 } else {
                     var f = self.currentFilter().toLowerCase();
-                    var exist = function (obj) {
+                    var exist = function(obj) {
                         return obj.toString().toLowerCase().indexOf(f) >= 0;
                     };
-                    return ko.utils.arrayFilter(self.datasheets(), function (item) {
+                    return ko.utils.arrayFilter(self.datasheets(), function(item) {
                         var i = ko.toJS(item);
                         return exist(i.DIS) || exist(i.TE) || exist(i.TM) || exist(i.Area) || exist(i.Rnd);
                     });
 
                 }
             });
+
+            self.Delete = function(data) {
+                var answer = confirm("Are you sure you want to delete this record?\nThis will permanently delete record");
+                if (answer) {
+                    
+                    showLoading();
+                    $.ajax({
+                        dataType: 'json',
+                        data: { id: data.DataSheetId() },
+                        type: 'POST',
+                        url: "/Data/DeleteData",
+                        success: function () {
+                            hideLoading();
+                            self.datasheets.remove(data);
+                        },
+                        error: function (err) {
+                            hideLoading();
+                            alert('Error getting data: ' + JSON.stringify(err));
+                        }
+                        
+                    });                    
+                }
+            }
 
             var args = { month: month, year: year };
 
@@ -243,11 +268,11 @@
                 dataType: "json",
                 url: "/Data/GetDataSheet",
                 data: args,
-                success: function (returnData) {
+                success: function(returnData) {
                     hideLoading();
                     ko.mapping.fromJS(returnData, {}, self.datasheets);
                 },
-                error: function (err) {
+                error: function(err) {
                     hideLoading();
                     alert('Error getting data: ' + JSON.stringify(err));
                 }
@@ -258,7 +283,7 @@
         ko.applyBindings(datasheetViewModel);
 
         $('#tblDatasheet').floatThead({
-            scrollContainer: function ($table) {
+            scrollContainer: function($table) {
                 return $table.closest('.table-wrapper');
             }
         });

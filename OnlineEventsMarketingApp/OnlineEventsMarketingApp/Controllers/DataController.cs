@@ -273,5 +273,17 @@ namespace OnlineEventsMarketingApp.Controllers
 
             return Json("Success", JsonRequestBehavior.AllowGet);
         }
+
+        [HttpPost]
+        public JsonResult DeleteData(int id)
+        {
+            var datasheet = _dataSheetRepository.FirstOrDefault(x => x.DataSheetId == id);
+            if (datasheet == null)
+                throw new Exception("Invalid ID");
+
+            _dataSheetRepository.Delete(datasheet);
+            _unitOfWork.Commit();
+            return Json("Success", JsonRequestBehavior.AllowGet);
+        }
     }
 }
