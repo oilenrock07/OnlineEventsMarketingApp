@@ -46,7 +46,7 @@ namespace OnlineEventsMarketingApp.Services.Implementations
                 foreach (DataRow row in table.Rows)
                 {
                     var date = row["Date"].ToDateTime();
-                    if (!(date >= start && date < end)) continue;
+                    if (date != DateTime.MinValue && !(date >= start && date < end)) continue;
 
                     var tag = tags.FirstOrDefault(x => date >= x.StartDate && date <= x.EndDate);
 
@@ -58,7 +58,8 @@ namespace OnlineEventsMarketingApp.Services.Implementations
                         Area = row["AREA"].ToString(),
                         InHouse = row["In House"].ToString().ToUpper(),
                         Rnd = row["RND"].ToString(),
-                        Date = date,
+                        Date = date == DateTime.MinValue ? default(DateTime?) : date,
+                        TempDate = date == DateTime.MinValue ? start : default(DateTime?),
                         NewUsers = row["New User"].ToInt(),
                         ExistingUsers = row["Existing User"].ToInt(),
                         Status = row["STATUS"].ToString().ToUpper(),

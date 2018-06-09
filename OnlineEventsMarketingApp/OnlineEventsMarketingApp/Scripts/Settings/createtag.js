@@ -20,6 +20,7 @@
 
     function init() {
         $('.js-month .js-year').on('change', handleMonthYearChange);
+        handleMonthYearChange();
     }
 
     init();

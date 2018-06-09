@@ -307,3 +307,9 @@ thead th {
     max-height: 500px;
     overflow: auto;
 }
+
+@media (max-width: 600px) {
+    input.form-control {
+        width: auto;
+    }
+}

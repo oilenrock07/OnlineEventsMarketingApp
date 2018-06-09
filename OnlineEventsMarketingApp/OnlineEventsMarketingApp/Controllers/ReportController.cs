@@ -68,7 +68,7 @@ namespace OnlineEventsMarketingApp.Controllers
                     Inhouse = Common.Constants.Constants.INHOUSE,
                     NoOfRuns = GetMonthlyRunsCount(monthlyRunsCount, month.Item1, Common.Constants.Constants.INHOUSE),
                     ConsultationACT = GetMonthlyConsultationACTCount(monthlyConsultations, month.Item1, Common.Constants.Constants.INHOUSE),
-                    NUTGT = GetMonthlyNewUserCount(monthlyNewUsers, month.Item1, Common.Constants.Constants.INHOUSE)
+                    NUACT = GetMonthlyNewUserCount(monthlyNewUsers, month.Item1, Common.Constants.Constants.INHOUSE)
                 });
 
                 //online
@@ -78,7 +78,7 @@ namespace OnlineEventsMarketingApp.Controllers
                     Inhouse = Common.Constants.Constants.INHOUSE,
                     NoOfRuns = GetMonthlyRunsCount(monthlyRunsCount, month.Item1, Common.Constants.Constants.ONLINE),
                     ConsultationACT = GetMonthlyConsultationACTCount(monthlyConsultations, month.Item1, Common.Constants.Constants.ONLINE),
-                    NUTGT = GetMonthlyNewUserCount(monthlyNewUsers, month.Item1, Common.Constants.Constants.ONLINE)
+                    NUACT = GetMonthlyNewUserCount(monthlyNewUsers, month.Item1, Common.Constants.Constants.ONLINE)
                 });
             }
 

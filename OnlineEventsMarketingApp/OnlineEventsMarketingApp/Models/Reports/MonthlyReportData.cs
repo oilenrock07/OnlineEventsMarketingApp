@@ -19,12 +19,12 @@ namespace OnlineEventsMarketingApp.Models.Reports
             get { return (ConsultationTGT != 0 ? (decimal)ConsultationACT/ConsultationTGT : 0).FormatDecimal(); }
         }
 
-        public int NUTGT { get; set; }
-
-        public int NUACT
+        public int NUTGT
         {
             get { return NoOfRuns*2; }
         }
+
+        public int NUACT { get; set; }
 
         public string NUACTVsTGT
         {
