@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Net.Sockets;
 using OnlineEventsMarketingApp.Common.Constants;
 using OnlineEventsMarketingApp.Common.Enums;
 using OnlineEventsMarketingApp.Common.Extensions;
@@ -19,7 +20,7 @@ namespace OnlineEventsMarketingApp.Services.Implementations
         private readonly IRepository<Tag> _tagRepository;
         private readonly IRepository<NewUserMTD> _newUserMtdRepository;
         private readonly IRepository<DataSheet> _dataSheetRepository;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;        
 
         public DataSheetService(IUnitOfWork unitOfWork, IRepository<DataSheet> dataSheetRepository, IRepository<Tag> tagRepository, IRepository<NewUserMTD> newUserMtdRepository)
         {
@@ -35,18 +36,32 @@ namespace OnlineEventsMarketingApp.Services.Implementations
                 return;
 
             //get the tags for the month
-            var tags = _tagRepository.Find(x => !x.IsDeleted && x.Month == month && x.Year == year).ToList();
+            var yearMonthList = from row in table.AsEnumerable()
+                                where row["Date"].ToString() != ""
+                                select new {row["Date"].ToDateTime().Month, row["Date"].ToDateTime().Year};
+
+            var months = yearMonthList.Select(x => x.Month).Distinct();
+            var years = yearMonthList.Select(x => x.Year).Distinct();
+
+            var tags = _tagRepository.Find(x => !x.IsDeleted && months.Contains(x.Month)  && years.Contains(x.Year)).ToList();
+
+            var monthsDoesNotExists = months.Except(tags.Select(x => x.Month).Distinct());
+            if (monthsDoesNotExists.Any())
+            {
+                var monthNames = monthsDoesNotExists.Select(x => new DateTime(year, x, 1).ToString("MMMM"));
+                throw new Exception(String.Format("The following months does not have assigned tags: {0}", String.Join(",",monthNames)));
+            }
+                
 
             //delete first the content for the month
             var start = new DateTime(year, month, 1);
-            var end = start.AddMonths(1);
-
             if (table.Rows.Count > 0)
             {
                 foreach (DataRow row in table.Rows)
                 {
                     var date = row["Date"].ToDateTime();
-                    if (date != DateTime.MinValue && !(date >= start && date < end)) continue;
+
+                    if (!IsDataSheetValid(row)) continue;
 
                     var tag = tags.FirstOrDefault(x => date >= x.StartDate && date <= x.EndDate);
 
@@ -71,7 +86,7 @@ namespace OnlineEventsMarketingApp.Services.Implementations
                 }
             }
 
-            ClearDataSheet(start, end);
+            ClearDataSheet(months, years);
             _unitOfWork.Commit();
         }
 
@@ -245,12 +260,36 @@ namespace OnlineEventsMarketingApp.Services.Implementations
             _unitOfWork.ExecuteSqlCommand(string.Format("DELETE FROM DataSheets WHERE Date >= '{0}' AND Date < '{1}' OR (TempDate >= '{0}' AND TempDate < '{1}')", start.ToSqlDate(), end.ToSqlDate()));
         }
 
+        public void ClearDataSheet(IEnumerable<int> months, IEnumerable<int> years)
+        {
+            var strMonths = String.Join(",", months);
+            var strYear = String.Join(",", years);
+            _unitOfWork.ExecuteSqlCommand(string.Format("DELETE FROM DataSheets WHERE MONTH(Date) IN ({0}) AND YEAR(Date) IN ({1}) OR (MONTH(TempDate) IN ({0}) AND YEAR(TempDate) IN ({1}))", strMonths, strYear));
+        }
+
         public bool HasDataSheet(int year, int month)
         {
             var start = new DateTime(year, month, 1);
             var end = start.AddMonths(1);
             return _dataSheetRepository.Find(x => (x.Date >= start && x.Date < end) || (x.Date == null && x.TempDate >= start && x.TempDate < end)).Any();
         }
+
+        #region Private Methods
+
+        private bool IsDataSheetValid(DataRow row)
+        {
+            var valid = false;
+            foreach (var header in Constants.DATASHEET_HEADERS)
+            {
+                if (row[header].ToString() != "")
+                {
+                    valid = true;
+                    break;
+                }
+            }
+            return valid;
+        }
+        #endregion
 
     }
 }

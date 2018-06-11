@@ -58,23 +58,23 @@
 <div class="row t1">
     <div class="col-xs-12">
         <div class="table-wrapper">
-            <table class="table t1 table-responsive table-striped" id="tblDatasheet">
+            <table class="table t1 table-striped fix-table">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>DIS</th>
-                        <th>TE <span class="hidden-xs">(TM Code)</span></th>
-                        <th>TM</th>
-                        <th>Area</th>
-                        <th>In House</th>
-                        <th>RND</th>
-                        <th>Date</th>
-                        <th>New Users</th>
-                        <th>Existing Users</th>
-                        <th>Status</th>
-                        <th># Of Patients</th>
-                        <th>Tagging</th>
-                        <th></th>
+                        <th width="70">ID</th>
+                        <th width="90">DIS</th>
+                        <th width="90">TE <span class="hidden-xs">(TM Code)</span></th>
+                        <th width="150">TM</th>
+                        <th width="150">Area</th>
+                        <th width="100">In House</th>
+                        <th width="150">RND</th>
+                        <th width="120">Date</th>
+                        <th width="90">New Users</th>
+                        <th width="90">Existing Users</th>
+                        <th width="90">Status</th>
+                        <th width="90"># Of Patients</th>
+                        <th width="100">Tagging</th>
+                        <th width="70"></th>
                     </tr>
                 </thead>
                 <tbody data-bind="foreach: filteredDatasheet">
@@ -282,10 +282,6 @@
         var datasheetViewModel = new viewModel();
         ko.applyBindings(datasheetViewModel);
 
-        $('#tblDatasheet').floatThead({
-            scrollContainer: function($table) {
-                return $table.closest('.table-wrapper');
-            }
-        });
+        $('table').stickyTableHeaders({ scrollableArea: $('.table-wrapper'), cacheHeaderHeight: true, zIndex: 999 });
     </script>
 }

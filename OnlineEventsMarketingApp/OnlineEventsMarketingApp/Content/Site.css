@@ -308,12 +308,6 @@ thead th {
     overflow: auto;
 }
 
-@media (max-width: 600px) {
-    input.form-control {
-        width: auto;
-    }
-}
-
 .dropdown-button,
 .dropdown-button button,
 .dropdown-button ul {
@@ -324,4 +318,8 @@ thead th {
 .dropdown-button span.caret {
     float: right;
     margin-top: 8px;
+}
+
+.fix-table {
+    table-layout: fixed;
 }

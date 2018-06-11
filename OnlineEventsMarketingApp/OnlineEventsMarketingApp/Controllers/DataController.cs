@@ -7,6 +7,7 @@ using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Web;
 using System.Web.Mvc;
 using LumenWorks.Framework.IO.Csv;
+using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
 using OnlineEventsMarketingApp.Common.Enums;
 using OnlineEventsMarketingApp.Common.Extensions;
@@ -85,14 +86,20 @@ namespace OnlineEventsMarketingApp.Controllers
                             {
                                 csvTable.Load(reader);
 
-                                var headers = new List<string> { "DISTID", "TERRID", "TM", "AREA", "In House", "RND", "Date", "New User", "Existing User", "STATUS", "# of PATIENTS" };
-                                if (!csvTable.IsHeaderValid(headers))
+                                if (!csvTable.IsHeaderValid(Common.Constants.Constants.DATASHEET_HEADERS))
                                 {
-                                    ModelState.AddModelError("", String.Format("Uploaded file does not contain all the required headers: {0}", String.Join(",", headers)));
+                                    ModelState.AddModelError("", String.Format("Uploaded file does not contain all the required headers: {0}", String.Join(",", Common.Constants.Constants.DATASHEET_HEADERS)));
                                     return View(viewModel);
                                 }
-                                    
-                                _dataSheetService.UploadDataSheet(month, year, csvTable);
+
+                                try
+                                {
+                                    _dataSheetService.UploadDataSheet(month, year, csvTable);
+                                }
+                                catch (Exception ex)
+                                {
+                                    ModelState.AddModelError("", ex.Message);
+                                }                                
                             }
                         }
                     }
