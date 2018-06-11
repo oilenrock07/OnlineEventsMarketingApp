@@ -27,3 +27,7 @@ function showLoading() {
 function hideLoading() {
     $("body").removeClass('loading');
 }
+
+function arrayMatch(a1, a2) {
+    return a1.length == a2.length && a1.every(function (v, i) { return v === a2[i] });
+}

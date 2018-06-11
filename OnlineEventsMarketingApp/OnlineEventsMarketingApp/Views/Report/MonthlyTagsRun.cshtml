@@ -8,24 +8,40 @@
 
 <div class="row">
     <div class="col-xs-12 col-sm-3 t1 pull-right">
-        @Html.DropDownListFor(m => m.Year, Model.Years, new { @class = "form-control js-year t1" })
+        @Html.DropDownListFor(m => m.Year, Model.Years, new {@class = "form-control js-year"})
+    </div>
+
+    <div class="col-xs-12 col-sm-3 t1 pull-right">
+        <div class="btn-group dropdown-button">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Month <span class="caret"></span></button>
+            <ul class="dropdown-menu">
+                @foreach (var month in Model.Months)
+                {
+                    var check = Model.SelectedMonths != null && Model.SelectedMonths.Contains(month.Value) ? "checked=\"checked\"" : "";
+                    <li><a href="#" tabIndex="-1"><input type="checkbox" @check data-value="@month.Value"/>&nbsp;@month.Text</a></li>
+                }
+            </ul>
+        </div>
     </div>
 </div>
 
 <div class="row">
     <h2>Online RNDS</h2>
-    @Html.Partial("_MonthlyTagReport", Model.OnlineMonthlyReport)
+    @Html.Partial("_MonthlyTagReport", Model.OnlineMonthlyReport, new ViewDataDictionary { {"SelectedMonths", Model.SelectedMonths} })
 </div>
 
 <div class="row">
     <h2>Inhouse</h2>
-    @Html.Partial("_MonthlyTagReport", Model.InhouseMonthlyReport)
+    @Html.Partial("_MonthlyTagReport", Model.InhouseMonthlyReport, new ViewDataDictionary { { "SelectedMonths", Model.SelectedMonths } })
 </div>
 
 
 @section scripts
 {
     <script type="text/javascript" src="~/Scripts/Reports/monthlyreport.js"></script>
+    <script>
+        var oldOptions = [@String.Join(",",Model.SelectedMonths ?? new List<string>())];
+    </script>
 }
 
 

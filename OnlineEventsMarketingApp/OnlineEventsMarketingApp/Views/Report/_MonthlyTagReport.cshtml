@@ -1,5 +1,7 @@
 ﻿@model IEnumerable<OnlineEventsMarketingApp.Models.Reports.MonthlyReportData>
-
+@{
+    var selectedMonths = (IEnumerable<string>)ViewData["SelectedMonths"];
+}
 <table class="table t1 table-responsive table-striped">
     <tr>
         <th colspan="2" class="border-right"></th>
@@ -22,15 +24,18 @@
     </tr>
     @foreach (var item in Model)
     {
-        <tr>
-            <td>@item.Month</td>
-            <td class="border-right">@item.NoOfRuns</td>
-            <td>@item.ConsultationTGT</td>
-            <td>@item.ConsultationACT</td>
-            <td class="border-right">@item.ConsultationACTVsTGT</td>
-            <td>@item.NUTGT</td>
-            <td>@item.NUACT</td>
-            <td>@item.NUACTVsTGT</td>
-        </tr>
+        if (selectedMonths.Contains(item.Month.ToString()))
+        {
+            <tr>
+                <td>@item.MonthName</td>
+                <td class="border-right">@item.NoOfRuns</td>
+                <td>@item.ConsultationTGT</td>
+                <td>@item.ConsultationACT</td>
+                <td class="border-right">@item.ConsultationACTVsTGT</td>
+                <td>@item.NUTGT</td>
+                <td>@item.NUACT</td>
+                <td>@item.NUACTVsTGT</td>
+            </tr>
+        }
     }
 </table>

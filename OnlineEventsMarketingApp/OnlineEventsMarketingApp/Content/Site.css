@@ -313,3 +313,15 @@ thead th {
         width: auto;
     }
 }
+
+.dropdown-button,
+.dropdown-button button,
+.dropdown-button ul {
+    width: 100%;
+    text-align: left;
+}
+
+.dropdown-button span.caret {
+    float: right;
+    margin-top: 8px;
+}

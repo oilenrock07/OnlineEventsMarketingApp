@@ -45,11 +45,17 @@ namespace OnlineEventsMarketingApp.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        public ActionResult MonthlyTagsRun(int? year = null)
+        public ActionResult MonthlyTagsRun(int? year = null, string months = null)
         {
+            var monthList = MonthYearHelper.GetMonthList();
+            var selectedMonth = !String.IsNullOrEmpty(months) ? months.Split(',') : new string [0];
+            var selectedMonthList = !String.IsNullOrEmpty(months) ? selectedMonth : monthList.Select(x => x.Value);
+
             var viewModel = new MonthlyTagRunViewModel
-            {
+            {                                
                 Year = year ?? DateTime.Now.Year,
+                SelectedMonths = selectedMonthList,
+                Months = monthList,
                 Years = MonthYearHelper.GetYearList()
             };
 
@@ -64,7 +70,8 @@ namespace OnlineEventsMarketingApp.Controllers
                 //inhouse
                 inHouseList.Add(new MonthlyReportData
                 {
-                    Month = month.Item2,
+                    Month = month.Item1,
+                    MonthName = month.Item2,
                     Inhouse = Common.Constants.Constants.INHOUSE,
                     NoOfRuns = GetMonthlyRunsCount(monthlyRunsCount, month.Item1, Common.Constants.Constants.INHOUSE),
                     ConsultationACT = GetMonthlyConsultationACTCount(monthlyConsultations, month.Item1, Common.Constants.Constants.INHOUSE),
@@ -74,7 +81,8 @@ namespace OnlineEventsMarketingApp.Controllers
                 //online
                 onlineList.Add(new MonthlyReportData
                 {
-                    Month = month.Item2,
+                    Month = month.Item1,
+                    MonthName = month.Item2,
                     Inhouse = Common.Constants.Constants.INHOUSE,
                     NoOfRuns = GetMonthlyRunsCount(monthlyRunsCount, month.Item1, Common.Constants.Constants.ONLINE),
                     ConsultationACT = GetMonthlyConsultationACTCount(monthlyConsultations, month.Item1, Common.Constants.Constants.ONLINE),

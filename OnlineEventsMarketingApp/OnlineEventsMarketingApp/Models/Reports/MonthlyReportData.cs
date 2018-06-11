@@ -5,7 +5,8 @@ namespace OnlineEventsMarketingApp.Models.Reports
     public class MonthlyReportData
     {
         public string Inhouse { get; set; }
-        public string Month { get; set; }
+        public int Month { get; set; }
+        public string MonthName { get; set; }
         public int NoOfRuns { get; set; }
         public int ConsultationTGT
         {
