@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "Monthly Tags Run";
+    var months = String.Join(",", Model.SelectedMonths);
 }
 
 <h2>Monthly Tags Run</h2>
@@ -26,12 +27,18 @@
 </div>
 
 <div class="row">
-    <h2>Online RNDS</h2>
+    <div class="col-xs-6"><h2>Online RNDS </h2></div>
+    <div class="col-xs-6">
+        @Html.ActionLink("Export Data", "ExportMonthlyReportToExcel", "Report", new { year = Model.Year, months = months }, new { @class = "btn btn-success t1 pull-right" })
+    </div>
+
     @Html.Partial("_MonthlyTagReport", Model.OnlineMonthlyReport, new ViewDataDictionary { {"SelectedMonths", Model.SelectedMonths} })
 </div>
 
 <div class="row">
-    <h2>Inhouse</h2>
+    <div class="col-xs-6"><h2>Inhouse </h2></div>
+    <div class="col-xs-6"><a class="btn btn-success t1 js-export pull-right" href="javascript:void(0)">Export Data</a></div>
+
     @Html.Partial("_MonthlyTagReport", Model.InhouseMonthlyReport, new ViewDataDictionary { { "SelectedMonths", Model.SelectedMonths } })
 </div>
 
