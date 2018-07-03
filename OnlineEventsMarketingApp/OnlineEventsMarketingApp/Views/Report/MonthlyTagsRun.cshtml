@@ -29,7 +29,7 @@
 <div class="row">
     <div class="col-xs-6"><h2>Online RNDS </h2></div>
     <div class="col-xs-6">
-        @Html.ActionLink("Export Data", "ExportMonthlyReportToExcel", "Report", new { year = Model.Year, months, isInhouse = false }, new { @class = "btn btn-success t1 pull-right" })
+        @Html.ActionLink("Export Data", "ExportMonthlyReportToExcel", "Report", new { year = Model.Year, months}, new { @class = "btn btn-success t1 pull-right" })
     </div>
 
     @Html.Partial("_MonthlyTagReport", Model.OnlineMonthlyReport, new ViewDataDictionary { {"SelectedMonths", Model.SelectedMonths} })
@@ -37,10 +37,6 @@
 
 <div class="row">
     <div class="col-xs-6"><h2>Inhouse </h2></div>
-    <div class="col-xs-6">
-        @Html.ActionLink("Export Data", "ExportMonthlyReportToExcel", "Report", new { year = Model.Year, months, isInhouse = true }, new { @class = "btn btn-success t1 pull-right" })
-    </div>
-
     @Html.Partial("_MonthlyTagReport", Model.InhouseMonthlyReport, new ViewDataDictionary { { "SelectedMonths", Model.SelectedMonths } })
 </div>
 

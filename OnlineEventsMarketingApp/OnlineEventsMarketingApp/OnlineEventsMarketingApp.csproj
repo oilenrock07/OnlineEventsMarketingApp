@@ -220,6 +220,7 @@
     <Compile Include="Helpers\Export.cs" />
     <Compile Include="Helpers\MonthYearHelper.cs" />
     <Compile Include="Helpers\ReportHelper.cs" />
+    <Compile Include="Interfaces\IExportDataSource.cs" />
     <Compile Include="Interfaces\IPaginationModel.cs" />
     <Compile Include="BusinessLogic\PaginationService.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -237,6 +238,7 @@
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\PaginationModel.cs" />
     <Compile Include="Models\Reports\MonthlyReportData.cs" />
+    <Compile Include="Models\Reports\MonthlyReportExportDataSource.cs" />
     <Compile Include="Models\Reports\MonthlyTagRunViewModel.cs" />
     <Compile Include="Models\Reports\WeeklyTagRunViewModel.cs" />
     <Compile Include="Models\Settings\TagCreateViewModel.cs" />

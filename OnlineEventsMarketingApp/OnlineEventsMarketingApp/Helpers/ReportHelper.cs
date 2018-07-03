@@ -1,43 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Web;
-using System.Web.UI.WebControls;
+using ClosedXML.Excel;
 using OnlineEventsMarketingApp.Models.Reports;
 
 namespace OnlineEventsMarketingApp.Helpers
 {
     public class ReportHelper
     {
-        public GridView PopulateMonthlyReportGridView(IEnumerable<MonthlyReportData> data)
-        {
-            var gridView = new GridView();
-            gridView.RowCreated += OnRowCreated;
-            gridView.DataSource = GenerateDataTable(data);
-            gridView.DataBind();
-            return gridView;
-        }
-
-        public DataTable GenerateDataTable(IEnumerable<MonthlyReportData> data, string name = "")
+        public MonthlyReportExportDataSource GenerateMonthlyDataTable(IEnumerable<MonthlyReportData> data, string name = "")
         {
             var dt = new DataTable(name);
-            var tgtConsultation = new DataColumn()
-            {
-                ColumnName = "TGT Consultation",
-                DataType = typeof(int)
-            };
-            var tgtNU = new DataColumn()
-            {
-                ColumnName = "TGT NU",
-                DataType = typeof(int)
-            };
+
             dt.Columns.Add("Month", typeof(string));
             dt.Columns.Add("# Of Runs", typeof(int));
-            dt.Columns.Add(tgtConsultation);
+            dt.Columns.Add("TGT Consultation", typeof(int));
             dt.Columns.Add("ACT Consultation", typeof(int));
             dt.Columns.Add("ACT vs TGT % Consultation", typeof(string));
-            dt.Columns.Add(tgtNU);
+            dt.Columns.Add("TGT NU", typeof(int));
             dt.Columns.Add("ACT NU", typeof(int));
             dt.Columns.Add("ACT vs TGT % NU", typeof(string));
 
@@ -56,41 +36,22 @@ namespace OnlineEventsMarketingApp.Helpers
                 dt.Rows.Add(row);
             }
 
-            return dt;
-        }
-
-        private void OnRowCreated(object sender, GridViewRowEventArgs gridViewRowEventArgs)
-        {
-            if (gridViewRowEventArgs.Row.RowType == DataControlRowType.Header) // If header created
+            Action<IXLWorksheet> action = workSheet =>
             {
-                var gridview = (GridView)sender;
+                workSheet.Row(1).InsertRowsAbove(1);
+                workSheet.Range("A1:B1").Row(1).Merge();
+                workSheet.Range("C1:E1").Row(1).Merge();
+                workSheet.Range("F1:H1").Row(1).Merge();
+                workSheet.Cell(1, 1).Value = "";
+                workSheet.Cell(1, 3).Value = "Consultation";
+                workSheet.Cell(1, 6).Value = "NU";
+            };
 
-                // Creating a Row
-                GridViewRow HeaderRow = new GridViewRow(0, 0, DataControlRowType.Header, DataControlRowState.Insert);
-
-                //Adding Year Column
-                TableCell HeaderCell = new TableCell();
-                HeaderCell.Text = "";
-                HeaderCell.ColumnSpan = 2;
-                HeaderRow.Cells.Add(HeaderCell);
-
-                //Adding Period Column
-                HeaderCell = new TableCell();
-                HeaderCell.Text = "Consultation";
-                HeaderCell.ColumnSpan = 3;
-                HeaderCell.HorizontalAlign = HorizontalAlign.Center;
-                HeaderRow.Cells.Add(HeaderCell);
-
-                //Adding Audited By Column
-                HeaderCell = new TableCell();
-                HeaderCell.Text = "NU";
-                HeaderCell.ColumnSpan = 3;
-                HeaderCell.HorizontalAlign = HorizontalAlign.Center;
-                HeaderRow.Cells.Add(HeaderCell);
-
-                //Adding the Row at the 0th position (first row) in the Grid
-                gridview.Controls[0].Controls.AddAt(0, HeaderRow);
-            }
-        }
+            return new MonthlyReportExportDataSource
+            {
+                Action = action,
+                Table = dt
+            };
+        }        
     }
 }

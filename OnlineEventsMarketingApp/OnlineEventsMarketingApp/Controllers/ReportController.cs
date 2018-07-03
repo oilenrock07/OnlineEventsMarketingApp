@@ -62,12 +62,45 @@ namespace OnlineEventsMarketingApp.Controllers
                 Years = MonthYearHelper.GetYearList()
             };
 
-            var monthlyRunsCount = _dataSheetService.GetMonthlyRunsCount(viewModel.Year);
-            var monthlyConsultations = _dataSheetService.GetMonthlyConsultationReport(viewModel.Year);
-            var monthlyNewUsers = _dataSheetService.GetMonthlyNewUserReport(viewModel.Year);
+            var onlineList = new List<MonthlyReportData>();
+            var inHouseList = new List<MonthlyReportData>();
+            GetMonthlyReportData(viewModel.Year, onlineList, inHouseList);
+
+            viewModel.InhouseMonthlyReport = inHouseList;
+            viewModel.OnlineMonthlyReport = onlineList;
+            return View(viewModel);
+        }
+
+        public void ExportMonthlyReportToExcel(int? year = null, string months = null)
+        {
+            var monthList = MonthYearHelper.GetMonthList();
+            var selectedMonth = !String.IsNullOrEmpty(months) ? months.Split(',') : new string[0];
+            var selectedMonthList = !String.IsNullOrEmpty(months) ? selectedMonth : monthList.Select(x => x.Value);
+            var selectedYear = year ?? DateTime.Now.Year;
 
             var onlineList = new List<MonthlyReportData>();
             var inHouseList = new List<MonthlyReportData>();
+            GetMonthlyReportData(selectedYear, onlineList, inHouseList);
+
+            var reportHelper = new ReportHelper();
+            var list = new List<MonthlyReportExportDataSource>
+            {
+                reportHelper.GenerateMonthlyDataTable(inHouseList, Common.Constants.Constants.INHOUSE),
+                reportHelper.GenerateMonthlyDataTable(onlineList, Common.Constants.Constants.ONLINE)
+            };
+
+            var selectedMonthNames = selectedMonthList.Select(x => new DateTime(selectedYear, x.ToInt(), 1).ToString("MMMM"));
+            var fileName = String.Format("Monthly Tags Report for {0} {1}",  String.Join(" ", selectedMonthNames), year);
+
+            Export.ToExcel(Response, list, fileName);           
+        }
+
+        private void GetMonthlyReportData(int year, IList<MonthlyReportData> onlineList, IList<MonthlyReportData> inHouseList)
+        {
+            var monthlyRunsCount = _dataSheetService.GetMonthlyRunsCount(year);
+            var monthlyConsultations = _dataSheetService.GetMonthlyConsultationReport(year);
+            var monthlyNewUsers = _dataSheetService.GetMonthlyNewUserReport(year);
+
             foreach (var month in MonthYearHelper.GetMonths())
             {
                 //inhouse
@@ -92,71 +125,6 @@ namespace OnlineEventsMarketingApp.Controllers
                     NUACT = GetMonthlyNewUserCount(monthlyNewUsers, month.Item1, Common.Constants.Constants.ONLINE)
                 });
             }
-
-            viewModel.InhouseMonthlyReport = inHouseList;
-            viewModel.OnlineMonthlyReport = onlineList;
-            return View(viewModel);
-        }
-
-        public void ExportMonthlyReportToExcel(int? year = null, string months = null, bool isInhouse = true)
-        {
-            var monthList = MonthYearHelper.GetMonthList();
-            var selectedMonth = !String.IsNullOrEmpty(months) ? months.Split(',') : new string[0];
-
-            var selectedYear = year ?? DateTime.Now.Year;
-            var monthlyRunsCount = _dataSheetService.GetMonthlyRunsCount(selectedYear);
-            var monthlyConsultations = _dataSheetService.GetMonthlyConsultationReport(selectedYear);
-            var monthlyNewUsers = _dataSheetService.GetMonthlyNewUserReport(selectedYear);
-
-            var onlineList = new List<MonthlyReportData>();
-            var inHouseList = new List<MonthlyReportData>();
-            foreach (var month in MonthYearHelper.GetMonths())
-            {
-                if (isInhouse)
-                {
-                    inHouseList.Add(new MonthlyReportData
-                    {
-                        Month = month.Item1,
-                        MonthName = month.Item2,
-                        Inhouse = Common.Constants.Constants.INHOUSE,
-                        NoOfRuns = GetMonthlyRunsCount(monthlyRunsCount, month.Item1, Common.Constants.Constants.INHOUSE),
-                        ConsultationACT = GetMonthlyConsultationACTCount(monthlyConsultations, month.Item1, Common.Constants.Constants.INHOUSE),
-                        NUACT = GetMonthlyNewUserCount(monthlyNewUsers, month.Item1, Common.Constants.Constants.INHOUSE)
-                    });
-                }
-                else
-                {
-                    onlineList.Add(new MonthlyReportData
-                    {
-                        Month = month.Item1,
-                        MonthName = month.Item2,
-                        Inhouse = Common.Constants.Constants.INHOUSE,
-                        NoOfRuns = GetMonthlyRunsCount(monthlyRunsCount, month.Item1, Common.Constants.Constants.ONLINE),
-                        ConsultationACT = GetMonthlyConsultationACTCount(monthlyConsultations, month.Item1, Common.Constants.Constants.ONLINE),
-                        NUACT = GetMonthlyNewUserCount(monthlyNewUsers, month.Item1, Common.Constants.Constants.ONLINE)
-                    });
-                }
-            }
-
-            var reportHelper = new ReportHelper();
-            var list = new List<DataTable>
-            {
-                reportHelper.GenerateDataTable(inHouseList, Common.Constants.Constants.INHOUSE),
-                reportHelper.GenerateDataTable(onlineList, Common.Constants.Constants.ONLINE)
-            };
-
-
-            string type;
-            if (isInhouse)
-                type = Common.Constants.Constants.INHOUSE;
-            else
-                type = Common.Constants.Constants.ONLINE;
-
-
-            //var selectedMonthNames = selectedMonthList.Select(x => new DateTime(selectedYear, x.ToInt(), 1).ToString("MMMM"));
-            //var fileName = String.Format("{0} Monthly Tags Report for {1} {2}", type, String.Join(" ", selectedMonthNames), year);
-
-            Export.ToExcel(Response, list, "Test");           
         }
 
         private int GetMonthlyRunsCount(IEnumerable<MonthlyRunsCountDTO> monthlyRunsCount, int month, string type)

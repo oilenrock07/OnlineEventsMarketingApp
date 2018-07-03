@@ -161,15 +161,17 @@ namespace OnlineEventsMarketingApp.Services.Implementations
         {
             var datasheet = (from sheet in _dataSheetRepository.Find(x => x.Date != null && x.Date >= startDate && x.Date < endDate && x.Status == "RUN" && 
                              x.TagId != 0 && (x.InHouse == Constants.INHOUSE || x.InHouse == Constants.ONLINE))
-                            group sheet by new { sheet.InHouse, sheet.TE} into g
+                            group sheet by new { sheet.InHouse, sheet.TE, sheet.Date.Value.Month} into g
                             select new
                             {
                                 g.Key.InHouse,
-                                g.Key.TE
+                                g.Key.TE,
+                                g.Key.Month
                             });
-
+            
             return (from newUser in query
                     join data in datasheet on newUser.TMCode equals data.TE
+                    where newUser.Month == data.Month
                     group newUser by new { newUser.Month, newUser.Year, data.InHouse } into g
                     select new NewUserMTDDTO
                     {

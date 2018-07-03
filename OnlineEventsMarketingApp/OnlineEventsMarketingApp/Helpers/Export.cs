@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using ClosedXML.Excel;
+using OnlineEventsMarketingApp.Interfaces;
 using OnlineEventsMarketingApp.Models.Reports;
 
 namespace OnlineEventsMarketingApp.Helpers
@@ -38,13 +39,18 @@ namespace OnlineEventsMarketingApp.Helpers
             }
         }
 
-        public static void ToExcel(HttpResponseBase response, IEnumerable<DataTable> data, string fileName)
+        public static void ToExcel(HttpResponseBase response, IEnumerable<IExportDataSource> data, string fileName)
         {
             var workBook = new XLWorkbook();
-
             foreach (var item in data)
-            {
-                workBook.Worksheets.Add(item);
+            {                
+                var workSheet = workBook.Worksheets.Add(item.Table);
+                workSheet.ConditionalFormats.RemoveAll();
+                workSheet.Table("Table1").Theme = XLTableTheme.None;
+                workSheet.Table("Table1").ShowRowStripes = false;
+
+                if (item.Action != null)
+                    item.Action(workSheet);
             }
 
             response.Clear();
