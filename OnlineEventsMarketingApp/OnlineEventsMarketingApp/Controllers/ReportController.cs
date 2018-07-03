@@ -98,11 +98,10 @@ namespace OnlineEventsMarketingApp.Controllers
             return View(viewModel);
         }
 
-        public void ExportMonthlyReportToExcel(int? year = null, string months = null)
+        public void ExportMonthlyReportToExcel(int? year = null, string months = null, bool isInhouse = true)
         {
             var monthList = MonthYearHelper.GetMonthList();
             var selectedMonth = !String.IsNullOrEmpty(months) ? months.Split(',') : new string[0];
-            var selectedMonthList = !String.IsNullOrEmpty(months) ? selectedMonth : monthList.Select(x => x.Value);
 
             var selectedYear = year ?? DateTime.Now.Year;
             var monthlyRunsCount = _dataSheetService.GetMonthlyRunsCount(selectedYear);
@@ -113,105 +112,51 @@ namespace OnlineEventsMarketingApp.Controllers
             var inHouseList = new List<MonthlyReportData>();
             foreach (var month in MonthYearHelper.GetMonths())
             {
-                //inhouse
-                inHouseList.Add(new MonthlyReportData
+                if (isInhouse)
                 {
-                    Month = month.Item1,
-                    MonthName = month.Item2,
-                    Inhouse = Common.Constants.Constants.INHOUSE,
-                    NoOfRuns = GetMonthlyRunsCount(monthlyRunsCount, month.Item1, Common.Constants.Constants.INHOUSE),
-                    ConsultationACT = GetMonthlyConsultationACTCount(monthlyConsultations, month.Item1, Common.Constants.Constants.INHOUSE),
-                    NUACT = GetMonthlyNewUserCount(monthlyNewUsers, month.Item1, Common.Constants.Constants.INHOUSE)
-                });
-
-                //online
-                onlineList.Add(new MonthlyReportData
+                    inHouseList.Add(new MonthlyReportData
+                    {
+                        Month = month.Item1,
+                        MonthName = month.Item2,
+                        Inhouse = Common.Constants.Constants.INHOUSE,
+                        NoOfRuns = GetMonthlyRunsCount(monthlyRunsCount, month.Item1, Common.Constants.Constants.INHOUSE),
+                        ConsultationACT = GetMonthlyConsultationACTCount(monthlyConsultations, month.Item1, Common.Constants.Constants.INHOUSE),
+                        NUACT = GetMonthlyNewUserCount(monthlyNewUsers, month.Item1, Common.Constants.Constants.INHOUSE)
+                    });
+                }
+                else
                 {
-                    Month = month.Item1,
-                    MonthName = month.Item2,
-                    Inhouse = Common.Constants.Constants.INHOUSE,
-                    NoOfRuns = GetMonthlyRunsCount(monthlyRunsCount, month.Item1, Common.Constants.Constants.ONLINE),
-                    ConsultationACT = GetMonthlyConsultationACTCount(monthlyConsultations, month.Item1, Common.Constants.Constants.ONLINE),
-                    NUACT = GetMonthlyNewUserCount(monthlyNewUsers, month.Item1, Common.Constants.Constants.ONLINE)
-                });
+                    onlineList.Add(new MonthlyReportData
+                    {
+                        Month = month.Item1,
+                        MonthName = month.Item2,
+                        Inhouse = Common.Constants.Constants.INHOUSE,
+                        NoOfRuns = GetMonthlyRunsCount(monthlyRunsCount, month.Item1, Common.Constants.Constants.ONLINE),
+                        ConsultationACT = GetMonthlyConsultationACTCount(monthlyConsultations, month.Item1, Common.Constants.Constants.ONLINE),
+                        NUACT = GetMonthlyNewUserCount(monthlyNewUsers, month.Item1, Common.Constants.Constants.ONLINE)
+                    });
+                }
             }
 
-            var selectedMonthNames = selectedMonthList.Select(x => new DateTime(selectedYear, x.ToInt(), 1).ToString("MMMM"));
-            var fileName = String.Format("Monthly Tags Report for {0} {1}", String.Join(",", selectedMonthNames), year);
-
-            var dt = new DataTable();
-
-            var tgtConsultation = new DataColumn()
+            var reportHelper = new ReportHelper();
+            var list = new List<DataTable>
             {
-                ColumnName = "TGT Consultation",
-                Caption = "TGT",
-                DataType = typeof (int)
+                reportHelper.GenerateDataTable(inHouseList, Common.Constants.Constants.INHOUSE),
+                reportHelper.GenerateDataTable(onlineList, Common.Constants.Constants.ONLINE)
             };
-            var tgtNU = new DataColumn()
-            {
-                ColumnName = "TGT NU",
-                Caption = "TGT",
-                DataType = typeof(int)
-            };
-            dt.Columns.Add("Month", typeof(string));
-            dt.Columns.Add("# Of Runs", typeof(int));
-            dt.Columns.Add(tgtConsultation);
-            dt.Columns.Add("ACT Consultation", typeof(int));
-            dt.Columns.Add("ACT vs TGT % Consultation", typeof(string));
-            dt.Columns.Add(tgtNU);
-            dt.Columns.Add("ACT NU", typeof(int));
-            dt.Columns.Add("ACT vs TGT % NU", typeof(string));
 
-            foreach (var item in inHouseList)
-            {
-                var row = dt.NewRow();
-                row["Month"] = item.MonthName;
-                row["# Of Runs"] = item.NoOfRuns;
-                row["TGT Consultation"] = item.ConsultationTGT;
-                row["ACT Consultation"] = item.ConsultationACT;
-                row["ACT vs TGT % Consultation"] = item.ConsultationACTVsTGT;
-                row["TGT NU"] = item.NUTGT;
-                row["ACT NU"] = item.NUACT;
-                row["ACT vs TGT % NU"] = item.NUACTVsTGT;
 
-                dt.Rows.Add(row);
-            }
+            string type;
+            if (isInhouse)
+                type = Common.Constants.Constants.INHOUSE;
+            else
+                type = Common.Constants.Constants.ONLINE;
 
-            Export.ToExcel(Response, dt, fileName, OnRowCreated);
-        }
 
-        private void OnRowCreated(object sender, GridViewRowEventArgs gridViewRowEventArgs)
-        {
-            if (gridViewRowEventArgs.Row.RowType == DataControlRowType.Header) // If header created
-            {
-                var gridview = (GridView)sender;
+            //var selectedMonthNames = selectedMonthList.Select(x => new DateTime(selectedYear, x.ToInt(), 1).ToString("MMMM"));
+            //var fileName = String.Format("{0} Monthly Tags Report for {1} {2}", type, String.Join(" ", selectedMonthNames), year);
 
-                // Creating a Row
-                GridViewRow HeaderRow = new GridViewRow(0, 0, DataControlRowType.Header, DataControlRowState.Insert);
-
-                //Adding Year Column
-                TableCell HeaderCell = new TableCell();
-                HeaderCell.Text = "";
-                HeaderCell.ColumnSpan = 2;
-                HeaderRow.Cells.Add(HeaderCell);
-
-                //Adding Period Column
-                HeaderCell = new TableCell();
-                HeaderCell.Text = "Consultation";
-                HeaderCell.ColumnSpan = 3;
-                HeaderCell.HorizontalAlign = HorizontalAlign.Center;
-                HeaderRow.Cells.Add(HeaderCell);
-
-                //Adding Audited By Column
-                HeaderCell = new TableCell();
-                HeaderCell.Text = "NU";
-                HeaderCell.ColumnSpan = 3;
-                HeaderCell.HorizontalAlign = HorizontalAlign.Center;
-                HeaderRow.Cells.Add(HeaderCell);
-
-                //Adding the Row at the 0th position (first row) in the Grid
-                gridview.Controls[0].Controls.AddAt(0, HeaderRow);
-            }
+            Export.ToExcel(Response, list, "Test");           
         }
 
         private int GetMonthlyRunsCount(IEnumerable<MonthlyRunsCountDTO> monthlyRunsCount, int month, string type)

@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.IO;
+using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using ClosedXML.Excel;
+using OnlineEventsMarketingApp.Models.Reports;
 
 namespace OnlineEventsMarketingApp.Helpers
 {
@@ -30,6 +35,29 @@ namespace OnlineEventsMarketingApp.Helpers
                     response.Write(sw.ToString());
                     response.End();
                 }
+            }
+        }
+
+        public static void ToExcel(HttpResponseBase response, IEnumerable<DataTable> data, string fileName)
+        {
+            var workBook = new XLWorkbook();
+
+            foreach (var item in data)
+            {
+                workBook.Worksheets.Add(item);
+            }
+
+            response.Clear();
+            response.Buffer = true;
+            response.Charset = "";
+            response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            response.AddHeader("content-disposition", string.Format("attachment;filename={0}.xlsx", fileName));
+            using (var MyMemoryStream = new MemoryStream())
+            {
+                workBook.SaveAs(MyMemoryStream);
+                MyMemoryStream.WriteTo(response.OutputStream);
+                response.Flush();
+                response.End();
             }
         }
     }
