@@ -71,11 +71,28 @@ namespace OnlineEventsMarketingApp.Controllers
             return View(viewModel);
         }
 
+        public void ExportWeeklyReportToExel(int year, int month)
+        {
+            var data = _dataSheetService.GetWeeklyReport(month, year);
+            var inhouseSummary = _dataSheetService.GetWeeklyInHouseSummary(month, year);
+            var tags = _tagService.GetTags(year, month).OrderBy(x => x.StartDate);
+
+            var reportHelper = new ReportHelper();
+            var list = new List<ExportDataSourceBase>
+            {
+                reportHelper.GenerateWeeklyDataTable(data, tags),
+                reportHelper.GenerateWeeklySummaryDataTable(inhouseSummary, tags)
+            };
+
+            var fileName = String.Format("Weekly Tags Run for {0} {1}", new DateTime(year, month, 1).ToString("MMMM"), year);
+            Export.ToExcel(Response, list, fileName);
+        }
+
         public void ExportMonthlyReportToExcel(int? year = null, string months = null)
         {
-            var monthList = MonthYearHelper.GetMonthList();
-            var selectedMonth = !String.IsNullOrEmpty(months) ? months.Split(',') : new string[0];
-            var selectedMonthList = !String.IsNullOrEmpty(months) ? selectedMonth : monthList.Select(x => x.Value);
+            //var monthList = MonthYearHelper.GetMonthList();
+            //var selectedMonth = !String.IsNullOrEmpty(months) ? months.Split(',') : new string[0];
+            //var selectedMonthList = !String.IsNullOrEmpty(months) ? selectedMonth : monthList.Select(x => x.Value);
             var selectedYear = year ?? DateTime.Now.Year;
 
             var onlineList = new List<MonthlyReportData>();
@@ -83,14 +100,14 @@ namespace OnlineEventsMarketingApp.Controllers
             GetMonthlyReportData(selectedYear, onlineList, inHouseList);
 
             var reportHelper = new ReportHelper();
-            var list = new List<MonthlyReportExportDataSource>
+            var list = new List<ExportDataSourceBase>
             {
                 reportHelper.GenerateMonthlyDataTable(inHouseList, Common.Constants.Constants.INHOUSE),
                 reportHelper.GenerateMonthlyDataTable(onlineList, Common.Constants.Constants.ONLINE)
             };
 
-            var selectedMonthNames = selectedMonthList.Select(x => new DateTime(selectedYear, x.ToInt(), 1).ToString("MMMM"));
-            var fileName = String.Format("Monthly Tags Report for {0} {1}",  String.Join(" ", selectedMonthNames), year);
+            //var selectedMonthNames = selectedMonthList.Select(x => new DateTime(selectedYear, x.ToInt(), 1).ToString("MMMM"));
+            var fileName = String.Format("Monthly Tags Report for {0}", year);
 
             Export.ToExcel(Response, list, fileName);           
         }

@@ -9,10 +9,16 @@
 <div class="row">
     <div class="col-xs-12 col-sm-6 t1 pull-right">
         <div class="col-md-6">
-            @Html.DropDownListFor(m => m.Year, Model.Years, new { @class = "form-control js-year t1" })
+            @Html.DropDownListFor(m => m.Year, Model.Years, new {@class = "form-control js-year t1"})
         </div>
         <div class="col-md-6">
             @Html.DropDownListFor(m => m.Month, Model.Months, new {@class = "form-control js-month t1"})
+        </div>
+    </div>
+    <div class="col-xs-12">
+        <div class="col-md-12"></div>
+        <div class="col-md-12 pull-right">
+            @Html.ActionLink("Export Data", "ExportWeeklyReportToExel", "Report", new { year = Model.Year, month = Model.Month }, new { @class = "btn btn-success t1 pull-right" })
         </div>
     </div>
 </div>

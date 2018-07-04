@@ -5,7 +5,7 @@ using OnlineEventsMarketingApp.Interfaces;
 
 namespace OnlineEventsMarketingApp.Models.Reports
 {
-    public class MonthlyReportExportDataSource : IExportDataSource
+    public class ExportDataSourceBase : IExportDataSource
     {
         public DataTable Table { get; set; }
         public Action<IXLWorksheet> Action { get; set; }
